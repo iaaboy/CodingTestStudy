@@ -95,18 +95,16 @@ public class Solution {
         }
 
         Set<Integer> answerSet = new HashSet<>();
+        int i=0;
         groups.forEach((key, value) -> {
-            System.out.println("value.groupSum : " + value.groupSum);
+            System.out.println("value.groupSum : " + value.groupSum + i);
             answerSet.add(value.groupSum);
-        }
-        );
+        });
 
         int[] answer = new int[0];
-        int i=0;
+
         if(answerSet.size() > 0) {
-
-            
-
+            answerSet.toArray();
         } else {
             answer = new int[1];
             answer[0] = -1;
