@@ -3,11 +3,7 @@ package acmicpc0322;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Set;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Vector;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -18,42 +14,31 @@ public class Main {
     }
 
     public void solution(int n) { // N 출력
-        // System.out.println("n: " + n);
-        Set<Integer> num = new HashSet<>();
-        for (int i = 0; i < n; i++) {
-            num.add(i + 1);
-        }
-        // System.out.println(num);
-        perm(new Vector<>(), num);
+        int[] nums = new int[n];
+        boolean[] visited = new boolean[n + 1];
+        perm(n, n, visited, nums);
     }
 
-    private void perm(Vector<Integer> curArray, Set<Integer> LeftNum) { // LeftNum 는 정렬되어있음.
-        if (LeftNum.size() == 1) {
+    private void perm(int n, int r, boolean[] visited, int[] nums) { // LeftNum 는 정렬되어있음.
+        if (r == 0) {
+            // System.out.println(Arrays.toString(nums));
 
-            Vector<Integer> newArrPrint = new Vector<>(curArray);
-            newArrPrint.addAll(LeftNum);
-            // System.out.println(newArrPrint);
-
-            for (int i : newArrPrint) {
-                System.out.print(i + " ");
+            for (int num : nums) {
+                System.out.print(num + " ");
             }
             System.out.println();
+
             return;
-            // 마지막
+            // printArray
         }
 
-        for (int n : LeftNum) {
-            Vector<Integer> newArr = new Vector<>(curArray);
-            Set<Integer> newLeftNum = new HashSet<>(LeftNum);
-            newArr.add(n);
-            newLeftNum.remove(n);
-
-            // System.out.println("new" + newArr);
-            // System.out.println("left" + newLeftNum);
-
-            perm(newArr, newLeftNum);
-            newArr.removeElement(n);
-            newLeftNum.add(n);
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                nums[n - r] = i;
+                perm(n, r - 1, visited, nums);
+                visited[i] = false;
+            }
         }
     }
 }
