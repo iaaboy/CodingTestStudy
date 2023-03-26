@@ -3,7 +3,6 @@ package acmicpc0322;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 //백준문제.
 //https://www.acmicpc.net/problem/10974

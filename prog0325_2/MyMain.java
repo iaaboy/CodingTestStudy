@@ -53,7 +53,6 @@ class Solution {
     int result;
 
     public int solution(int[][] maps) {
-        int answer = -1;
         Node currenctNode;
 
         goalX = maps[0].length - 1;

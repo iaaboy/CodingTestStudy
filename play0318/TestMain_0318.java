@@ -4,12 +4,6 @@ import java.util.Arrays;
 
 public class TestMain_0318 {
 
-    /*
-     maps	result
-      ["X591X","X1X5X","X231X", "1XXX1"]	[1, 1, 27]
-      ["XXX","XXX","XXX"]	[-1]
-     */
-    
         public static void main(String[] args) {
     
             String maps[] = {"15X1X","11X5X","1XXXX", "1XXX1"};

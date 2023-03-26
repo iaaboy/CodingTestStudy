@@ -79,18 +79,18 @@ class Solution {
         mMap.clear();
     }
 
-    private void printStats(){
-        mMap.values().stream().forEach(
-            v -> {
-                System.out.println(v + ": d," + v.distance + " v," + v.visited + " n," + v.nodes.size());
+    // private void printStats(){
+    //     mMap.values().stream().forEach(
+    //         v -> {
+    //             System.out.println(v + ": d," + v.distance + " v," + v.visited + " n," + v.nodes.size());
 
-                for(int i = 0; i < v.nodes.size(); i++) {
-                    System.out.print(v.nodes.get(i) + ",");    
-                }
-                System.out.println();                
-            }
-        );
-    }
+    //             for(int i = 0; i < v.nodes.size(); i++) {
+    //                 System.out.print(v.nodes.get(i) + ",");    
+    //             }
+    //             System.out.println();                
+    //         }
+    //     );
+    // }
 
     private boolean addNode(String a, String b){
         //두 단어를 비교

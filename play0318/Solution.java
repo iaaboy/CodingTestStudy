@@ -85,7 +85,7 @@ class Solution {
             }
         }
 
-        ArrayList answerSet = new ArrayList<Integer>();
+        ArrayList<Integer> answerSet = new ArrayList<Integer>();
         int i = 0;
         int[] answer;
 

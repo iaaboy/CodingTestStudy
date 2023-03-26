@@ -12,9 +12,9 @@ public class Solution {
     public int solution(
             int n, int[] lost, int[] spare) {
 
-        HashSet<Integer> coice = new HashSet();
-        HashSet<Integer> lostJin = new HashSet();
-        HashSet<Integer> spareJin = new HashSet();
+        HashSet<Integer> coice = new HashSet<Integer>();
+        HashSet<Integer> lostJin = new HashSet<Integer>();
+        HashSet<Integer> spareJin = new HashSet<Integer>();
         for (int lo : lost) {
             for (int sp : spare) {
                 if (lo == sp) {
@@ -30,7 +30,7 @@ public class Solution {
             spareJin.remove(c);
         }
 
-        HashSet<Integer> mCandi = new HashSet();
+        HashSet<Integer> mCandi = new HashSet<Integer>();
         for (int lo : lostJin) {
             for (int sp : spareJin) {
                 if (Math.abs(lo - sp) == 1) {
