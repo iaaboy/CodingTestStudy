@@ -18,7 +18,13 @@ public class MyMain {
 }
 
 class Solution {        
-
+    // data model
+    // class Vertex implements Comparable <Vertex> {
+    //     String w; //debugging목적
+    //     int distance; //거리가 얼마인지
+    //     boolean visited; //방문여부
+    //     Vector <Vertex> nodes; //인접 노드
+    // }
     HashMap <String, Vertex> mMap;
     PriorityQueue<Vertex> pQ;
 
@@ -28,26 +34,31 @@ class Solution {
         mMap = new HashMap<>();
         pQ = new PriorityQueue<>();
 
+        //각 정점을 생성하고 map에 넣는다.
         for(int i = 0; i < words.length ; i++ ) {
             Vertex v = new Vertex(words[i]);
             mMap.put(words[i], v);
         }
 
+        //begin도 정점 생성해서 넣는다.
         Vertex v2 = new Vertex(begin);
         mMap.put(begin, v2);
 
         for(int i = 0; i < words.length ; i++ ) {
+            //begin과 word간 노드 생성
             addNode(begin, words[i]);
         }
 
         for(int i = 0; i < words.length ; i++ ) {
             for(int j = i ; j < words.length ; j++ ) {
+                //각 word간 노드 생성
                 addNode(words[i], words[j]);
             }
         }
 
         //printStats();
 
+        //begin부터 방문 시작
         mMap.get(begin).visited = true;
         pQ.add(mMap.get(begin));
         while(pQ.size() > 0) {
@@ -59,7 +70,7 @@ class Solution {
             
             curVertex.nodes.forEach(v -> {
                 if(!v.visited) {
-                    v.visited = true;
+                    v.visited = true; //visited를 언제 st하느냐가 매우 중요!!! // queue에 넣기 전에 하지 않으면, 필요 없는 방문이 많아짐.
                     v.distance = curVertex.distance + 1;
                     pQ.add(v);
                 }
@@ -104,7 +115,7 @@ class Solution {
             }
         }
 
-        if(diffCount == 1) {
+        if(diffCount == 1) { //한글자가 다를때만 node생성.
             mMap.get(a).nodes.add(mMap.get(b));
             mMap.get(b).nodes.add(mMap.get(a));
         }
