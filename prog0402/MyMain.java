@@ -4,7 +4,7 @@ import java.util.*;
 
 class MyMain {
     public static void main(String[] args) {
-        int [] inputArr = {2, 3, 6, 1, 1, 3 , 2, -4, -1, 5, 7};
+        int [] inputArr = {5,-5,4,7,-9,2,4};
 
         Solution sol = new Solution();
         long result = sol.solution(inputArr);
@@ -12,75 +12,48 @@ class MyMain {
     }
 }
 
+/*
+sequence :        [5, -5,    4,  7,  -9, 2, 4]
+pulsed sequence : [-5, -5,  -4,  7,  9,  2, -4]
+prefix :       [0, -5, -10, -14, -7, 2,  4, 0]
+중간합이 낮은 -14(3번째)  -> {-5, -5,  -4} 합
+중간합이 가장 높은 4(6번째) -> {-5, -5,  -4,  7,  9,  2} 합
+결과 구간                -> {7 ,9 ,2}
+답 : 19
+ */
+
 class Solution {
     public long solution(int[] sequence) {
-        long answer = 0;
-        int [] seq1 = new int[sequence.length];
-        int [] seq2 = new int[sequence.length];
+        long[] prefix = new long[sequence.length + 1];// sequence의 합을 나타낸 배열
+
+        System.out.println(Arrays.toString(sequence));
 
         int pulse = -1;
         for(int i = 0; i < sequence.length; i++) {
-            seq1[i] = sequence[i]*pulse;
-            seq2[i] = sequence[i]*pulse*-1;
+            sequence[i] = sequence[i]*pulse;
             pulse = pulse*-1;
         }
 
-        //System.out.println(Arrays.toString(seq1));
-        answer = calcIt(seq1);
-        //System.out.println(Arrays.toString(seq2));
-        calcIt(seq2);
+        for (int i = 1; i <= sequence.length; i++) {
+            prefix[i] = prefix[i - 1] + sequence[i - 1];
+        }
 
-        return answer;
-    }
-    private int calcIt(int[] numbers){
-        LinkedList <Integer> result2 = new LinkedList<>();
-        int prevSig = 0;
-        for(int i=0; i< numbers.length ; i++) {
-            if(prevSig * numbers[i] > 0) {
-                result2.set(result2.size()-1, result2.peekLast() + numbers[i]);
-            } else if(numbers[i] == 0) {
-
-            } else {
-                result2.add(numbers[i]);
+        System.out.println(Arrays.toString(sequence));
+        System.out.println(Arrays.toString(prefix));
+        
+        long min = Long.MAX_VALUE;
+        long max = Long.MIN_VALUE;
+        for(int i = 0; i< prefix.length ; i++) {
+            if(prefix[i] <  min) {
+                min = prefix[i];
             }
-
-            if(numbers[i] < 0) {
-                prevSig = -1;
-            } else if(numbers[i] > 0) {
-                prevSig = 1;
+            if(prefix[i] >  max) {
+                max = prefix[i];
             }
         }
 
-        //System.out.println("sequence: " + result2);
-
-        int indexMid = 1;
-        int subResult = 0;
-        while((indexMid <= result2.size() - 2 && result2.size() > 2)) {
-            int pre =result2.get(indexMid-1);
-            int mid =result2.get(indexMid);
-            int post =result2.get(indexMid+1);
-
-            if(Math.abs(mid) <= Math.abs(pre) && Math.abs(mid) <= Math.abs(post)) {
-                //합쳐
-                subResult = pre + mid + post;
-                result2.set(indexMid - 1, subResult);
-                result2.remove(indexMid + 1);
-                result2.remove(indexMid);
-                indexMid --;
-                //System.out.println("mid result:" + result2);
-            } else {
-                indexMid++;
-            }
-        }
-
-        int max = 0;
-        for(int a : result2) {
-            if(Math.abs(a)>max) {
-                max = Math.abs(a);
-            }
-        }
-
-        return max;
+        System.out.println(Math.abs(max-min));
+        return Math.abs(max-min);
     }
 }
 
