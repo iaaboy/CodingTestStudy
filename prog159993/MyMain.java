@@ -4,12 +4,12 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        String[][] exam = { 
-            {"LOSOE",
-            "XXXXX",
-            "OOOOO",
-            "XXXXX",
-            "OOOOO"},
+        String[][] exam = {
+                { "LOSOE",
+                        "XXXXX",
+                        "OOOOO",
+                        "XXXXX",
+                        "OOOOO" },
                 { "SOOOL",
                         "XXXXO",
                         "OOOOO",
@@ -47,7 +47,7 @@ class Solution {
         visited[start.y][start.x] = true;
         int toLever = getMinPath(start, 'L');
 
-        if(toLever == 0) {
+        if (toLever == 0) {
             return -1;
         }
 
@@ -57,7 +57,7 @@ class Solution {
         int toGoal = getMinPath(start, 'E');
         answer = toLever + toGoal;
 
-        if(toGoal == 0) {
+        if (toGoal == 0) {
             return -1;
         }
         return answer;
@@ -82,36 +82,36 @@ class Solution {
             if (curX != 0) { // x-1
                 if (checkTarget(curY, curX - 1, target))
                     return curDist + 1;
-                if (!visited[curY][curX - 1] && maps[curY].charAt(curX-1) != 'X') {
+                if (!visited[curY][curX - 1] && maps[curY].charAt(curX - 1) != 'X') {
                     visited[curY][curX - 1] = true;
-                    System.out.println("x:"  + (curX - 1) + ", y:" + curY + ",min:" + (curDist + 1));
+                    System.out.println("x:" + (curX - 1) + ", y:" + curY + ",min:" + (curDist + 1));
                     pQ.add(new Node(curX - 1, curY, curDist + 1));
                 }
             }
             if (curY != 0) { // y-1
                 if (checkTarget(curY - 1, curX, target))
                     return curDist + 1;
-                if (!visited[curY - 1][curX] && maps[curY-1].charAt(curX) != 'X') {
+                if (!visited[curY - 1][curX] && maps[curY - 1].charAt(curX) != 'X') {
                     visited[curY - 1][curX] = true;
-                    System.out.println("x:"  + (curX) + ", y:" + (curY-1) + ",min:" + (curDist + 1));
+                    System.out.println("x:" + (curX) + ", y:" + (curY - 1) + ",min:" + (curDist + 1));
                     pQ.add(new Node(curX, curY - 1, curDist + 1));
                 }
             }
             if (curX != xLen - 1) { // x+1
                 if (checkTarget(curY, curX + 1, target))
                     return curDist + 1;
-                if (!visited[curY][curX + 1] && maps[curY].charAt(curX+1) != 'X') {
+                if (!visited[curY][curX + 1] && maps[curY].charAt(curX + 1) != 'X') {
                     visited[curY][curX + 1] = true;
-                    System.out.println("x:"  + (curX + 1) + ", y:" + curY + ",min:" + (curDist + 1));
+                    System.out.println("x:" + (curX + 1) + ", y:" + curY + ",min:" + (curDist + 1));
                     pQ.add(new Node(curX + 1, curY, curDist + 1));
                 }
             }
             if (curY != yLen - 1) { // y+1
                 if (checkTarget(curY + 1, curX, target))
                     return curDist + 1;
-                if (!visited[curY + 1][curX] && maps[curY+1].charAt(curX) != 'X') {
+                if (!visited[curY + 1][curX] && maps[curY + 1].charAt(curX) != 'X') {
                     visited[curY + 1][curX] = true;
-                    System.out.println("x:"  + (curX) + ", y:" + (curY+1) + ",min:" + (curDist + 1));
+                    System.out.println("x:" + (curX) + ", y:" + (curY + 1) + ",min:" + (curDist + 1));
                     pQ.add(new Node(curX, curY + 1, curDist + 1));
                 }
             }
