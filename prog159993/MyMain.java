@@ -68,7 +68,6 @@ class Solution {
      * 찾으면 distance
      */
     int getMinPath(Node start, char target) {
-        int minVal = -1;
         int curDist = 0;
         PriorityQueue<Node> pQ = new PriorityQueue<Node>();
 
