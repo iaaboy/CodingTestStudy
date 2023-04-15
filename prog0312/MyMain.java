@@ -1,4 +1,18 @@
-import java.util.HashSet;
+package prog0312;
+import java.util.*;
+public class MyMain {
+    public static void main(String[] args) {
+        
+        int[] n = { 5, 5, 3, 7 };
+        int llost[][] = { { 2, 4 }, { 2, 4 }, { 3 }, { 1, 3, 4, 5 } };
+        int sspare[][] = { { 1, 3, 5 }, { 3 }, { 1 }, { 3, 5, 6 } };
+        
+        Solution mSol = new Solution();
+        for (int i = 0; i < 4; i++) {
+            mSol.solution(n[i], llost[i], sspare[i]);
+        }
+    }
+}
 
 /*
 문제 : https://school.programmers.co.kr/learn/courses/30/lessons/42862
@@ -7,7 +21,7 @@ import java.util.HashSet;
         int sspare[][] = { { 1, 3, 5 }, { 3 }, { 1 }, { 3, 5, 6 } };
  */
 
-public class Solution {
+class Solution {
 
     public int solution(
             int n, int[] lost, int[] spare) {
@@ -64,3 +78,4 @@ public class Solution {
         return result;
     }
 }
+
