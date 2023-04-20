@@ -1,10 +1,26 @@
-package play0318;
+package play154540;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
+
+public class TestMain_0318 {
+
+    public static void main(String[] args) {
+
+        String maps[] = { 
+            "X222222222", 
+            "1222222222", 
+            "XXXXXXXXXX", 
+            "1222222222",
+            "1222222222" };
+        //String maps2[] = { "XXX", "XXX", "XXX" };
+        //String maps3[] = { "X591X", "X1X5X", "X231X", "1XXX1" };
+
+        Solution mSolution = new Solution();
+        System.out.println("maps result" + Arrays.toString(mSolution.solution(maps)));
+        //System.out.println("maps2 result" + Arrays.toString(mSolution.solution(maps2)));
+        //System.out.println("maps3 result" + Arrays.toString(mSolution.solution(maps3)));
+    }
+}
 
 class Solution {
     class Node {
@@ -29,12 +45,6 @@ class Solution {
         Vector<Node> nodes;
     }
 
-    // 문제
-    // https://school.programmers.co.kr/learn/courses/30/lessons/154540?language=java
-
-    // Sample
-    // String maps[] = {"X591X","XXX5X","X231X", "1XXX1"};
-
     int myArr[][];
     int groupIDs[][];
     Integer Idx;
@@ -58,7 +68,7 @@ class Solution {
         }
 
         // for (int[] line : myArr) {
-        //     // System.out.println("mid result: " + Arrays.toString(line));
+        // // System.out.println("mid result: " + Arrays.toString(line));
         // }
 
         for (int y = 0; y < myArr.length; y++) {
@@ -112,7 +122,6 @@ class Solution {
             answer = new int[1];
             answer[0] = -1;
         }
-
 
         return answer;
 
