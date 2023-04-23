@@ -8,13 +8,13 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         String [][][] tickets = {
-            {{"ICN", "JFK"}, {"HND", "IAD"}, {"JFK", "HND"}},
+           // {{"ICN", "JFK"}, {"HND", "IAD"}, {"JFK", "HND"}},
             {{"ICN", "SFO"}, {"ICN", "ATL"}, {"SFO", "ATL"}, {"ATL", "ICN"}, {"ATL","SFO"}}
         };
 
         Solution mSol = new Solution();
         for (String[][] ticket : tickets) {
-            System.out.println(mSol.solution(ticket));
+            System.out.println(Arrays.toString(mSol.solution(ticket)));
         }
     }
 }
@@ -34,8 +34,11 @@ class Solution {
         Map <Integer, AirPort> airportMap = new HashMap<Integer, AirPort>();
         int index = 0;
         for(String ap : sortedAiports) {
-            airportMap.put(index, new AirPort(ap, index));
+            airportMap.put(index++, new AirPort(ap, index));
         }
+
+        System.out.print(sortedAiports);
+        System.out.print(airportMap);
 
         return answer;
     }
