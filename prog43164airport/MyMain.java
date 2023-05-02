@@ -9,8 +9,8 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         String[][][] tickets = {
-                {{"ICN", "JFK"}, {"HND", "IAD"}, {"JFK", "HND"}},
-                //{ { "ICN", "SFO" }, { "ICN", "ATL" }, { "SFO", "ATL" }, { "ATL", "ICN" }, { "ATL", "SFO" } }
+               // {{"ICN", "JFK"}, {"HND", "IAD"}, {"JFK", "HND"}},
+                { { "ICN", "SFO" }, { "ICN", "ATL" }, { "SFO", "ATL" }, { "ATL", "ICN" }, { "ATL", "SFO" } }
         };
 
         Solution mSol = new Solution();
@@ -19,6 +19,8 @@ public class MyMain {
         }
     }
 }
+
+// {0=0:HND-[0,1,false], 1=1:IAD-[], 2=2:ICN-[2,3,true], 3=3:JFK-[3,0,false]}
 
 class Solution {
     int ticketSize = 0;
@@ -52,9 +54,14 @@ class Solution {
                             new Node(airportIndex.get(ticket[0]), airportIndex.get(ticket[1])));
         }
 
-        //System.out.println("airportMap" + airportMap);
+        System.out.println("airportMap" + airportMap);
 
         journey(airportMap.get(airportIndex.get(tickets[0][0])).next.first());
+
+        //airportMap{
+            // 0=0:ATL-[0,1,false, 0,2,false], 
+            // 1=1:ICN-[1,0,false, 1,2,false], 
+            // 2=2:SFO-[2,0,false]}
 
         // make answer
         System.out.println(airportIndex.get(tickets[0][0]) + ", " + routine);
@@ -101,6 +108,9 @@ class Solution {
                         return true;
                     } else {
                         // try next
+                        //visited를 원복
+                        //다시 pop
+                        return false;
                     }
                 }
             }
