@@ -4,7 +4,7 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        String[] inStr = {"119", "97674223", "1195524421"};
+        String[] inStr = {"12","123","1235","567","88"};
         Solution mSol = new Solution();
         System.out.println("result:" + mSol.solution(inStr));
     }
@@ -13,22 +13,17 @@ public class MyMain {
 class Solution {
     public boolean solution(String[] phone_book) {
         boolean answer = true;
+        HashSet<Integer> sizeSet = new HashSet<>();
 
-        Arrays.sort(phone_book, (str1, str2) -> {
-            if (str1.length() > str2.length()) {
-                return 1;
-            } else 
-            return -1;
-        });
-
+        Arrays.sort(phone_book);
         System.out.println(Arrays.toString(phone_book));
 
-        for(int i = 0; i< phone_book.length; i++) {
-            for(int j = i+1; j< phone_book.length; j++) {
-                if(phone_book[i].equals(phone_book[j].substring(0, phone_book[i].length()))){
-                    answer = false;
-                    break;
-                }
+        System.out.println(sizeSet);
+
+        for(int i=0;i<phone_book.length-1;i++){
+            if(phone_book[i+1].startsWith(phone_book[i])){
+                answer = false;
+                break;
             }
         }
         return answer;
