@@ -2,7 +2,7 @@ package prog154538;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[][] numbers = { { 2, 100, 4} };
+        int[][] numbers = { { 2, 3 * 2 * 1024 * 1024, 3 * 2 * 1024 * 1024 - 2 } };
 
         Solution mSol = new Solution();
 
@@ -14,25 +14,24 @@ public class MyMain {
 }
 
 class Solution {
-    int Y, X, N;
-    int curN ;
-    int cur2 ;
-    int cur3 ;
+    int Y, X;
+    int cur2;
+    int cur3;
+
     public int solution(int x, int y, int n) {
         this.Y = y;
         this.X = x;
-        this.N = n;
-        curN = cur2 = cur3 = X;
-        if(x==y)
+        cur2 = cur3 = X;
+        if (x == y)
             return 0;
 
         int rN = checkN(x, y, n);
         int result = Math.min(rN, checkNext(1));
 
-        if(result == Integer.MAX_VALUE) {
+        if (result == Integer.MAX_VALUE) {
             return -1;
-        } else 
-        return result;
+        } else
+            return result;
     }
 
     private int checkN(int x, int y, int n) {
@@ -42,25 +41,25 @@ class Solution {
             return (y - x) / n;
         }
     }
-    
-    private int checkNext(int n){
-        if((cur2 == Integer.MAX_VALUE) && (cur3 == Integer.MAX_VALUE)) {
+
+    private int checkNext(int n) {
+        if ((cur2 == Integer.MAX_VALUE) && (cur3 == Integer.MAX_VALUE)) {
             return Integer.MAX_VALUE;
         } else {
-            if(cur2 != Integer.MAX_VALUE && cur2 < Y) {
-                cur2 = cur2*2;
-            } else if(cur2 != Integer.MAX_VALUE && cur2 > Y) {
+            if (cur2 != Integer.MAX_VALUE && cur2 < Y) {
+                cur2 = cur2 * 2;
+            } else if (cur2 != Integer.MAX_VALUE && cur2 > Y) {
                 cur2 = Integer.MAX_VALUE;
             }
 
-            if(cur3 != Integer.MAX_VALUE && cur3 < Y) {
-                cur3 = cur3*3;
-            } else if(cur2 != Integer.MAX_VALUE && cur3 > Y) {
+            if (cur3 != Integer.MAX_VALUE && cur3 < Y) {
+                cur3 = cur3 * 3;
+            } else if (cur2 != Integer.MAX_VALUE && cur3 > Y) {
                 cur3 = Integer.MAX_VALUE;
             }
 
-            System.out.println("nums:" + curN + "," + cur2 + "," + cur3);
-            if((cur2 == Y) || (cur3 == Y)) {
+            System.out.println("nums:" + "," + cur2 + "," + cur3);
+            if ((cur2 == Y) || (cur3 == Y)) {
                 return n;
             }
 
@@ -68,5 +67,3 @@ class Solution {
         }
     }
 }
-
-
