@@ -1,8 +1,10 @@
 package prog154538;
 
+import java.util.*;
+
 public class MyMain {
     public static void main(String[] args) {
-        int[][] numbers = { { 2, 3 * 2 * 1024 * 1024, 3 * 2 * 1024 * 1024 - 2 } };
+        int[][] numbers = { { 10, 40, 30 } };
 
         Solution mSol = new Solution();
 
@@ -14,56 +16,78 @@ public class MyMain {
 }
 
 class Solution {
-    int Y, X;
-    int cur2;
-    int cur3;
+    int curNum;
+
+    PriorityQueue<Depth> pq = new PriorityQueue<>();
 
     public int solution(int x, int y, int n) {
-        this.Y = y;
-        this.X = x;
-        cur2 = cur3 = X;
+        curNum = x;
         if (x == y)
             return 0;
-
-        int rN = checkN(x, y, n);
-        int result = Math.min(rN, checkNext(1));
-
-        if (result == Integer.MAX_VALUE) {
-            return -1;
-        } else
-            return result;
+        return checkNext(1, x, y, n);
     }
 
-    private int checkN(int x, int y, int n) {
-        if (((y - x) % n != 0)) {
-            return Integer.MAX_VALUE;
+    private int checkNext(int count, int curX, int y, int n) {
+
+        int nextX;
+
+        System.out.println("check: " + count + "," + curX + "," + y + "," + n);
+
+        nextX = curX + n;
+        if (nextX == y) {
+            return count;
         } else {
-            return (y - x) / n;
+            if (nextX < y) {
+                pq.add(new Depth(count + 1, nextX));
+            }
         }
+
+        nextX = curX * 2;
+        if (nextX == y) {
+            return count;
+        } else {
+            if (nextX < y) {
+                pq.add(new Depth(count + 1, nextX));
+            }
+        }
+
+        nextX = curX * 3;
+        if (nextX == y) {
+            return count;
+        } else {
+            if (nextX < y) {
+                pq.add(new Depth(count + 1, nextX));
+            }
+        }
+
+        int res;
+        while (pq.size() > 0) {
+            Depth data = pq.peek();
+            pq.remove();
+            res = checkNext(data.count, data.curX, y, n);
+            if (res > 0) {
+                return res;
+            }
+        }
+
+        return -1;
+    }
+}
+
+class Depth implements Comparable<Depth> {
+    int count;
+    int curX;
+
+    public Depth(int count, int curX) {
+        this.count = count;
+        this.curX = curX;
     }
 
-    private int checkNext(int n) {
-        if ((cur2 == Integer.MAX_VALUE) && (cur3 == Integer.MAX_VALUE)) {
-            return Integer.MAX_VALUE;
-        } else {
-            if (cur2 != Integer.MAX_VALUE && cur2 < Y) {
-                cur2 = cur2 * 2;
-            } else if (cur2 != Integer.MAX_VALUE && cur2 > Y) {
-                cur2 = Integer.MAX_VALUE;
-            }
-
-            if (cur3 != Integer.MAX_VALUE && cur3 < Y) {
-                cur3 = cur3 * 3;
-            } else if (cur2 != Integer.MAX_VALUE && cur3 > Y) {
-                cur3 = Integer.MAX_VALUE;
-            }
-
-            System.out.println("nums:" + "," + cur2 + "," + cur3);
-            if ((cur2 == Y) || (cur3 == Y)) {
-                return n;
-            }
-
-            return checkNext(n + 1);
+    @Override
+    public int compareTo(Depth o) {
+        if (count > o.count) {
+            return 1;
         }
+        return -1;
     }
 }
