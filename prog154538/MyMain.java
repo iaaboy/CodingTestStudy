@@ -21,66 +21,39 @@ class Solution {
     PriorityQueue<Depth> pq = new PriorityQueue<>();
 
     public int solution(int x, int y, int n) {
-        curNum = x;
-        if (x == y)
-            return 0;
-        return checkNext(1, x, y, n);
-    }
 
-    private int checkNext(int count, int curX, int y, int n) {
-
-        int nextX;
-
-        System.out.println("check: " + count + "," + curX + "," + y + "," + n);
-
-        nextX = curX + n;
-        if (nextX == y) {
-            return count;
-        } else {
-            if (nextX < y) {
-                pq.add(new Depth(count + 1, nextX));
-            }
-        }
-
-        nextX = curX * 2;
-        if (nextX == y) {
-            return count;
-        } else {
-            if (nextX < y) {
-                pq.add(new Depth(count + 1, nextX));
-            }
-        }
-
-        nextX = curX * 3;
-        if (nextX == y) {
-            return count;
-        } else {
-            if (nextX < y) {
-                pq.add(new Depth(count + 1, nextX));
-            }
-        }
-
-        int res;
+        pq.add(new Depth(0, y));
         while (pq.size() > 0) {
-            Depth data = pq.peek();
+            Depth curDepth = pq.peek();
             pq.remove();
-            res = checkNext(data.count, data.curX, y, n);
-            if (res > 0) {
-                return res;
+
+            System.out.println("check: " + curDepth.count + "," + curDepth.curY + "," + y + "," + n);
+
+            if (curDepth.curY == x)
+                return curDepth.count;
+
+            if (curDepth.curY > x) {
+                if (curDepth.curY % 3 == 0) {
+                    pq.add(new Depth(curDepth.count + 1, curDepth.curY / 3));
+                }
+                if (curDepth.curY % 2 == 0) {
+                    pq.add(new Depth(curDepth.count + 1, curDepth.curY / 2));
+                }
+                pq.add(new Depth(curDepth.count + 1, curDepth.curY - n));
             }
         }
-
         return -1;
     }
+
 }
 
 class Depth implements Comparable<Depth> {
     int count;
-    int curX;
+    int curY;
 
-    public Depth(int count, int curX) {
+    public Depth(int count, int curY) {
         this.count = count;
-        this.curX = curX;
+        this.curY = curY;
     }
 
     @Override
