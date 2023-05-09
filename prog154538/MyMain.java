@@ -2,12 +2,13 @@ package prog154538;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[][] numbers = { { 30, 30*8*9, 11 }, { 2, 64*2, 20 }, { 2, 5, 4 } };
+        int[][] numbers = { { 3,3, 1} };
 
         Solution mSol = new Solution();
 
         for (int[] num : numbers) {
             System.out.println(mSol.solution(num[0], num[1], num[2]));
+            System.out.println();
         }
     }
 }
@@ -15,15 +16,15 @@ public class MyMain {
 class Solution {
     public int solution(int x, int y, int n) {
         if (x == y) {
-            return -1;
+            return 0;
         }
-        int rN = checkN(x, y, n);
+        int rN = checkAdd(x, y, n);
         int r2 = (int) log2(y, x);
         int r3 = (int) log3(y, x);
 
-        // System.out.println(rN);
-        // System.out.println(r2);
-        // System.out.println(r3);
+         System.out.println("addN:" + rN);
+         System.out.println("log2: " + r2);
+         System.out.println("log3:" + r3);
 
         return getMin(rN, r2, r3);
     }
@@ -36,7 +37,7 @@ class Solution {
             return result;
     }
 
-    private int checkN(int x, int y, int n) {
+    private int checkAdd(int x, int y, int n) {
         if (((y - x) % n != 0)) {
             return Integer.MAX_VALUE;
         } else {
