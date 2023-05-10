@@ -12,7 +12,6 @@ public class TestMain_0318 {
             "XXXXXXXXXX", 
             "1222222222",
             "1222222222" };
-        //String maps2[] = { "XXX", "XXX", "XXX" };
         //String maps3[] = { "X591X", "X1X5X", "X231X", "1XXX1" };
 
         Solution mSolution = new Solution();
