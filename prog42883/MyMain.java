@@ -66,6 +66,11 @@ class NumData {
     int num;
     int idx;
 
+    @Override
+    public String toString() {
+        return "num:" + num + ",idx:" + idx;
+    }
+
     public NumData(int num, int idx) {
         this.num = num;
         this.idx = idx;
