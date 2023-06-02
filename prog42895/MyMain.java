@@ -1,135 +1,141 @@
 package prog42895;
 
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int N = 5;
-        int number = 55  + (5/5);
+        int N = 2;
+        int number = 11;
 
         Solution mSol = new Solution();
-        //System.out.println(mSol.solution(N, number));
+        System.out.println(mSol.solution(N, number));
     }
 }
 
 class Solution {
+    MySet[] mySet;
+    int number;
     int N;
-    public int solution(int N, int number) {
-        int answer = 0;
-        MidResult n0 = new MidResult(N, 1, Integer.toString(N));
-        this.N = N;
 
-        if(N == number) {
+    public int solution(int N, int number) {
+        int answer = -1;
+        this.number = number;
+        this.N = N;
+        mySet = new MySet[10];
+        for (int i = 0; i < 10; i++) {
+            mySet[i] = new MySet();
+        }
+
+        // n = 0;
+        if (N == number) {
             return 1;
         }
 
-        PriorityQueue<MidResult> wQ = new PriorityQueue<>();
-        wQ.add(n0);
-        MidResult n2 = new MidResult(0-N, 1,"-" + Integer.toString(N));
-        wQ.add(n2);
+        // n = 1;
+        mySet[1].r.add(N);
+        mySet[1].r.add(-N);
 
-        int currCount = 1;
-        MidResult n;
+        // n= 2 ~ 8
 
-        while (!wQ.isEmpty()) {
-            n = wQ.poll();
-            //System.out.println(n);
+        for (int count = 2; count < 9; count++) {
+            for (int m = 1; m <= count / 2; m++) {
+                int leftV = count - m;
+                int rightV = m;
 
-            if (n.nCount > currCount) {
-                if(n.nCount > 8) {
-                    return -1;
-                }
-                //System.out.println(n.nCount);
-                int repeatNumber = repeatN(N, n.nCount);
-                if (repeatNumber == number) {
-                    answer = n.nCount;
-                    //System.out.println(n); 
-                    break;
-                } else {
-                    wQ.add(new MidResult(repeatNumber, n.nCount, Integer.toString(N) + "r" + Integer.toString(n.nCount)));
-                }
-                currCount = n.nCount;
-            }
-
-            // +
-            if (n.curVal + N == number) {
-                answer = n.nCount + 1;
-                //System.out.println(n); 
-                break;
-            } else {
-                wQ.add(new MidResult(n.curVal + N, n.nCount + 1, n.log + "+" + Integer.toString(N)));
-            }
-
-            // -
-            if (n.curVal - N == number) {
-                answer = n.nCount + 1;
-                //System.out.println(n); 
-                break;
-            } else {
-                wQ.add(new MidResult(n.curVal - N, n.nCount + 1, n.log + "-" + Integer.toString(N)));
-            }
-            // x
-            if (n.curVal * N == number) {
-                answer = n.nCount + 1;
-                //System.out.println(n); 
-                break;
-            } else {
-                wQ.add(new MidResult(n.curVal * N, n.nCount + 1, n.log + "*" + Integer.toString(N)));
-            }
-            // /
-            if(n.curVal % N == 0) {
-                if (n.curVal / N == number) {
-                    answer = n.nCount + 1;
-                    //System.out.println(n); 
-                    break;
-                } else {
-                    wQ.add(new MidResult(n.curVal / N, n.nCount + 1, n.log + "/" + Integer.toString(N)));
-                }
-            } else {
-                if (n.curVal - (n.curVal % N) / N == number) {
-                    answer = n.nCount + 1;
-                    //System.out.println(n); 
-                    break;
-                } else {
-                    wQ.add(new MidResult(n.curVal / N, n.nCount + 1, n.log + "/" + Integer.toString(N)));
+                for (int l : mySet[leftV].r) {
+                    for (int r : mySet[rightV].r) {
+                        if (calcPlus(count, l, r)) {
+                            return count;
+                        }
+                        if (calcMinus(count, l, r)) {
+                            return count;
+                        }
+                        if (calcBy(count, l, r)) {
+                            return count;
+                        }
+                        if (calcDevide(count, l, r)) {
+                            return count;
+                        }
+                        if (l != r) {
+                            if (calcPlus(count, r, l)) {
+                                return count;
+                            }
+                            if (calcMinus(count, r, l)) {
+                                return count;
+                            }
+                            if (calcBy(count, r, l)) {
+                                return count;
+                            }
+                            if (calcDevide(count, r, l)) {
+                                return count;
+                            }
+                        }
+                    }
                 }
             }
+            int seq = calcSeq(count);
+            if (seq == number) {
+                return count;
+            } else {
+                mySet[count].r.add(seq);
+            }
+            System.out.println(count + " numbers :" + mySet[count].r);
         }
 
         return answer;
     }
 
-    public int repeatN(int n, int count) {
+    int calcSeq(int count) {
         if (count < 2) {
-            return n;
-        } else {
-            return repeatN(n * 10 + N, count - 1);
+            return N;
         }
+        return calcSeq(count - 1) * 10 + N;
     }
 
-    class MidResult implements Comparable<MidResult> {
-        int curVal;
-        int nCount;
-        String log;
-    
-        public MidResult(int curVal, int nCount, String log) {
-            this.curVal = curVal;
-            this.nCount = nCount;
-            this.log = log;
+    boolean calcPlus(int count, int l, int r) {
+        int result = l + r;
+        if (result == number) {
+            return true;
         }
-    
-        @Override
-        public int compareTo(MidResult o) {
-            if(nCount == o.nCount) {
-                return Math.abs(N-curVal) - Math.abs(N-o.curVal);
-            } else
-            return nCount - o.nCount;
+        mySet[count].r.add(result);
+        return false;
+    }
+
+    boolean calcMinus(int count, int l, int r) {
+        int result = l - r;
+        if (result == number) {
+            return true;
         }
-    
-        @Override
-        public String toString() {
-            return "cur: " + curVal + ", nCount: " + nCount + ", log: " + log;
+        mySet[count].r.add(result);
+        return false;
+    }
+
+    boolean calcBy(int count, int l, int r) {
+        int result = l * r;
+        if (result == number) {
+            return true;
         }
+        mySet[count].r.add(result);
+        return false;
+    }
+
+    boolean calcDevide(int count, int l, int r) {
+        if (r == 0) {
+            return false;
+        }
+        int result = l / r;
+        if (result == number) {
+            return true;
+        }
+        mySet[count].r.add(result);
+        return false;
     }
 }
 
+class MySet {
+    Set<Integer> r;
+
+    public MySet() {
+        this.r = new HashSet<>();
+    }
+}
