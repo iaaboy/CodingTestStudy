@@ -1,7 +1,5 @@
 package prog42898;
 
-import java.util.*;
-
 public class MyMain {
     public static void main(String[] args) {
         Solution mSol = new Solution();
