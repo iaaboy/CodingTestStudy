@@ -15,58 +15,51 @@ public class MyMain {
 // m 오른쪽
 // n 아래쪽
 class Solution {
-    Queue<Point> next = new LinkedList<>();
+    int[][] visited;
 
     public int solution(int m, int n, int[][] puddles) {
-        int arrivedCount = 0;
-        next.add(new Point(1, 1));
+        visited = new int[m + 1][n + 1];
 
-        while (!next.isEmpty()) {
-            Point curPoint = next.poll();
+        visited[1][1] = 1;
 
-            if (checkPd(curPoint, puddles))
-                continue;
-
-            if (curPoint.m <= m) {
-                next.add(new Point(curPoint.m + 1, curPoint.n));
-            }
-            if (curPoint.n <= n) {
-                next.add(new Point(curPoint.m, curPoint.n + 1));
-            }
-
-            if (curPoint.m == m && curPoint.n == n) {
-                arrivedCount++;
-                // System.out.println("arrived: " + arrivedCount);
-            }
-        }
-
-        return arrivedCount;
-    }
-
-    private boolean checkPd(Point curPoint, int[][] puddles) {
-
-        boolean isPd = false;
         for (int[] pd : puddles) {
-            if (pd[0] == curPoint.m && pd[1] == curPoint.n) {
-                isPd = true;
-                break;
+            visited[pd[0]][pd[1]] = -1;
+        }
+
+        for (int i = 2; i < m + n + 1; i++) {
+            for (int k = 1; k < i; k++) {
+                int myM = k;
+                int myN = i - k;
+
+                if (myN <= n && myM <= m) {
+                    if (visited[myM][myN] != -1) {
+                        // System.out.print("| m: " + myM + ", n: " + myN);
+
+                        if (visited[myM - 1][myN] > 0) {
+                            visited[myM][myN] += visited[myM - 1][myN];
+                        }
+                        if (visited[myM][myN - 1] > 0) {
+                            visited[myM][myN] += visited[myM][myN - 1];
+                        }
+
+                        visited[myM][myN] = visited[myM][myN] % 1000000007;
+                    }
+                }
             }
+            // System.out.println();
         }
-        if (isPd) {
-            return true;
-        }
-        return false;
-    }
-}
 
-class Point {
-    int m;
-    int n;
-    int count;
+        // for(int i = 0; i < m+1 ; i++){
+        // System.out.println(Arrays.toString(visited[i]));
+        // }
 
-    public Point(int m, int n) {
-        this.m = m;
-        this.n = n;
-        this.count = 1;
+        // 결과
+        // [0, 0, 0, 0]
+        // [0, 1, 1, 1]
+        // [0, 1, -1, 1]
+        // [0, 1, 1, 2]
+        // [0, 1, 2, 4]
+
+        return visited[m][n] % 1000000007;
     }
 }
