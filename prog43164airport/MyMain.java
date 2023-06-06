@@ -2,15 +2,11 @@ package prog43164airport;
 
 import java.util.*;
 
-/*
-[["ICN", "JFK"], ["HND", "IAD"], ["JFK", "HND"]]	["ICN", "JFK", "HND", "IAD"]
-[["ICN", "SFO"], ["ICN", "ATL"], ["SFO", "ATL"], ["ATL", "ICN"], ["ATL","SFO"]]	["ICN", "ATL", "ICN", "SFO", "ATL", "SFO"]
- */
 public class MyMain {
     public static void main(String[] args) {
         String[][][] tickets = {
-               // {{"ICN", "JFK"}, {"HND", "IAD"}, {"JFK", "HND"}},
-                { { "ICN", "SFO" }, { "ICN", "ATL" }, { "SFO", "ATL" }, { "ATL", "ICN" }, { "ATL", "SFO" } }
+                // {{"ii", "JFK"}, {"HND", "IAD"}, {"JFK", "HND"}},
+                { { "ii", "aa" }, { "ii", "bb" }, { "aa", "bb" }, { "bb", "ii" }, { "bb", "aa" } }
         };
 
         Solution mSol = new Solution();
@@ -20,65 +16,39 @@ public class MyMain {
     }
 }
 
-// {0=0:HND-[0,1,false], 1=1:IAD-[], 2=2:ICN-[2,3,true], 3=3:JFK-[3,0,false]}
-
 class Solution {
     int ticketSize = 0;
-    Map<Integer, AirPort> airportMap = new HashMap<Integer, AirPort>();
-    Map<String, Integer> airportIndex = new HashMap<String, Integer>();
+    Map<String, AirPort> airportMap = new HashMap<String, AirPort>();
+    HashMap<String, Boolean> ticketUsed;
 
     public String[] solution(String[][] tickets) {
-        String[] answer;
+        String[] answer = {};
+        TreeSet<String> airports = new TreeSet<>();
 
-        ticketSize = tickets.length;
-        System.out.println("ticket length: " + tickets.length);
-        // 1 공항을 이름순으로 정렬
-        TreeSet<String> sortedAiports = new TreeSet<String>();
-        for (String[] ticket : tickets) {
-            sortedAiports.add(ticket[0]);
-            sortedAiports.add(ticket[1]);
+        ticketUsed = new HashMap<>();
+
+        for (int i = 0; i < tickets.length; i++) {
+            AirPort ap;
+            if (airportMap.containsKey(tickets[i][0])) {
+                ap = airportMap.get(tickets[i][0]);
+            } else {
+                ap = new AirPort(tickets[i][0]);
+            }
+            ap.nexts.add(tickets[i][1]);
+            airportMap.put(tickets[i][0], ap);
+            ticketUsed.put(tickets[i][0] + tickets[i][1], false);
+            airports.add(tickets[i][0]);
         }
 
-        // index를 key로 공항 map생성
-        int index = 0;
-        for (String ap : sortedAiports) {
-            AirPort aa = new AirPort(ap, index);
-            airportIndex.put(ap, index);
-            airportMap.put(index++, aa);
-        }
+        System.out.println(airportMap);
+        System.out.println(ticketUsed);
 
-        //각 공항에 노드 저장
-        for (String[] ticket : tickets) {
-            airportMap.get(
-                    airportIndex.get(ticket[0])).next.add(
-                            new Node(airportIndex.get(ticket[0]), airportIndex.get(ticket[1])));
-        }
+        for (String aiport : airports) {
+            journey(aiport);
 
-        System.out.println("airportMap" + airportMap);
-
-        journey(airportMap.get(airportIndex.get(tickets[0][0])).next.first());
-
-        //airportMap{
-            // 0=0:ATL-[0,1,false, 0,2,false], 
-            // 1=1:ICN-[1,0,false, 1,2,false], 
-            // 2=2:SFO-[2,0,false]}
-
-        // make answer
-        System.out.println(airportIndex.get(tickets[0][0]) + ", " + routine);
-
-        //결과 처리
-        int[] resultArr = new int[routine.size() + 1];
-        resultArr[0] = airportIndex.get(tickets[0][0]);
-        int idx = routine.size();
-        while (routine.size() - 1 > 0) {
-            resultArr[idx--] = routine.peek();
-            routine.pop();
-        }
-
-        answer = new String[resultArr.length];
-        idx = 0;
-        for(int apIdx : resultArr) {
-            answer[idx++] = airportMap.get(apIdx).name;
+            for (String a : ticketUsed.keySet()) {
+                ticketUsed.put(a, false);
+            }
         }
 
         return answer;
@@ -86,87 +56,43 @@ class Solution {
 
     Stack<Integer> routine = new Stack<Integer>();
 
-    private boolean journey(Node currentNode) {
-        currentNode.visited = true;
-        System.out.println(currentNode + " " + airportMap.get(currentNode.st).name);
-        System.out.println(airportMap);
-        // 루틴에 add
-        routine.push(currentNode.ed);
+    private boolean journey(String ap) {
 
-        // 종점인지 체크
-        if (routine.size() == ticketSize) {
-            //System.out.println("종점");
-            return true;
-        } else {
-            // 다음 지점으로 가라.
-            Iterator<Node> aa = airportMap.get(currentNode.ed).next.iterator();
-            while (aa.hasNext()) {
-                Node nextNode = aa.next();
-                if (!nextNode.visited) {
-                    if (journey(nextNode)) {
-                        // 종점 찾아서 리턴
-                        return true;
-                    } else {
-                        // try next
-                        //visited를 원복
-                        //다시 pop
-                        return false;
-                    }
+        while (true) {
+            System.out.println(ap);
+            AirPort curAp = airportMap.get(ap);
+            boolean hasNext = false;
+            for (String next : curAp.nexts) {
+                if (ticketUsed.get(ap + next)) {
+                } else {
+                    hasNext = true;
+                    ticketUsed.put(ap + next, true);
+                    ap = next;
+                    break;
                 }
             }
+            if (!hasNext) {
+                break;
+            }
         }
-        //
 
+        System.out.println(ticketUsed);
         return false;
     }
 
 }
 
-class Node implements Comparable<Node> {
-    int st;
-    int ed;
-    boolean visited;
-
-    public Node(int st, int ed) {
-        this.st = st;
-        this.ed = ed;
-        visited = false;
-    }
-
-    @Override
-    public int compareTo(Node o) {
-        if (ed > o.ed) {
-            return 1;
-        } else if (ed == o.ed) {
-            if (st > o.st) {
-                return 1;
-            } else {
-                return -1;
-            }
-        }
-        return -1;
-    }
-
-    @Override
-    public String toString() {
-        return st + "," + ed + "," + visited;
-    }
-}
-
 class AirPort {
     String name;
-    int id;
 
-    public AirPort(String name, int id) {
+    public AirPort(String name) {
         this.name = name;
-        this.id = id;
-        next = new TreeSet<>();
     }
+
+    TreeSet<String> nexts = new TreeSet<>();;
 
     @Override
     public String toString() {
-        return id + ":" + name + "-" + next;
+        return nexts.toString();
     }
-
-    TreeSet<Node> next;
 }
