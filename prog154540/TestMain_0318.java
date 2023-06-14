@@ -1,4 +1,4 @@
-package play154540;
+package prog154540;
 
 import java.util.*;
 
@@ -171,5 +171,4 @@ class Solution {
         groups.get(gId).groupSum += myArr[nd.y][nd.x];
         groups.get(gId).nodes.add(nd);
     }
-
 }

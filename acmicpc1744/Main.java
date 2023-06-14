@@ -8,18 +8,18 @@ import java.util.*;
 
 public class Main {
 
-    // 양수 : 큰수부터 두개씩 짝지어 곱
+    // 양수 : 큰 수부터 두개씩 짝지어 곱
     // - 예외 1*1 < 1+1 : 작은수가 1이면
     // 음수 : 작은수부터 두개씩 짝지어 곱
     // 양수/음수/0 각 하나 이하로 남았을 때 처리
-    // 1 / 1 / 1 : 음수량 0 이랑 곱
+    // 1 / 1 / 1 : 음수량 0 이랑 곱 --> 2 + 0 - 3 < 2 + 0*(-3)
     // 0 / 1 / 1 : "
     // 1 / 0 / 1 : 그냥 더해
     // 1 / 1 / 0 : "
     // 1 / 0 / 0 : "
     // 0 / 1 / 0 : "
     // 0 / 0 / 1 : "
-    // 0의 개수는 홀수개인지만 의미 있음.
+    // 0의 개수는 1개 이상 하나만 의미 있음.
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
