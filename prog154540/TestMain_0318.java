@@ -8,10 +8,6 @@ public class TestMain_0318 {
         String maps[] = {
                 "11x8999",
         };
-        // String maps[] = {
-        // "XXX",
-        // "XXX",
-        // "XXX", };
 
         Solution mSolution = new Solution();
         System.out.println("maps result" + Arrays.toString(mSolution.solution(maps)));
