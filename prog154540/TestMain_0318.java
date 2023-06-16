@@ -5,170 +5,123 @@ import java.util.*;
 public class TestMain_0318 {
 
     public static void main(String[] args) {
-
-        String maps[] = { 
-            "X222222222", 
-            "1222222222", 
-            "XXXXXXXXXX", 
-            "1222222222",
-            "1222222222" };
-        //String maps3[] = { "X591X", "X1X5X", "X231X", "1XXX1" };
+        String maps[] = {
+                "11x8999",
+        };
+        // String maps[] = {
+        // "XXX",
+        // "XXX",
+        // "XXX", };
 
         Solution mSolution = new Solution();
         System.out.println("maps result" + Arrays.toString(mSolution.solution(maps)));
-        //System.out.println("maps2 result" + Arrays.toString(mSolution.solution(maps2)));
-        //System.out.println("maps3 result" + Arrays.toString(mSolution.solution(maps3)));
     }
 }
 
 class Solution {
-    class Node {
-        Node(int y, int x) {
-            this.y = y;
-            this.x = x;
-        }
-
-        int y;
-        int x;
-    }
-
-    class Group {
-        Group(int gId) {
-            this.gId = gId;
-            groupSum = 0;
-            nodes = new Vector<>();
-        }
-
-        int gId;
-        int groupSum;
-        Vector<Node> nodes;
-    }
-
-    int myArr[][];
-    int groupIDs[][];
-    Integer Idx;
-    HashMap<Integer, Group> groups = new HashMap<>();
+    int[][] ids;
+    int wide;
+    String[] maps;
+    HashMap<Integer, Integer> counts = new HashMap<>();
 
     public int[] solution(String[] maps) {
-
-        myArr = new int[maps.length][maps[0].length()];
-        groupIDs = new int[maps.length][maps[0].length()];
-        Idx = 0;
+        // int[] answer = {};
+        this.maps = maps;
+        wide = maps[0].length();
+        ids = new int[maps.length][maps[0].length()];
 
         for (int y = 0; y < maps.length; y++) {
-            for (int x = 0; x < maps[0].length(); x++) {
-                int number = maps[y].toCharArray()[x] - '0';
-                if (number >= 0 && number <= 9) {
-                    myArr[y][x] = number;
-                } else {
-                    myArr[y][x] = -1;
-                }
+            for (int x = 0; x < wide; x++) {
+                ids[y][x] = -1;
             }
         }
 
-        // for (int[] line : myArr) {
-        // // System.out.println("mid result: " + Arrays.toString(line));
-        // }
+        for (int y = 0; y < maps.length; y++) {
+            for (int x = 0; x < wide; x++) {
+                Character ch = maps[y].charAt(x);
+                if (ch != 'X' && ch != 'x') {
+                    // System.out.print(ch + ",");
+                    ids[y][x] = y * wide + x;
+                    // 상하좌우 숫자가 있는지 찾는다.
+                    counts.put(ids[y][x], ch - '0');
+                    findGroup(y, x);
 
-        for (int y = 0; y < myArr.length; y++) {
-            for (int x = 0; x < myArr[y].length; x++) {
-                boolean checkResult = false;
-                if (myArr[y][x] == -1) {
-                    groupIDs[y][x] = -1;
-                    continue;
-                }
-                if (x != 0) {
-                    checkResult = checkLeft(y, x);
-                }
-                if (y != 0) {
-                    checkResult = checkTop(y, x) || checkResult;
-                }
-                if (!checkResult) {
-                    Group g = new Group(++Idx);
-                    Node nd = new Node(y, x);
-                    g.nodes.add(nd);
-                    g.groupSum = myArr[y][x];
-                    groups.put(Idx, g);
-                    groupIDs[y][x] = Idx;
+                    // 숫자가 있으면, Union
                 }
             }
+            System.out.println(Arrays.toString(ids[y]));
         }
 
-        ArrayList<Integer> answerSet = new ArrayList<Integer>();
-        int i = 0;
-        int[] answer;
+        // System.out.println(counts);
 
-        groups.forEach((key, value) -> {
-            answerSet.add(value.groupSum);
-            value.nodes.clear();
-        });
-        groups.clear();
-        Collections.sort(answerSet);
-
-        // System.out.println("value.groupSum : " + answerSet);
-
-        if (answerSet.size() > 0) {
-            answer = new int[answerSet.size()];
-            Iterator<Integer> iter = answerSet.iterator();
-            // Returns an iterator over the elements
-            while (iter.hasNext()) {
-                answer[i] = iter.next();
-                // System.out.println("value : " + answer[i] );
-                i++;
-            }
-
+        if (counts.size() == 0) {
+            int[] answer = { -1 };
+            return answer;
         } else {
-            answer = new int[1];
-            answer[0] = -1;
-        }
-
-        return answer;
-
-    }
-
-    boolean checkTop(int y, int x) {
-        boolean result = false;
-
-        if (myArr[y - 1][x] != -1) {
-            if (groupIDs[y][x] == 0) {
-                groupIDs[y][x] = groupIDs[y - 1][x];
-                addToGroup(groupIDs[y - 1][x], new Node(y, x));
-            } else {
-                if (groupIDs[y][x] != groupIDs[y - 1][x])
-                    combineToGroup(groupIDs[y][x], groupIDs[y - 1][x]);
+            int[] answer = new int[counts.size()];
+            int i = 0;
+            for (int a : counts.values()) {
+                answer[i++] = a;
             }
-            result = true;
-        }
 
-        return result;
+            Arrays.sort(answer);
+
+            // System.out.println((Arrays.toString(counts.values().stream().sorted().toArray())));
+
+            return answer;
+        }
     }
 
-    void combineToGroup(int gFrom, int gTo) {
-        // from에 있는 아이들을 G로 바꾼다.
-
-        for (Node n : groups.get(gFrom).nodes) {
-            groupIDs[n.y][n.x] = gTo;
+    void findGroup(int y, int x) {
+        // 위
+        if (y > 0) {
+            if (ids[y - 1][x] != -1) {
+                union(y, x, y - 1, x);
+            }
         }
-        groups.get(gTo).groupSum += groups.get(gFrom).groupSum;
-        groups.get(gFrom).nodes.clear();
-        groups.remove(gFrom);
+
+        // 좌
+        if (x > 0) {
+            if (ids[y][x - 1] != -1) {
+                union(y, x, y, x - 1);
+            }
+        }
+
+        // 우
+        if (x < wide - 1) { // 범위 체크
+            if (ids[y][x + 1] != -1) {
+                union(y, x, y, x + 1);
+            }
+        }
     }
 
-    boolean checkLeft(int y, int x) {
-        if (myArr[y][x - 1] != -1) {
-            groupIDs[y][x] = groupIDs[y][x - 1];
-            addToGroup(groupIDs[y][x - 1], new Node(y, x));
-            return true;
+    int findRoot(int y, int x) {
+        if (ids[y][x] == y * wide + x) {
+            return y * wide + x;
+        } else {
+            return findRoot(ids[y][x] / wide, ids[y][x] % wide);
         }
-
-        return false;
     }
 
-    void addToGroup(int gId, Node nd) {
-        if (groups.get(gId) == null) {
-            // System.out.println("Somthing wrong");
+    void union(int ay, int ax, int by, int bx) {
+        int rootA = findRoot(ay, ax);
+        int rootB = findRoot(by, bx);
+
+        if (rootA == rootB) {
+            // do nothing
+            return;
         }
-        groups.get(gId).groupSum += myArr[nd.y][nd.x];
-        groups.get(gId).nodes.add(nd);
+
+        if (rootA < rootB) {
+            counts.put(rootA, counts.get(rootB) + counts.get(rootA));
+            counts.remove(rootB);
+            ids[by][bx] = rootA;
+            // System.out.println(counts);
+        } else {
+            counts.put(rootB, counts.get(rootA) + counts.get(rootB));
+            counts.remove(rootA);
+            ids[ay][ax] = rootB;
+            // System.out.println(counts);
+        }
     }
 }
