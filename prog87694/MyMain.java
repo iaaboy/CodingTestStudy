@@ -6,17 +6,11 @@ public class MyMain {
     public static void main(String[] args) {
         int[][][] rectangle = {
                 { { 1, 1, 7, 4 }, { 3, 2, 5, 5 }, { 4, 3, 6, 9 }, { 2, 6, 8, 8 } },
-                { { 1, 1, 8, 4 }, { 2, 2, 4, 9 }, { 3, 6, 9, 8 }, { 6, 3, 7, 7 } },
-                { { 1, 1, 5, 7 } },
-                { { 2, 1, 7, 5 }, { 6, 4, 10, 10 } },
-                { { 2, 2, 5, 5 }, { 1, 3, 6, 4 }, { 3, 1, 4, 6 } },
+                { { 1, 1, 8, 4 }, { 2, 2, 4, 9 }, { 3, 6, 9, 8 }, { 6, 3, 7, 7 } }, { { 1, 1, 5, 7 } },
+                { { 2, 1, 7, 5 }, { 6, 4, 10, 10 } }, { { 2, 2, 5, 5 }, { 1, 3, 6, 4 }, { 3, 1, 4, 6 } },
         };
         int ip[][] = {
-                { 1, 3, 7, 8 },
-                { 9, 7, 6, 1 },
-                { 1, 1, 4, 7 },
-                { 3, 1, 7, 10 },
-                { 1, 4, 6, 3 },
+                { 1, 3, 7, 8 }, { 9, 7, 6, 1 }, { 1, 1, 4, 7 }, { 3, 1, 7, 10 }, { 1, 4, 6, 3 },
         };
         Solution mSol = new Solution();
         // for (int i = 0; i < rectangle.length; i++) {
@@ -31,126 +25,128 @@ public class MyMain {
 
 class Solution {
     Rect[] rects;
-    TreeSet<Point> allPtr;
 
     public int solution(int[][] rectangle, int characterX, int characterY, int itemX, int itemY) {
         int answer = 0;
-        allPtr = new TreeSet<>();
         rects = new Rect[rectangle.length];
-
         for (int i = 0; i < rectangle.length; i++) {
             rects[i] = new Rect(rectangle[i][0], rectangle[i][1], rectangle[i][2], rectangle[i][3], i);
         }
+        // set contact
+        setNeighbor();
 
-        int rId = 0;
-        for (Rect r : rects) {
-            for (int x = r.p1.x; x <= r.p2.x; x++) {
-                if (isPointOutside(x, r.p1.y))
-                    allPtr.add(new Point(x, r.p1.y, rId));
-                if (isPointOutside(x, r.p2.y))
-                    allPtr.add(new Point(x, r.p2.y, rId));
-                // System.out.print(x + " " + r.p1.y + ", " + x + " " + r.p2.y + ", ");
-            }
-            // System.out.println();
-            for (int y = r.p1.y; y <= r.p2.y; y++) {
-                if (isPointOutside(r.p1.x, y))
-                    allPtr.add(new Point(r.p1.x, y, rId));
-                if (isPointOutside(r.p2.x, y))
-                    allPtr.add(new Point(r.p2.x, y, rId));
+        // System.out.println(allPtr);
+        System.out.println(rects[0] + "\n");
+        // System.out.println(rects[1] + "\n");
+        // System.out.println(rects[2] + "\n");
+        // System.out.println(rects[3] + "\n");
+        // System.out.println(Arrays.toString(rects));
 
-                // System.out.print(r.p1.x + " " + y + ", " + r.p2.x + " " + y + ", ");
-            }
-            rId++;
-            // System.out.println("\n |||" + allPtr);
-            // System.out.println("");
-        }
-
-        System.out.println(allPtr);
-        System.out.println(Arrays.toString(rects));
-        int totalPoints = allPtr.size();
         answer = trip(characterX, characterY, itemX, itemY);
 
-        answer = Math.min(answer, totalPoints - answer);
         System.out.println("Result: " + answer);
         return answer;
     }
 
+    private void setNeighbor() {
+        for (int me = 0; me < rects.length; me++) {
+            for (int other = 0; other < rects.length; other++) {
+                if (me == other)
+                    continue;
+                for (int i = 0; i < rects[me].outline.size(); i++) {
+                    for (int j = 0; j < rects[other].outline.size(); j++) {
+                        if (rects[me].outline.get(i).x == rects[other].outline.get(j).x
+                                && rects[me].outline.get(i).y == rects[other].outline.get(j).y) {
+                            rects[me].outline.get(i).contact = rects[other].outline.get(j).rectId;
+                            rects[other].outline.get(j).contact = rects[me].outline.get(i).rectId;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private int trip(int fromX, int fromY, int toX, int toY) {
         int result = 0;
-        Point curPoint = null;
 
-        Iterator curPtr = allPtr.iterator();
-        while (curPtr.hasNext()) {
-            curPoint = (Point) curPtr.next();
-            if (curPoint.x == fromX && curPoint.y == fromY) {
-                System.out.println("From: " + curPoint);
-                allPtr.remove(curPoint);
-                break;
-            }
-        }
-
-        while (!allPtr.isEmpty() && !(curPoint.x == toX && curPoint.y == toY)) {
-            result++;
-            curPoint = findNext(curPoint);
-            allPtr.remove(curPoint);
-        }
-
-        return result;
-    }
-
-    private Point findNext(Point other) {
-        Point curPoint;
-        Point candidate = null;
-        // 1 같은 그룹
-        Iterator curPtr = allPtr.iterator();
-        while (curPtr.hasNext()) {
-            curPoint = (Point) curPtr.next();
-            if (curPoint.rectId == other.rectId
-                    && Math.abs(curPoint.x - other.x) + Math.abs(curPoint.y - other.y) == 1) {
-
-                System.out.println("Found: " + curPoint);
-                return curPoint;
-
-            }
-            if (Math.abs(curPoint.x - other.x) + Math.abs(curPoint.y - other.y) == 1) {
-                candidate = curPoint;
-            }
-        }
-        System.out.println("Found secondary: " + candidate);
-        return candidate;
-        // 2 다른 그룹 1개만 차이
-    }
-
-    private boolean isPointOutside(int x, int y) {
-        boolean result = true;
-
+        // 도형을 찾는다.
+        Point curP = null;
         for (Rect r : rects) {
-            if ((r.p1.x < x && r.p2.x > x) && (r.p1.y < y && r.p2.y > y)) {
-                result = false;
-                break;
+            for (Point p : r.outline) {
+                if (p.x == fromX && p.y == fromY) {
+                    curP = p;
+                    break;
+                }
             }
+            if (curP != null)
+                break;
         }
 
-        if (!result) {
-            System.out.println("insidePoint: " + "x:" + x + ", y:" + y);
+        System.out.println("start Y,X: " + curP);
+        while (!(fromX == toX && fromY == toY)) {
+            if(curP.contact != -1) {
+                curP = nextPoint(curP, true);
+            } else {
+                curP = nextPoint(curP, false);
+            }
+            System.out.println("goNext: " + curP);
+            result++;
         }
 
         return result;
+    }
+
+    Point nextPoint(Point curP, boolean isCross) {
+        int rectId = curP.rectId;
+        if(isCross) {
+            rectId = curP.contact;
+        }
+        for (Point p : rects[rectId].outline) {
+            if (p.rectId != -1 && ((curP.x == p.x && Math.abs(curP.y - p.y) == 1) || curP.y == p.y && Math.abs(curP.x - p.x) == 1)) {
+                if(isCross) {
+                    //상대 도형 내부인지 확인
+                    System.out.println(curP);
+                    System.out.println(p);
+
+                    System.out.println(rects[curP.rectId].p1);
+                    System.out.println(rects[curP.rectId].p2);
+
+                    if((rects[curP.rectId].p1.x <= p.x &&  rects[curP.rectId].p2.x >= p.x
+                        && rects[curP.rectId].p1.y <= p.y &&  rects[curP.rectId].p2.y >= p.y)) {
+                        System.out.println("pass: " + p);
+                        continue;
+                    }
+
+                }
+                return p;
+            }
+        }
+
+        return null;
     }
 }
 
 class Rect {
     Point p1;
     Point p2;
+    ArrayList<Point> outline = new ArrayList<>();
 
     public Rect(int x1, int y1, int x2, int y2, int rId) {
-        this.p1 = new Point(x1, y1, rId);
-        this.p2 = new Point(x2, y2, rId);
+        this.p1 = new Point(y1, x1, rId);
+        this.p2 = new Point(y2, x2, rId);
+        for (int i = x1; i <= x2; i++) {
+            outline.add(new Point(y1, i, rId));
+            outline.add(new Point(y2, i, rId));
+        }
+        for (int k = y1 + 1; k < y2; k++) {
+            outline.add(new Point(k, x1, rId));
+            outline.add(new Point(k, x2, rId));
+        }
     }
 
     @Override
     public String toString() {
-        return p1.toString() + "|" + p2.toString();
+        return outline.toString();
     }
 }
 
@@ -158,11 +154,13 @@ class Point implements Comparable<Point> {
     int x;
     int y;
     int rectId;
+    int contact;
 
-    public Point(int x, int y, int rectId) {
+    public Point(int y, int x, int rectId) {
         this.x = x;
         this.y = y;
         this.rectId = rectId;
+        this.contact = -1;
     }
 
     @Override
@@ -176,6 +174,6 @@ class Point implements Comparable<Point> {
 
     @Override
     public String toString() {
-        return "(" + x + "," + y + ":" + rectId + ")";
+        return "(" + y + "," + x + ":" + rectId + "," + contact + ")";
     }
 }
