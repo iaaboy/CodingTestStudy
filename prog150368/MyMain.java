@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 public class MyMain {
     public static void main(String[] args) {
-
         // int[][] users = { { 40, 10000 }, { 25, 10000 } };
         // int[] emoticons = { 7000, 9000 };
         int[][] users2 = { { 40, 2900 }, { 23, 10000 }, { 11, 5200 }, { 5, 5900 }, { 40, 3100 },
@@ -36,12 +35,10 @@ class Solution {
     void permu(int[] curRate, int depth) {
         if (depth == curRate.length) {
             // System.out.println(Arrays.toString(curRate));
-
             checkUsers(curRate);
             // System.out.println();
             return;
         }
-
         for (int i = 0; i < saleBase.length; i++) {
             curRate[depth] = saleBase[i];
             permu(curRate, depth + 1);
