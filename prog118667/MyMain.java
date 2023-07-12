@@ -4,9 +4,8 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[] queue1 = { 3, 2, 7, 2 };
-        int[] queue2 = { 4, 6, 5, 1 };
-        // int [] queue1 = {1, 2, 1, 2} ; int []queue2 = {1, 10, 1, 2};
+        int[] queue1 = { 3, 2, 7, 2 }; int[] queue2 = { 4, 6, 5, 1 };
+        // int [] queue1 = {1, 2, 1, 2}; int []queue2 = {1, 10, 1, 2};
         // int [] queue1 = {1,1}; int [] queue2 = {1, 1};
 
         Solution mSol = new Solution();
