@@ -1,49 +1,101 @@
 package prog136797;
 
+import java.util.*;
+
 public class MyMain {
     public static void main(String[] args) {
-        // String myStr = "1756";
-        String myStr = "10262626262626";
+        String myStr = "555";
         Solution mSol = new Solution();
         System.out.println(mSol.solution(myStr));
     }
 }
 
 class Solution {
-    int[][] preset = { { 3, 1 }, { 0, 0 }, { 0, 1 }, { 0, 2 }, { 1, 0 }, { 1, 1 }, { 1, 2 }, { 2, 0 }, { 2, 1 }, { 2, 2 },
-            };
+    int[][] preset = { { 3, 1 }, { 0, 0 }, { 0, 1 }, { 0, 2 }, { 1, 0 }, { 1, 1 }, { 1, 2 }, { 2, 0 }, { 2, 1 },
+            { 2, 2 }, };
     int map[][] = new int[10][10];
+    String numbers;
 
     public int solution(String numbers) {
         int answer = 0;
+        this.numbers = numbers;
         for (int i = 0; i < 10; i++) {
             for (int j = i; j < 10; j++) {
-                int dist = calcDistance(i, j);
+                int dist = generateDistance(i, j);
                 map[j][i] = map[i][j] = dist;
             }
         }
         // for (int i = 0; i < 10; i++) {
-        //     System.out.println(Arrays.toString(map[i]));
+        // System.out.println(Arrays.toString(map[i]));
         // }
 
-        answer = caltDist(numbers, 0, 0, 4, 6);
+        answer = caltDist();
 
         return answer;
     }
 
-    int caltDist(String num, int curIdx, int curVal, int left, int right) {
-        System.out.println("curIdx:" + curIdx + ",curVal:" + curVal + " ,l:" + left + " ,r:" + right);
-        if (curIdx == num.length()) {
-            return curVal;
+    int caltDist() {
+        int[][][] isVisit = new int[numbers.length() + 1][10][10];
+        int result = Integer.MAX_VALUE;
+        PriorityQueue<StateData> stateQ = new PriorityQueue<>();
+        stateQ.add(new StateData(0, 0, 6, 4));
+        isVisit[0][6][4] = 0;
+        int big = 0;
+        int small = 0;
+
+        for (int i = 0; i < numbers.length() + 1; i++)
+            for (int j = 0; j < 10; j++)
+                for (int k = 0; k < 10; k++)
+                    isVisit[i][j][k] = Integer.MAX_VALUE;
+
+        while (!stateQ.isEmpty()) {
+            StateData curSt = stateQ.poll();
+
+            if (curSt.strIndex >= numbers.length()) {
+                // System.out.println(curSt);
+                if (curSt.distance < result) {
+                    result = curSt.distance;
+                }
+                continue;
+            }
+
+            int curNumIndex = numbers.charAt(curSt.strIndex) - '0';
+
+            big = Math.max(curNumIndex, curSt.big);
+            small = Math.min(curNumIndex, curSt.big);
+
+            if (isVisit[curSt.strIndex + 1][big][small] > curSt.distance + map[curSt.small][curNumIndex]) {
+                StateData a = new StateData(curSt.strIndex + 1, curSt.distance + map[curSt.small][curNumIndex], big,
+                        small);
+                // System.out.println(curSt.small + "-> " + curNumIndex + " : " +
+                // map[curSt.small][curNumIndex]);
+                // System.out.println("add: " + a);
+                isVisit[curSt.strIndex + 1][big][small] = a.distance;
+                stateQ.add(a);
+            } else {
+                // System.out.println("pass: " + a);
+            }
+
+            big = Math.max(curNumIndex, curSt.small);
+            small = Math.min(curNumIndex, curSt.small);
+
+            if (isVisit[curSt.strIndex + 1][big][small] > curSt.distance + map[curSt.big][curNumIndex]) {
+                StateData b = new StateData(curSt.strIndex + 1, curSt.distance + map[curSt.big][curNumIndex], big,
+                        small);
+                // System.out.println(curSt.big + "-> " + curNumIndex + " : " +
+                // map[curSt.big][curNumIndex]);
+                // System.out.println("add: " + b);
+                isVisit[curSt.strIndex + 1][big][small] = b.distance;
+                stateQ.add(b);
+            } else {
+                // System.out.println("pass: " + b);
+            }
         }
 
-        int nextVal = num.charAt(curIdx) - '0';
-        int lResult = caltDist(num, curIdx + 1, curVal + map[right][nextVal], left, nextVal);
-        int rResult = caltDist(num, curIdx + 1, curVal + map[left][nextVal], nextVal, right);
-        return Math.min(lResult, rResult);
+        return result;
     }
 
-    int calcDistance(int from, int to) {
+    int generateDistance(int from, int to) {
 
         int y = Math.abs(preset[from][0] - preset[to][0]);
         int x = Math.abs(preset[from][1] - preset[to][1]);
@@ -53,5 +105,29 @@ class Solution {
             result = 1;
         // System.out.println(from + "-> " + to + ": " + result);
         return result;
+    }
+}
+
+class StateData implements Comparable<StateData> {
+    int strIndex;
+    int distance;
+    int big;
+    int small;
+
+    public StateData(int strIndex, int distance, int big, int small) {
+        this.strIndex = strIndex;
+        this.distance = distance;
+        this.big = big;
+        this.small = small;
+    }
+
+    @Override
+    public int compareTo(StateData o) {
+        return distance - o.distance;
+    }
+
+    @Override
+    public String toString() {
+        return "index: " + strIndex + ", dist: " + distance + " [" + big + "," + small + "]";
     }
 }
