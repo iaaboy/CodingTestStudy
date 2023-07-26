@@ -1,5 +1,11 @@
 package prog42898;
 
+import java.util.*;
+
+/* 등굣길
+ * https://school.programmers.co.kr/learn/courses/30/lessons/42898
+ */
+
 public class MyMain {
     public static void main(String[] args) {
         Solution mSol = new Solution();
@@ -31,7 +37,7 @@ class Solution {
 
                 if (myN <= n && myM <= m) {
                     if (visited[myM][myN] != -1) {
-                        // System.out.print("| m: " + myM + ", n: " + myN);
+                        System.out.print("| m: " + myM + ", n: " + myN);
 
                         if (visited[myM - 1][myN] > 0) {
                             visited[myM][myN] += visited[myM - 1][myN];
@@ -44,12 +50,12 @@ class Solution {
                     }
                 }
             }
-            // System.out.println();
+            System.out.println();
         }
 
-        // for(int i = 0; i < m+1 ; i++){
-        // System.out.println(Arrays.toString(visited[i]));
-        // }
+        for (int i = 0; i < m + 1; i++) {
+            System.out.println(Arrays.toString(visited[i]));
+        }
 
         // 결과
         // [0, 0, 0, 0]
