@@ -9,36 +9,14 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        // int[][] beginning = { { 0, 1, 0, 0, 0 }, { 1, 0, 1, 0, 1 }, { 0, 1, 1, 1, 0
-        // }, { 1, 0, 1, 1, 0 },
-        // { 0, 1, 0, 1, 0 } };
-        // int[][] target = { { 0, 0, 0, 1, 1 }, { 0, 0, 0, 0, 1 }, { 0, 0, 1, 0, 1 }, {
-        // 0, 0, 0, 1, 0 },
-        // { 0, 0, 0, 0, 1 } };
-        int[][] beginning = {
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 } };
-        int[][] target = {
-                { 1, 0, 1, 0, },
-                { 0, 1, 0, 1 },
-                { 0, 1, 0, 1 },
-                { 0, 1, 0, 1 }, };
-        // int[][] beginning = {
-        // { 0, 0, 1, 0, 0 },
-        // { 1, 0, 0, 0, 0 },
-        // { 0, 0, 0, 0, 0 },
-        // { 0, 0, 0, 0, 0 },
-        // { 0, 0, 0, 0, 0 },
-        // };
-        // int[][] target = {
-        // { 0, 1, 0, 1, 1 },
-        // { 0, 0, 0, 0, 0 },
-        // { 1, 0, 0, 0, 0 },
-        // { 1, 0, 0, 0, 0 },
-        // { 1, 0, 0, 0, 0 }
-        // };
+        int[][] beginning = { { 1, 1, 1, 1 }, { 1, 1, 1, 1 }, { 1, 1, 1, 1 }, { 1, 1, 1, 1 } };
+        int[][] target = { { 1, 0, 1, 0, }, { 0, 1, 0, 1 }, { 0, 1, 0, 1 }, { 0, 1, 0, 1 }, };
+        // int[][] beginning = { { 0, 0, 1, 0, 0 }, { 1, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0
+        // }, { 0, 0, 0, 0, 0 },
+        // { 0, 0, 0, 0, 0 }, };
+        // int[][] target = { { 0, 1, 0, 1, 1 }, { 0, 0, 0, 0, 0 }, { 1, 0, 0, 0, 0 }, {
+        // 1, 0, 0, 0, 0 },
+        // { 1, 0, 0, 0, 0 } };
 
         Solution mSol = new Solution();
         System.out.println(mSol.solution(beginning, target));
@@ -51,17 +29,23 @@ class Solution {
     int yMax;
     int flipCount = 0;
     int flipCountV = 0;
+    int flipCountH = 0;
+
+    private void resetDiff(int[][] beginning, int[][] target) {
+        flipCount = 0;
+        for (int y = 0; y < yMax; y++)
+            for (int x = 0; x < xMax; x++)
+                diff[y][x] = (beginning[y][x] != target[y][x]) ? true : false;
+    }
 
     public int solution(int[][] beginning, int[][] target) {
         xMax = beginning[0].length;
         yMax = beginning.length;
         diff = new boolean[yMax][xMax];
 
-        for (int y = 0; y < yMax; y++)
-            for (int x = 0; x < xMax; x++)
-                diff[y][x] = (beginning[y][x] != target[y][x]) ? true : false;
+        printCurrent("1st trial");
 
-        printCurrent("Initial");
+        resetDiff(beginning, target);
 
         for (int x = 0; x < xMax; x++) {
             if (diff[0][x]) {
@@ -81,12 +65,11 @@ class Solution {
 
         /////
         flipCountV = flipCount;
-        flipCount = 0;
-        for (int y = 0; y < yMax; y++)
-            for (int x = 0; x < xMax; x++)
-                diff[y][x] = (beginning[y][x] != target[y][x]) ? true : false;
 
-        printCurrent("Initial");
+        // 초기화
+        resetDiff(beginning, target);
+
+        printCurrent("Second trial");
 
         for (int y = 0; y < yMax; y++) {
             if (diff[y][0]) {
@@ -104,7 +87,28 @@ class Solution {
             }
         }
 
-        return Math.min(flipCountV, flipCount);
+        flipCountH = flipCount;
+        resetDiff(beginning, target);
+
+        printCurrent("3rd trial");
+
+        for (int x = 0; x < xMax; x++) {
+            if (!diff[0][x]) {
+                flip(x, true);
+                printCurrent("v flip:" + x);
+            }
+        }
+        for (int y = 0; y < yMax; y++) {
+            if (diff[y][0]) {
+                flip(y, false);
+                printCurrent("h flip; " + y);
+            }
+            if (!checkLine(y, true)) {
+                return -1;
+            }
+        }
+
+        return Math.min(Math.min(flipCountV, flipCountH), flipCount);
     }
 
     private boolean checkLine(int n, boolean isVertical) {
