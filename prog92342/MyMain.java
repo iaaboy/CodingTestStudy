@@ -27,14 +27,14 @@ class Solution {
         int[] answer = new int[info.length];
         int[] mincountforWin = new int[info.length];
         boolean[] vicTable = new boolean[info.length];
-        int[] vicTable2 = new int[info.length]; //win draw lose로 하면 되지 않을까?
+        // int[] vicTable2 = new int[info.length]; //win draw lose로 하면 되지 않을까?
 
-        int idx = 0;
+        // int idx = 0;
         int trialSum = 0;
-        for(int minCnt: mincountforWin) {
-            mincountforWin[idx] = info[idx]+1;
-            trialSum += info[idx++];
-        }
+        // for(int minCnt: mincountforWin) {
+        //     mincountforWin[idx] = info[idx]+1;
+        //     trialSum += info[idx++];
+        // }
 
         System.out.println("trialSum: " + trialSum);
         System.out.println("mincountforWin: " + Arrays.toString(mincountforWin));
