@@ -4,161 +4,93 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        // int k = 3;
-        // int n = 5;
-        // int[][] reqs = { { 10, 60, 1 }, { 15, 100, 3 }, { 20, 30, 1 }, { 30, 50, 3 },
-        // { 50, 40, 1 }, { 60, 30, 2 },
-        // { 65, 30, 1 }, { 70, 100, 2 } }; // 25
+        int k = 3;
+        int n = 5;
+        int[][] reqs = { { 10, 60, 1 }, { 15, 100, 3 }, { 20, 30, 1 }, { 30, 50, 3 },
+        { 50, 40, 1 }, { 60, 30, 2 },
+        { 65, 30, 1 }, { 70, 100, 2 } }; // 25
         // int k = 2;
         // int n = 4;
         // int[][] reqs = { { 5, 55, 2 }, { 10, 90, 2 }, { 20, 40, 2 }, { 50, 45, 2 }, {
         // 100, 50, 2 } }; // 90
 
-        int k = 2;
-        int n = 5;
-        int[][] reqs = { { 10, 50, 1 }, { 20, 20, 1 }, { 39, 20, 1 } }; // 25
+        // int k = 2;
+        // int n = 5;
+        // int[][] reqs = { { 10, 50, 1 }, { 20, 20, 1 }, { 39, 20, 1 } }; // 25
 
         Solution mSol = new Solution();
         System.out.println("answer: " + mSol.solution(k, n, reqs));
     }
 }
 
+
+//id별 사람수 List
+//ididAssigned
+
+
 class Solution {
-    int[][] delayList;
-    ArrayList<ArrayList<Consult>> cList;
+    int[][] delayMemo;
+    HashMap<Integer, ArrayList<Plan>> planTable = new HashMap<>();
 
     public int solution(int k, int n, int[][] reqs) {
-        int[] assigned = new int[k];
-        delayList = new int[k][n - k + 1];
+        int[] idAssigned = new int[k];
+        delayMemo = new int[k][n - k + 1];
 
         for (int i = 0; i < k; i++)
-            for (int j = 0; j < n - k + 1; j++)
-                delayList[i][j] = -1;
-
-        cList = new ArrayList<>();
-
-        for (int i = 0; i < k; i++) {
-            assigned[i] = 1;
-            cList.add(new ArrayList<>());
-        }
+                Arrays.fill(delayMemo[i],-1);
 
         for (int[] req : reqs) {
-            cList.get(req[2] - 1).add(new Consult(req[0], req[1]));
+            if (!planTable.containsKey(req[2])) {
+                planTable.put(req[2], new ArrayList<>());
+            }
+            planTable.get(req[2]).add(new Plan(req[1], req[0]));
         }
 
-        makeSelections(n - k, assigned);
+        makeSelections(n - k, idAssigned);
 
-        return minAssigned;
+        return minidAssigned;
     }
 
-    int minAssigned = Integer.MAX_VALUE;
+    int minidAssigned = Integer.MAX_VALUE;
 
     int getDelay(int y, int x) {
-        if (delayList[y][x] == -1) {
-            if (cList.get(y).size() == 0) {
-                delayList[y][x] = 0;
-            } else {
-                int delay = getDelayedTime(cList.get(y), x + 1);
-                delayList[y][x] = delay;
-            }
-        }
-
-        return delayList[y][x];
+        return delayMemo[y][x];
     }
 
-    private void makeSelections(int countRemained, int[] assigned) {
-        System.out.println("r:" + countRemained + " " + Arrays.toString(assigned));
+    private void makeSelections(int countRemained, int[] idAssigned) {
+        System.out.println("r:" + countRemained + " " + Arrays.toString(idAssigned));
         if (countRemained == 0) {
             int sum = 0;
-            for (int i = 0; i < assigned.length; i++) {
-                sum += getDelay(i, assigned[i] - 1);
+            for (int i = 0; i < idAssigned.length; i++) {
+                sum += getDelay(i, idAssigned[i] - 1);
             }
 
-            // System.out.println("sum: " + sum + ", " + Arrays.toString(assigned));
-            minAssigned = Math.min(sum, minAssigned);
+            // System.out.println("sum: " + sum + ", " + Arrays.toString(idAssigned));
+            minidAssigned = Math.min(sum, minidAssigned);
 
             return;
         }
-        // for (int i = assigned.length - 1; i >= 0 ; i--) {
-        for (int i = 0; i < assigned.length; i++) {
-            assigned[i]++;
-            makeSelections(countRemained - 1, assigned);
-            assigned[i]--;
+        // for (int i = idAssigned.length - 1; i >= 0 ; i--) {
+        for (int i = 0; i < idAssigned.length; i++) {
+            idAssigned[i]++;
+            makeSelections(countRemained - 1, idAssigned);
+            idAssigned[i]--;
         }
     }
 
-    private int getDelayedTime(ArrayList<Consult> arrayList, int max) {
-        int delay = 0;
-        int index = 0;
-        int now = arrayList.get(0).st;
-        PriorityQueue<Consult> mQ = new PriorityQueue<>((a, b) -> {
-            return a.ed - b.ed;
-        });
-
-        // System.out.println("max: " + max + ": " + arrayList);
-
-        if (max > arrayList.size()) {
-            return 0;
-        }
-
-        // max개 만큼 바로 시작
-        for (int i = 0; i < max; i++) {
-            // System.out.println ("now: " + now + " startWork : " + arrayList.get(index));
-            mQ.add(new Consult(arrayList.get(index).st, 0, arrayList.get(index).st + arrayList.get(index++).dur));
-        }
-
-        while (index <= arrayList.size() || !mQ.isEmpty()) {
-
-            // System.out.println("now:" + now + " , index:" + index + " , qSize:" +
-            // mQ.size());
-
-            // 1 queue check
-            if (!mQ.isEmpty()) {
-                // System.out.println(now + ": done" + mQ);
-                now = mQ.poll().ed;
-                if (index == arrayList.size() && mQ.isEmpty()) {
-                    break;
-                }
-            }
-
-            // 2 list check
-            if (index < arrayList.size()) {
-                if (mQ.size() < max) {
-                    int currentDelay = now - arrayList.get(index).st;
-                    if (currentDelay > 0) {
-                        delay += currentDelay;
-                    }
-                    // System.out.println ("now: " + now + ", delay: " + currentDelay + "startWork :
-                    // " + arrayList.get(index));
-                    mQ.add(new Consult(now, 0, now + arrayList.get(index++).dur));
-                }
-            }
-        }
-
-        // System.out.println("delay: " + delay);
-        return delay;
-    }
 }
 
-class Consult {
+class Plan {
     int st;
-    int delay;
-    int dur;
-    int ed;
+    int du;
 
-    public Consult(int st, int dur) {
+    public Plan(int st, int du) {
         this.st = st;
-        this.dur = dur;
-    }
-
-    public Consult(int st, int dur, int ed) {
-        this.st = st;
-        this.dur = dur;
-        this.ed = ed;
+        this.du = du;
     }
 
     @Override
     public String toString() {
-        return "s:" + st + "|du:" + dur + "|e:" + ed;
+        return "s:" + st + "|du:" + du;
     }
 }
