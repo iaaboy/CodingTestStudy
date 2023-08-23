@@ -4,6 +4,8 @@ package prog150365;
  * https://school.programmers.co.kr/learn/courses/30/lessons/150365
  */
 
+import java.util.ArrayList;
+
 public class MyMain {
     public static void main(String[] args) {
         // n m x y r c k result
@@ -28,33 +30,97 @@ public class MyMain {
 class Solution {
     public String solution(int n, int m, int x, int y, int r, int c, int k) {
         String answer = "";
-        if (x == 0 && r == 0) {
-            // 좌로 못 감.
-        }
-        if (x == m && r == m) {
-            // 우로 못 감.
-        }
-        if (y == 0 && c == 0) {
-            // 위로 못 감.
-        }
-        if (y == n && c == n) {
-            // 아래로 못 감
-        }
+        ArrayList<String> route = new ArrayList<>();
+
+        int moveCount = 0;
 
         // char lr;
         if (x > r) {
-
+            for (int i = 0; i < x - r; i++) {
+                moveCount++;
+                route.add("u");
+            }
         } else if (x < r) {
-
+            for (int i = 0; i < r - x; i++) {
+                moveCount++;
+                route.add("d");
+            }
         }
 
         // char ud;
         if (y > c) {
-
+            for (int i = 0; i < y - c; i++) {
+                moveCount++;
+                route.add("l");
+            }
         } else {
+            for (int i = 0; i < c - y; i++) {
+                moveCount++;
+                route.add("r");
+            }
+        }
 
+        route.sort(null);
+
+        if (moveCount > k) {
+            return "impossible";
+        } else if (moveCount < k) {
+            if ((k - moveCount) % 2 == 0) {
+                checkRoutine(route, x, y, k - moveCount);
+
+                // for (int i = 0; i < (k - moveCount) / 2; i++) {
+                // if (candiList.size() > 0) {
+                // route.add(candiList.get(0));
+                // } else {
+                // return "impossible";
+                // }
+                // }
+            } else {
+                return "impossible";
+            }
+        }
+
+        for (int i = 0; i < route.size(); i++) {
+            answer += route.get(i);
         }
 
         return answer;
+    }
+
+    private void checkRoutine(ArrayList<String> candiList, int x, int y, int remained) {
+        for (String cur : candiList) {
+            if (cur.equals("d")) {
+                x += 1;
+            } else if (cur.equals("u")) {
+                x -= 1;
+            }
+            if (cur.equals("l")) {
+                y -= 1;
+            }
+            if (cur.equals("r")) {
+                y += 1;
+            }
+            System.out.println("cur(" + x + "," + y + ")");
+        }
+    }
+
+    private void tt() {
+        // ArrayList<String> candiList = new ArrayList<>();
+        // if (!(x == 0 && r == 0)) {
+        // // 좌로 못 감.
+        // candiList.add("lr");
+        // }
+        // if (!(x == m && r == m)) {
+        // // 우로 못 감.
+        // candiList.add("rl");
+        // }
+        // if (!(y == 0 && c == 0)) {
+        // candiList.add("ud");
+        // }
+        // if (!(y == n && c == n)) {
+        // candiList.add("du");
+        // }
+
+        // candiList.sort(null);
     }
 }
