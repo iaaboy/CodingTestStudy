@@ -28,9 +28,13 @@ public class MyMain {
 }
 
 class Solution {
+    int m, n;
+
     public String solution(int n, int m, int x, int y, int r, int c, int k) {
         String answer = "";
         ArrayList<String> route = new ArrayList<>();
+        this.n = n;
+        this.m = m;
 
         int moveCount = 0;
 
@@ -67,14 +71,6 @@ class Solution {
         } else if (moveCount < k) {
             if ((k - moveCount) % 2 == 0) {
                 checkRoutine(route, x, y, k - moveCount);
-
-                // for (int i = 0; i < (k - moveCount) / 2; i++) {
-                // if (candiList.size() > 0) {
-                // route.add(candiList.get(0));
-                // } else {
-                // return "impossible";
-                // }
-                // }
             } else {
                 return "impossible";
             }
@@ -88,6 +84,7 @@ class Solution {
     }
 
     private void checkRoutine(ArrayList<String> candiList, int x, int y, int remained) {
+        int count = 1;
         for (String cur : candiList) {
             if (cur.equals("d")) {
                 x += 1;
@@ -100,27 +97,30 @@ class Solution {
             if (cur.equals("r")) {
                 y += 1;
             }
-            System.out.println("cur(" + x + "," + y + ")");
+
+            checkAddible(x, y);
+            System.out.println("cur(" + x + "," + y + ") : " + count++);
         }
     }
 
-    private void tt() {
-        // ArrayList<String> candiList = new ArrayList<>();
-        // if (!(x == 0 && r == 0)) {
-        // // 좌로 못 감.
-        // candiList.add("lr");
-        // }
-        // if (!(x == m && r == m)) {
-        // // 우로 못 감.
-        // candiList.add("rl");
-        // }
-        // if (!(y == 0 && c == 0)) {
-        // candiList.add("ud");
-        // }
-        // if (!(y == n && c == n)) {
-        // candiList.add("du");
-        // }
+    private void checkAddible(int x, int y) {
+        ArrayList<String> candiList = new ArrayList<>();
+        if (x != 0) {
+            // 좌로 못 감.
+            candiList.add("lr");
+        }
+        if (x != n) {
+            // 우로 못 감.
+            candiList.add("rl");
+        }
+        if (y != 0) {
+            candiList.add("ud");
+        }
+        if (y != m) {
+            candiList.add("du");
+        }
 
-        // candiList.sort(null);
+        candiList.sort(null);
+        System.out.println(candiList);
     }
 }
