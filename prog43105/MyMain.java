@@ -1,7 +1,5 @@
 package prog43105;
 
-import java.util.Arrays;
-
 /*
  * https://school.programmers.co.kr/learn/courses/30/lessons/43105
  */
