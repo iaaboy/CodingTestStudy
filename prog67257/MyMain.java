@@ -15,8 +15,7 @@ public class MyMain {
 }
 
 class Solution {
-    ArrayList <Long> numbers = new ArrayList<>();
-    Stack <String> expStack = new Stack<>();
+    LinkedList<String> numList = new LinkedList<>();
     long answer = 0;
     char[] opPrio = { '*', '+', '-' };
 
@@ -26,14 +25,15 @@ class Solution {
         int index = 0;
         for (Character c : expression.toCharArray()) {
             if (c == '-' | c == '+' | c == '*') {
-                expStack.add(numbersStr[index++]);
-                expStack.add("" + c);
+                numList.add(numbersStr[index++]);
+                numList.add("" + c);
             }
         }
+        numList.add(numbersStr[index]);
 
-        System.out.println(expStack);
+        // System.out.println(numList);
 
-        char [] opPrio = { '*','+','-'};
+        char[] opPrio = { '*', '+', '-' };
 
         makeSeq(0, opPrio);
 
@@ -42,7 +42,7 @@ class Solution {
 
     void makeSeq(int depth, char[] sequence) {
         if (depth == sequence.length) {
-            answer = calc(sequence);
+            answer = Math.max(answer, calcExp(sequence));
             return;
         }
 
@@ -60,14 +60,30 @@ class Solution {
         arr[i] = temp;
     }
 
-    long calc(char[] seq) {
-        System.out.println(Arrays.toString(seq));
+    long calcExp(char[] opPr) {
+        LinkedList<String> localList = new LinkedList<>();
+        for (String p : numList) {
+            localList.add(p);
+        }
 
-        // for (char idx : seq) {
-            
-        // }
+        for (char op : opPr) {
+            for (int i = 1; i < localList.size(); i++) {
+                if (localList.get(i).charAt(0) == op) {
+                    long num1 = Long.parseLong(localList.get(i - 1));
+                    long num2 = Long.parseLong(localList.get(i + 1));
+                    long midResult = calc(num1, num2, op);
+                    localList.set(i - 1, midResult + "");
+                    localList.remove(i);
+                    localList.remove(i);
+                    // System.out.println(localList);
+                    i--;
+                }
+            }
+        }
 
-        return -1;
+        // System.out.println(Arrays.toString(opPr) + "-> Result: " + localList);
+
+        return Math.abs(Long.parseLong(localList.get(0)));
     }
 
     long calc(long num1, long num2, char op) {
