@@ -144,7 +144,9 @@ class Solution {
             return;
         }
         // 두셀 중 한 셀만 가지고 있을 경우
-        if (table[r1][c1] == 0) {
+        if (table[r1][c1] == 0 && table[r2][c2] == 0) {
+
+        } else if (table[r1][c1] == 0) {
             table[r1][c1] = table[r2][c2];
             keyMap.get(table[r2][c2]).add(new Point(r1, c1));
         } else if (table[r2][c2] == 0) {
