@@ -22,12 +22,12 @@ class Solution {
             if (begin == 1) {
                 answer[answerIdx++] = 0;
             } else {
-                int minP = getMinPrime(begin);
+                int minP = getMaxDeviced(begin);
                 // System.out.println("minPrime: " + i + " -> " + minP);
                 if (minP == -1) {
                     answer[0] = 1;
                 } else {
-                    answer[0] = (int) begin / minP;
+                    answer[0] = minP;
                 }
             }
             return answer;
@@ -38,7 +38,7 @@ class Solution {
                 answer[answerIdx++] = 0;
                 continue;
             }
-            int minP = getMinPrime(i);
+            int minP = getMaxDeviced(i);
             // System.out.println("minPrime: " + i + " -> " + minP);
             if (minP == -1) {
                 answer[answerIdx++] = 1;
@@ -50,16 +50,21 @@ class Solution {
         return answer;
     }
 
-    int getMinPrime(long number) {
+    int getMaxDeviced(long number) {
+        int candidate = 0;
         for (int i = 2; i <= Math.sqrt(number); i++) {
             if (number % i == 0) {
                 int result = (int) number / i;
                 if (result > 10000000) {
+                    candidate = i;
                     continue;
                 } else {
                     return result;
                 }
             }
+        }
+        if (candidate != 0) {
+            return candidate;
         }
         return -1;
     }
