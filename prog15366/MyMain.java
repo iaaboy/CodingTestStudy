@@ -8,11 +8,7 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        // String[] commands = { "UPDATE 1 1 menu", "UPDATE 1 2 category", "UPDATE 2 1 bibimbap", "UPDATE 2 2 korean",
-        //         "UPDATE 2 3 rice", "UPDATE 3 1 ramyeon", "UPDATE 3 2 korean", "UPDATE 3 3 noodle", "UPDATE 3 4 instant",
-        //         "UPDATE 4 1 pasta", "UPDATE 4 2 italian", "UPDATE 4 3 noodle", "MERGE 1 2 1 3", "MERGE 1 3 1 4",
-        //         "UPDATE korean hansik", "UPDATE 1 3 group", "UNMERGE 1 4", "PRINT 1 3", "PRINT 1 4" };
-        String[] commands = { "MERGE 1 1 2 2", "MERGE 1 1 3 3", "UPDATE 3 3 A", "PRINT 1 1", "PRINT 2 2", "PRINT 3 3"};
+        String[] commands = { "UPDATE 1 1 a", "UPDATE 1 2 b", "UPDATE 2 1 c", "UPDATE 2 2 d", "MERGE 1 1 1 2", "MERGE 2 2 2 1", "MERGE 2 1 1 1", "PRINT 1 1", "UNMERGE 2 2", "PRINT 1 1"};
 
         Solution mSol = new Solution();
         System.out.println(Arrays.toString(mSol.solution(commands)));
@@ -68,11 +64,11 @@ class Solution {
         for (int i = 0; i < mx; i++) {
             for (int k = 0; k < mx; k++) {
                 System.out.print(table[i][k] + " ");
-                // if(table[i][k] == 0) {
-                //     System.out.print("---" + " ");
-                // } else {
-                //     System.out.print(wordMap.get(table[i][k]) + " ");
-                // }
+                if(table[i][k] == 0) {
+                    System.out.print("---" + " ");
+                } else {
+                    System.out.print(wordMap.get(table[i][k]) + " ");
+                }
             }
             System.out.println();
         }
@@ -145,7 +141,8 @@ class Solution {
         }
         // 두셀 중 한 셀만 가지고 있을 경우
         if (table[r1][c1] == 0 && table[r2][c2] == 0) {
-
+            Update(r1, c1, "Empty");
+            Merge(r1, c1, r2, c2);
         } else if (table[r1][c1] == 0) {
             table[r1][c1] = table[r2][c2];
             keyMap.get(table[r2][c2]).add(new Point(r1, c1));
