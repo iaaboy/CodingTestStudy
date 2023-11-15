@@ -15,11 +15,11 @@ public class MyMain {
         // int[] gates = { 1, 3 };
         // int[] summits = { 5 };
 
-        int n = 7;
-        int [][] paths = {{1, 2, 5}, {1, 4, 1}, {2, 3, 1}, {2, 6, 7}, {4, 5, 1}, {5,
-        6, 1}, {6, 7, 1}};
-        int[] gates = {3,7};
-        int [] summits = {1,5};
+        // int n = 7;
+        // int [][] paths = {{1, 2, 5}, {1, 4, 1}, {2, 3, 1}, {2, 6, 7}, {4, 5, 1}, {5,
+        // 6, 1}, {6, 7, 1}};
+        // int[] gates = {3,7};
+        // int [] summits = {1,5};
 
         // int n = 5;
         // int[][] paths = { { 1, 3, 10 }, { 1, 4, 20 }, { 2, 3, 4 }, { 2, 4, 6 }, { 3,
@@ -36,6 +36,11 @@ public class MyMain {
         // int[][] paths = { { 1, 3, 1 }, { 1, 4, 1 }, { 4,2,1 } };
         // int[] gates = { 1 };
         // int[] summits = { 2,3,4 };
+
+        int n = 7;
+        int [][] paths = {{1, 4, 4}, {1, 6, 1}, {1, 7, 3}, {2, 5, 2}, {3, 7, 4}, {5, 6, 6}};
+        int [] gates = {2};
+        int [] summits = {3, 4};
 
         Solution mSol = new Solution();
         System.out.println("answer" + Arrays.toString(mSol.solution(n, paths, gates, summits)));
@@ -95,48 +100,25 @@ class Solution {
 
         answer[0] = Integer.MIN_VALUE;
         answer[1] = Integer.MAX_VALUE;
-        for (int gate : gates) {
-            for (int summit : summits) {
-                int intens = climb(gate, summit);
-                if(intens == Integer.MIN_VALUE)
-                    continue;
-                if (intens < answer[1]) {
-                    answer[1] = intens;
-                    answer[0] = summit;
-                } else if (answer[1] == intens && answer[0] > summit) {
-                    answer[1] = intens;
-                    answer[0] = summit;
-                }
-            }
-        }
+
+        climb(gates, summits);
 
         // System.out.println(Arrays.toString(peaks));
 
         return answer;
     }
 
-    int climb(int gate, int summit) {
+    int climb(int[] gate, int[] summit) {
         Arrays.fill(isVisited, false);
         PriorityQueue<Vertex> mQ = new PriorityQueue<>();
-        isVisited[gate] = true;
-
-        for (int v : summits) {
-            if (summit != v) {
-                isVisited[v] = true;
-            }
-        }
-
-        for (int g : gates) {
-            if (gate != g) {
-                isVisited[g] = true;
-            }
-        }
 
         int intensMax = Integer.MIN_VALUE;
 
-        for (Coord cd : peaks[gate].mCo) {
-            if (!isVisited[cd.ed] && answer[1] > cd.intens) {
-                mQ.add(new Vertex(cd.ed, cd.intens));
+        for(int g : gate) {
+            for (Coord cd : peaks[g].mCo) {
+                if (!isVisited[cd.ed] && answer[1] > cd.intens) {
+                    mQ.add(new Vertex(cd.ed, cd.intens));
+                }
             }
         }
         // System.out.println(peaks[4]);
