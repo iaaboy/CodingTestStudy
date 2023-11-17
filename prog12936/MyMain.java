@@ -9,7 +9,6 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         int n = 3;
-        int k = 5;
 
         Solution mSol = new Solution();
         for (int i = 1; i < 7; i++) {
