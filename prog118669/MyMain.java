@@ -8,39 +8,10 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        // int n = 6;
-        // int[][] paths = { { 1, 2, 3 }, { 2, 3, 5 }, { 2, 4, 2 }, { 2, 5, 4 }, { 3, 4,
-        // 4 }, { 4, 5, 3 }, { 4, 6, 1 },
-        // { 5, 6, 1 } };
-        // int[] gates = { 1, 3 };
-        // int[] summits = { 5 };
-
-        // int n = 7;
-        // int [][] paths = {{1, 2, 5}, {1, 4, 1}, {2, 3, 1}, {2, 6, 7}, {4, 5, 1}, {5,
-        // 6, 1}, {6, 7, 1}};
-        // int[] gates = {3,7};
-        // int [] summits = {1,5};
-
-        // int n = 5;
-        // int[][] paths = { { 1, 3, 10 }, { 1, 4, 20 }, { 2, 3, 4 }, { 2, 4, 6 }, { 3,
-        // 5, 20 }, { 4, 5, 6 } };
-        // int[] gates = { 2 };
-        // int[] summits = { 5 };
-
-        // int n = 3;
-        // int[][] paths = { { 1, 2, 5 }, { 1, 3, 1 }, { 3, 2, 3 } };
-        // int[] gates = { 1 };
-        // int[] summits = { 2 };
-
-        // int n = 4;
-        // int[][] paths = { { 1, 3, 1 }, { 1, 4, 1 }, { 4,2,1 } };
-        // int[] gates = { 1 };
-        // int[] summits = { 2,3,4 };
-
-        int n = 7;
-        int [][] paths = {{1, 4, 4}, {1, 6, 1}, {1, 7, 3}, {2, 5, 2}, {3, 7, 4}, {5, 6, 6}};
-        int [] gates = {2};
-        int [] summits = {3, 4};
+        int n = 4;
+        int[][] paths = { { 1, 3, 1 }, { 1, 4, 1 }, { 4, 2, 1 } };
+        int[] gates = { 1 };
+        int[] summits = { 2, 3, 4 };
 
         Solution mSol = new Solution();
         System.out.println("answer" + Arrays.toString(mSol.solution(n, paths, gates, summits)));
@@ -49,100 +20,93 @@ public class MyMain {
 
 class Solution {
     Peak[] peaks;
-    boolean isVisited[];
     int[] summits;
     int[] gates;
     int[] answer = new int[2];
-
-    boolean isGate(int p) {
-        boolean result = false;
-        for(int g : gates) {
-            if(g == p)
-                return true;
-        }
-        return result;
-    }
-    boolean isPeak(int p) {
-        boolean result = false;
-        for(int s : summits) {
-            if(s == p)
-                return true;
-        }
-        return result;
-    }
+    int n;
+    int[] intenses;
 
     public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
         this.summits = summits;
         this.gates = gates;
+        this.n = n;
 
         peaks = new Peak[n + 1];
-        isVisited = new boolean[n + 1];
 
         for (int[] path : paths) {
             if (peaks[path[0]] == null) {
                 peaks[path[0]] = new Peak();
             }
-            if(!isPeak(path[0]) && !isGate(path[1])) {
+            if (!isPeak(path[0]) && !isGate(path[1])) {
                 peaks[path[0]].mCo.add(new Coord(path[0], path[1], path[2]));
             }
             if (peaks[path[1]] == null) {
                 peaks[path[1]] = new Peak();
             }
-            if(!isPeak(path[1]) && !isGate(path[0])) {
+            if (!isPeak(path[1]) && !isGate(path[0])) {
                 peaks[path[1]].mCo.add(new Coord(path[1], path[0], path[2]));
             }
         }
 
-        for (Peak p : peaks) {
-            if (p != null)
-                p.sort();
-        }
+        climb();
 
-        answer[0] = Integer.MIN_VALUE;
+        answer[0] = Integer.MAX_VALUE;
         answer[1] = Integer.MAX_VALUE;
 
-        climb(gates, summits);
+        Arrays.sort(summits);
 
-        // System.out.println(Arrays.toString(peaks));
+        for (int sum : summits) {
+            if (intenses[sum] < answer[1]) {
+                answer[0] = sum;
+                answer[1] = intenses[sum];
+            }
+        }
 
         return answer;
     }
 
-    int climb(int[] gate, int[] summit) {
-        Arrays.fill(isVisited, false);
-        PriorityQueue<Vertex> mQ = new PriorityQueue<>();
-
-        int intensMax = Integer.MIN_VALUE;
-
-        for(int g : gate) {
-            for (Coord cd : peaks[g].mCo) {
-                if (!isVisited[cd.ed] && answer[1] > cd.intens) {
-                    mQ.add(new Vertex(cd.ed, cd.intens));
-                }
-            }
+    boolean isGate(int p) {
+        boolean result = false;
+        for (int g : gates) {
+            if (g == p)
+                return true;
         }
-        // System.out.println(peaks[4]);
+        return result;
+    }
+
+    boolean isPeak(int p) {
+        boolean result = false;
+        for (int s : summits) {
+            if (s == p)
+                return true;
+        }
+        return result;
+    }
+
+    void climb() {
+        Queue<Vertex> mQ = new LinkedList<>();
+        intenses = new int[n + 1];
+        Arrays.fill(intenses, Integer.MAX_VALUE);
+
+        for (int g : gates) {
+            mQ.add(new Vertex(g, 0));
+            intenses[g] = 0;
+        }
+
         while (!mQ.isEmpty()) {
             // System.out.println("mq: " + mQ);
             Vertex curCoord = mQ.poll();
-            isVisited[curCoord.p] = true;
-            if (curCoord.p == summit) {
-                intensMax = curCoord.intens;
-                break;
-            }
-            // System.out.println("cur: " + curCoord +
-            // Arrays.toString(isVisited));
+            if (intenses[curCoord.p] < curCoord.intens)
+                continue;
 
             for (Coord nexCoord : peaks[curCoord.p].mCo) {
                 int tempIntense = Math.max(nexCoord.intens, curCoord.intens);
-                if (!isVisited[nexCoord.ed] && tempIntense < answer[1] ) {
+                if (intenses[nexCoord.ed] > tempIntense) {
+                    intenses[nexCoord.ed] = tempIntense;
                     mQ.add(new Vertex(nexCoord.ed, tempIntense));
                 }
             }
         }
-
-        // System.out.println(gate + "->" + summit + " intensMax: " + intensMax);
-        return intensMax;
     }
 }
 
