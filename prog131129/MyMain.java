@@ -8,108 +8,54 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[] targets = { 100 };
+        int[] targets = { 21, 58 };
         Solution mSol = new Solution();
         for (int t : targets)
-            System.out.print(t + "-" + Arrays.toString(mSol.solution(t)) + ", ");
+            System.out.print(Arrays.toString(mSol.solution(t)));
     }
 }
 
 class Solution {
+    int[][] dp;
+    private static int MAX_DART = 100001;
+
     public int[] solution(int target) {
-        int[] answer = new int[2];
-        int preCalclulatedBullet = 0;
-        int preCalclulatedDart = 0;
-        // if(target > 310) {
-        // preCalclulatedBullet = 5 * (target / 300) ;
-        // preCalclulatedDart = 5 * (target / 300) ;
-        // target = target % 300;
-        // }
-        HashMap<Integer, Integer> ScoreSet = new HashMap<>();
-        for (int i = 1; i <= 20; i++) {
-            ScoreSet.put(i * 2, 0);
-            ScoreSet.put(i * 3, 0);
-        }
-        for (int i = 1; i <= 20; i++) {
-            ScoreSet.put(i, 1);
-        }
-        ScoreSet.put(50, 1);
+        dp = new int[target + 1][2];
+        for (int i = 1; i < target + 1; i++)
+            dp[i][0] = MAX_DART;
 
-        // System.out.println(ScoreSet);
+        // 0 : darts , 1: bulls/singles
 
-        HashSet<Score> cur = new HashSet<>();
-        HashSet<Score> next;
+        return throwDart(target);
+    }
 
-        cur.add(new Score(target, 0, 0));
-
-        boolean hasResult = false;
-        answer[0] = 0;
-        answer[1] = 0;
-        while (!cur.isEmpty()) {
-            next = new HashSet<>();
-            // System.out.println("cur: " + cur);
-            for (Score sc : cur) {
-                if (sc.remained == 0) {
-                    // System.out.println("temp result: " + sc);
-                    hasResult = true;
-                    answer[1] = sc.bulls;
-                    answer[0] = sc.darts;
-                    continue;
+    int[] throwDart(int scoreRemained) {
+        if (dp[scoreRemained][0] == MAX_DART) {
+            if (scoreRemained >= 50) {
+                int[] temp = throwDart(scoreRemained - 50);
+                if (temp[0] + 1 < dp[scoreRemained][0]
+                        || temp[0] + 1 == dp[scoreRemained][0] && temp[1] + 1 > dp[scoreRemained][1]) {
+                    dp[scoreRemained][1] = temp[1] + 1;
+                    dp[scoreRemained][0] = temp[0] + 1;
                 }
-                for (int s : ScoreSet.keySet()) {
-                    if (sc.remained >= s) {
-                        Score newSC = new Score(sc.remained - s, sc.darts + 1, sc.bulls + ScoreSet.get(s));
-                        // System.out.println(newSC);
-                        if (!next.contains(newSC)) {
-                            // System.out.println("put" + newSC);
-                            next.add(newSC);
-                        } else {
+            }
+
+            int i = scoreRemained >= 20 ? 20 : scoreRemained;
+            for (; i >= 1; i--) {
+                for (int j = 1; j <= 3; j++) {
+                    if (scoreRemained >= i * j) {
+                        int[] temp2 = throwDart(scoreRemained - i * j);
+                        int bull = j == 1 ? 1 : 0;
+                        if (temp2[0] + 1 < dp[scoreRemained][0]
+                                || temp2[0] + 1 == dp[scoreRemained][0] && temp2[1] + bull > dp[scoreRemained][1]) {
+                            dp[scoreRemained][0] = temp2[0] + 1;
+                            dp[scoreRemained][1] = temp2[1] + bull;
                         }
-                    } else {
-                        break;
                     }
                 }
             }
-            if (hasResult)
-                break;
-            cur = next;
         }
 
-        // next.clear();
-        answer[0] += preCalclulatedDart;
-        answer[1] += preCalclulatedBullet;
-
-        return answer;
-    }
-
-    class Score {
-        int remained;
-        int darts;
-        int bulls;
-
-        public Score(int remained, int dart, int bulls) {
-            this.remained = remained;
-            this.bulls = bulls;
-            this.darts = dart;
-        }
-
-        @Override
-        public String toString() {
-            return remained + "," + bulls + "," + darts;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            Score that = (Score) obj;
-            return remained == that.remained && darts == that.darts && bulls == that.bulls;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = remained * 31;
-            result += darts * 31;
-            result += bulls * 31;
-            return result;
-        }
+        return dp[scoreRemained];
     }
 }
