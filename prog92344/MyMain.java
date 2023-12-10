@@ -21,7 +21,7 @@ public class MyMain {
                         { 2, 2, 0, 2, 0, 100 } } };
 
         Solution mSol = new Solution();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 1; i < 2; i++) {
             System.out.println(mSol.solution(boards[i], skills[i]));
         }
     }
@@ -36,83 +36,55 @@ class Solution {
         this.skill = skill;
         int count = 0;
 
-        index = new Integer [skill.length];
+        int[][] accumulated = new int[board.length+1][board[0].length+1];
 
-        for(int i = 0; i<skill.length ; i++) {
-            index[i] = i;
-        }
-
-        // System.out.println(Arrays.toString(index));
-
-        // printBoard();
-
-        Arrays.sort(index, (Integer a, Integer b) -> {
-            if (skill[a][0] == skill[b][0]) {
-                if (skill[a][0] == 1) {// 1이면 파괴, //2면 회복
-                    return skill[b][5] - skill[a][5];
-                } else {
-                    return skill[a][5] - skill[b][5];
-                }
-            } else {
-                return skill[a][0] - skill[b][0];
-            }
-        });
-
-        // System.out.println(Arrays.toString(index));
-
-        // printSkill();
-
-        for (int y = 0; y < board.length; y++) {
-            for (int x = 0; x < board[0].length; x++) {
-                if (calculate(board[y][x], y, x))
-                    count++;
-            }
-        }
-        return count;
-    }
-
-    // 1 y1, 2 x1 3 y2, 4 x2
-    boolean calculate(int num, int y, int x) {
-        for (int i = 0; i < skill.length; i++) {
-            int currentIdx = index[i];
-            if (skill[currentIdx][0] != 1)
-                break;
-            
-            if (skill[currentIdx][1] > y || skill[currentIdx][3] < y || skill[currentIdx][2] > x || skill[currentIdx][4] < x)
-                continue;
-
-            num -= skill[currentIdx][5];
-        }
-
-        if (num >= 1) {
-            return true;
-        }
-
-        for (int i = skill.length - 1; i >= 0; i--) {
-            int currentIdx = index[i];
-            if (skill[currentIdx][0] != 2)
-                break;
-
-            if (skill[currentIdx][1] > y || skill[currentIdx][3] < y || skill[currentIdx][2] > x || skill[currentIdx][4] < x)
-                continue;
-
-            num += skill[currentIdx][5];
-            if (num >= 1)
-                break;
-        }
-        return num >= 1 ? true : false;
-    }
-
-    void printBoard() {
-        for (int[] b : board) {
-            System.out.println(Arrays.toString(b));
-        }
-    }
-
-    void printSkill() {
-        System.out.println(Arrays.toString(index));
+        //skill들에 대해 누적합 적용
         for (int[] s : skill) {
-            System.out.println(Arrays.toString(s));
+            int type = s[0];
+            int r1 = s[1];
+            int c1 = s[2];
+            int r2 = s[3];
+            int c2 = s[4];
+            int degree = (type == 2) ? -s[5] : s[5];
+            accumulated[r1][c1] -= degree;
+            accumulated[r1][c2 + 1] += degree;
+            accumulated[r2 + 1][c1] += degree;
+            accumulated[r2 + 1][c2 + 1] -= degree;
         }
+
+        for(int [] ac : accumulated)
+            System.out.println(Arrays.toString(ac));
+
+        //가로 누적합 계산
+        for (int i = 0; i < accumulated.length - 1; i++) {
+            for (int j = 0; j < accumulated[0].length - 1; j++) {
+                accumulated[i][j + 1] += accumulated[i][j];
+            }
+        }
+        System.out.println();
+        for(int [] ac : accumulated)
+            System.out.println(Arrays.toString(ac));
+
+        //세로 누적합 계산
+        for (int i = 0; i < accumulated.length - 1; i++) {
+            for (int j = 0; j < accumulated[0].length - 1; j++) {
+                accumulated[i + 1][j] += accumulated[i][j];
+            }
+        }
+        
+        System.out.println();
+        for(int [] ac : accumulated)
+            System.out.println(Arrays.toString(ac));
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                board[i][j] += accumulated[i][j];
+                if (board[i][j] > 0) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 }
