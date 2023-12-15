@@ -8,13 +8,13 @@ import java.util.Arrays;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[][] picture = { 
-            { 1, 1, 1, 0 }, 
-            { 1, 2, 2, 0 }, 
-            { 1, 0, 0, 1 }, 
-            { 0, 0, 0, 1 }, 
-            { 0, 0, 0, 3 },
-            { 0, 0, 0, 3 } };
+        int[][] picture = {
+                { 1, 1, 1, 0 },
+                { 1, 2, 2, 0 },
+                { 1, 0, 0, 1 },
+                { 0, 0, 0, 1 },
+                { 0, 0, 0, 3 },
+                { 0, 0, 0, 3 } };
 
         Solution mSol = new Solution();
         System.out.println(Arrays.toString(mSol.solution(6, 4, picture)));
@@ -22,20 +22,41 @@ public class MyMain {
 }
 
 class Solution {
-
-    int[] xOffset = {0, 1, -1, 0};
-    int[] yOffset = {1, 0, 0, -1};
+    int[] xOffset = { 0, 1, -1, 0 };
+    int[] yOffset = { 1, 0, 0, -1 };
+    int[][] picture;
 
     public int[] solution(int m, int n, int[][] picture) {
-        int numberOfArea = 0;
-        int maxSizeOfOneArea = 0;
-
+        this.picture = picture;
         int[] answer = new int[2];
-        answer[0] = numberOfArea;
-        answer[1] = maxSizeOfOneArea;
 
-        // removeArea(int y, int x)
-
+        for (int y = 0; y < picture.length; y++) {
+            for (int x = 0; x < picture[0].length; x++) {
+                if (picture[y][x] != 0) {
+                    int size = checkNear(y, x, picture[y][x]);
+                    answer[1] = size > answer[1] ? size : answer[1];
+                    answer[0]++;
+                }
+            }
+        }
         return answer;
+    }
+
+    private int checkNear(int y, int x, int id) {
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            int newY = y + yOffset[i];
+            int newX = x + xOffset[i];
+            if (isIntheArea(newY, newX) && id == picture[newY][newX]) {
+                picture[newY][newX] = 0;
+                count++;
+                count += checkNear(newY, newX, id);
+            }
+        }
+        return count;
+    }
+
+    private boolean isIntheArea(int y, int x) {
+        return y >= 0 && x >= 0 && y < picture.length && x < picture[0].length;
     }
 }
