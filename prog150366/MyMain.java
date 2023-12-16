@@ -1,8 +1,8 @@
-package prog15366;
+package prog150366;
 
 import java.util.*;
 
-/*
+/* 표 병합
  * https://school.programmers.co.kr/learn/courses/30/lessons/150366
  */
 
