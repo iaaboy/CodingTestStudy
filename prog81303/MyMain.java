@@ -8,7 +8,7 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        String[] cmd2 = { "C", "U 2", "C", "C", "Z", "D 4", "C", "U 2", "Z", "Z" };
+        String[] cmd2 = { "C" };
 
         Solution mSol = new Solution();
         System.out.println(mSol.solution(8, 0, cmd2));
@@ -26,14 +26,12 @@ class Solution {
 
         storage = new Storage[n];
         for (int i = 0; i < n; i++) {
-            storage[i] = new Storage(true, i - 1, i + 1);
+            storage[i] = new Storage(true, i - 1, i + 1, i);
         }
         storage[n - 1].next = -1; // handle last pointer
 
-        System.out.println("Start[" + prompt + "] :" + Arrays.toString(storage));
-
         for (String c : cmd) {
-            System.out.println(c + "[" + prompt + "]");
+            // System.out.println(c + "[" + prompt + "]");
             switch (c.charAt(0)) {
                 case 'D':
                     String[] com = c.split(" ");
@@ -54,18 +52,18 @@ class Solution {
                 default:
                     break;
             }
-            System.out.println("[" + prompt + "] :" + Arrays.toString(storage));
+            // System.out.println("[" + prompt + "] :" + Arrays.toString(storage));
         }
 
-        String answer = "";
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
             if (storage[i].occupy) {
-                answer += 'O';
-            } else {
-                answer += 'X';
-            }
+                sb.append("O");
+            } else
+                sb.append("X");
         }
-        return answer;
+        return sb.toString();
+
     }
 
     void move(boolean isDown, int num) {
@@ -87,64 +85,52 @@ class Solution {
     }
 
     Stack<Integer> candiStack = new Stack<>();
-
-    void cut() {
+    void cut() { //현재 pointer를 stack에 넣고, point를 정리
         candiStack.add(prompt);
         int nextPtr = storage[prompt].next;
         int prePtr = storage[prompt].prev;
         if (prePtr == -1) {
             storage[nextPtr].prev = -1;
-            storage[prompt].occupy = false;
+            storage[prompt].occupy = false;// todo erase
             prompt = nextPtr;
         } else if (nextPtr == -1) {
             storage[prePtr].next = -1;
-            storage[prompt].occupy = false;
+            storage[prompt].occupy = false;// todo erase
             prompt = prePtr;
         } else {
             storage[nextPtr].prev = prePtr;
             storage[prePtr].next = nextPtr;
-            storage[prompt].occupy = false;
+            storage[prompt].occupy = false;// todo erase
             prompt = nextPtr;
         }
     }
 
-    void undo() {
+    void undo() { //이전 pointer들을 그냥 restore하면 된다.
         if (candiStack.empty()) {
             System.out.println("Something wroing");
             return;
         }
-        System.out.println("stack: " + candiStack);
         int restoreNum = candiStack.pop();
+        // System.out.println(restoreNum + " stack: " + candiStack);
         int prePtr = storage[restoreNum].prev;
-        while (prePtr != -1 && !storage[prePtr].occupy) {
-            prePtr = storage[prePtr].prev;
-            if (prePtr == -1)
-                break;
-        }
         int nextPtr = storage[restoreNum].next;
-        while (nextPtr != -1 && !storage[nextPtr].occupy) {
-            nextPtr = storage[nextPtr].prev;
-            if (nextPtr == -1)
-                break;
-        }
-        storage[restoreNum].prev = prePtr;
-        if (nextPtr != -1) {
-            storage[nextPtr].prev = restoreNum;
-        }
-        storage[restoreNum].next = nextPtr;
-        if (prePtr != -1) {
+
+        if (prePtr != -1)
             storage[prePtr].next = restoreNum;
-        }
-        storage[restoreNum].occupy = true;
+        if (nextPtr != -1)
+            storage[nextPtr].prev = restoreNum;
+
+        storage[restoreNum].occupy = true; // todo erase
     }
 }
 
 class Storage {
-    boolean occupy;
+    boolean occupy; //업데이트하지 않아도 문제를 풀 수 있음.
+    int data; //occupy가 없을 경우 data를 저장
     int prev;
     int next;
 
-    public Storage(boolean occupy, int prev, int next) {
+    public Storage(boolean occupy, int prev, int next, int data) {
         this.occupy = occupy;
         this.prev = prev;
         this.next = next;
