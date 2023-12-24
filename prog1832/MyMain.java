@@ -1,6 +1,7 @@
 package prog1832;
 
 /* 보행자 천국
+ * dp가 아니면 시간 초과
  * https://school.programmers.co.kr/learn/courses/30/lessons/1832
  */
 
@@ -14,67 +15,59 @@ public class MyMain {
 
         Solution mSol = new Solution();
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
             System.out.println(mSol.solution(m[i], n[i], cityMap[i]));
     }
 }
 
 class Solution {
     int MOD = 20170805;
-    int count;
-    int[][] cityMap;
-    int yEnd, xEnd;
-    boolean[][] isVisited;
-
+    int[][] count;
     public int solution(int m, int n, int[][] cityMap) {
-        count = 0;
-        this.cityMap = cityMap;
-        this.yEnd = m - 1;
-        this.xEnd = n - 1;
-        isVisited = new boolean[m][n];
+        count = new int[m][n];
+        count[0][0] = 1;
 
-        visitNext(0, 0, false);
-        isVisited[0][0] = true;
-
-        return count;
-    }
-
-    private void visitNext(int y, int x, boolean fromLeft) {
-
-        System.out.println("<" + y + "," + x + ">");
-
-        if (x == xEnd && y == yEnd) {
-            count++;
-            if (count == MOD)
-                count = 0;
-            return;
-        }
-
-        if (cityMap[y][x] == 0) {
-            if (x < xEnd && !isVisited[y][x + 1]) {
-                isVisited[y][x + 1] = true;
-                visitNext(y, x + 1, true);
-                isVisited[y][x + 1] = false;
-            }
-            if (y < yEnd && !isVisited[y + 1][x]) {
-                isVisited[y + 1][x] = true;
-                visitNext(y + 1, x, false);
-                isVisited[y + 1][x] = false;
-            }
-        } else if (cityMap[y][x] == 2) {
-            if (fromLeft) {
-                if (x < xEnd && !isVisited[y][x + 1]) {
-                    isVisited[y][x + 1] = true;
-                    visitNext(y, x + 1, true);
-                    isVisited[y][x + 1] = false;
-                }
-            } else {
-                if (y < yEnd && !isVisited[y + 1][x]) {
-                    isVisited[y + 1][x] = true;
-                    visitNext(y + 1, x, false);
-                    isVisited[y + 1][x] = false;
+        for (int y = 0; y < m; y++) {
+            for (int x = 0; x < n; x++) {
+                if (cityMap[y][x] != 1) { // 0 좌회전, 우회전 가능
+                    // add up
+                    if (y - 1 >= 0) {
+                        if (cityMap[y - 1][x] == 0) {
+                            count[y][x] += count[y - 1][x];
+                            count[y][x] = count[y][x] % MOD;
+                        } else if (cityMap[y - 1][x] == 2) {
+                            if (y - 2 >= 0) {
+                                for (int curY = y - 2; curY >= 0; curY--) { // 앞에가 직진이면, 한칸 더 앞에 찾아간다
+                                    if (cityMap[curY][x] != 2) {
+                                        count[y][x] += count[curY][x];
+                                        count[y][x] = count[y][x] % MOD;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // add left
+                    if (x - 1 >= 0) {
+                        if (cityMap[y][x - 1] == 0) {
+                            count[y][x] += count[y][x - 1];
+                            count[y][x] = count[y][x] % MOD;
+                        } else if (cityMap[y][x - 1] == 2) {
+                            if (x - 2 >= 0) {
+                                for (int curX = x - 2; curX >= 0; curX--) { // 앞에가 직진이면, 한칸 더 앞에 찾아간다
+                                    if (cityMap[y][curX] != 2) {
+                                        count[y][x] += count[y][curX];
+                                        count[y][x] = count[y][x] % MOD;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        return count[m - 1][n - 1];
     }
 }
