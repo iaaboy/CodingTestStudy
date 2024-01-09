@@ -11,13 +11,13 @@ public class MyMain {
         int[] m = { 3, 2, 4, 2 };
         int[] n = { 3, 4, 4, 2 };
         String[][] board = {
-                { ".ZI.", "M.**", "MZU.", ".IU." }, // "MUZI"
                 { "DBA", "C*A", "CDB" }, // "ABCD"
                 { "NRYN", "ARYA" }, // "RYAN"
+                { ".ZI.", "M.**", "MZU.", ".IU." }, // "MUZI"
                 { "AB", "BA" } // "IMPOSSIBLE"
         };
         Solution mSol = new Solution();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 2; i < 3; i++) {
             System.out.println(mSol.solution(m[i], n[i], board[i]));
         }
     }
@@ -43,6 +43,8 @@ class Solution {
                 }
             }
         }
+
+        System.out.println(chMap);
 
         Character[] chList = new Character[chMap.size()];
         chMap.keySet().toArray(chList);
@@ -81,17 +83,20 @@ class Solution {
         int stepX = (chMap.get(ch).n2 - chMap.get(ch).n1);
         stepX = stepX == 0 ? 0 : stepY / Math.abs(stepX);
 
-        boolean xHasObst = false;
-        boolean yHasObst = false;
-        if (stepX != 0) {
-            for (int x = chMap.get(ch).n1; x != chMap.get(ch).n2; x += stepX) {
+        System.out.println(chMap.get(ch));
 
+        if(stepX == 0) { //n2 == n1;
+            //check m1 -> m2
+            for(int y = chMap.get(ch).m1 + 1 ; y != chMap.get(ch).m2 ; y+=stepY ) {
+                System.out.println(chMap.get(ch).n2 + ", " + y);
             }
-        }
-        if (stepY != 0) {
-            for (int y = chMap.get(ch).m2; y != chMap.get(ch).m2; y += stepY) {
+        } else if(stepY == 0) { //m2 == m1
+            //check n1 -> n2
+            for(int x = chMap.get(ch).n1 + 1 ; x != chMap.get(ch).n2 ; x+=stepX ) {
+                System.out.println(chMap.get(ch).m2 + ", " + x);
+            }
+        } else {
 
-            }
         }
 
         return false;
@@ -110,6 +115,11 @@ class Solution {
         public Vertex(int m1, int n1) {
             this.m1 = m1;
             this.n1 = n1;
+        }
+
+        @Override
+        public String toString() {
+            return "<" + + m1 + "," + n1 + " ~ " + m2 + "," +  n2 +  ">";
         }
     }
 }

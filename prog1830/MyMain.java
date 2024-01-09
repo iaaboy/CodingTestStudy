@@ -9,13 +9,13 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         String[] sentences = {
-                "AaAaAbBbBbB", // A A ABBB
                 "SpIpGpOpNpGJJqOqA", // "SIGONG JJ O A");
                 "SpIpGpOpNpGJqOqA", // "SIGONG JOA");
-                "aGbWbFbDakGnWnLk", // "GWFD GWL");
+                "aGbWbFbDakGnWnLk", // "GWFD GWL");  aGbWbFbDa   kGnWnLk
                 "AAAaBaAbBBBBbCcBdBdBdBcCeBfBeGgGGjGjGRvRvRvRvRvR", // "AAA B A BBBB C BBBB CBB GG G G G RRRRRR");
                 "AaBaA", // ABA
                 "AbAaAbAaCa", // INVALID
+                "AaAaAbBbBbB", // A A ABBB
                 // "XcXbXcX", //"X XX X"
                 // "AababB", // " AB " ???,
                 // "", // "");
@@ -188,7 +188,7 @@ class Solution {
             }
             if (sP.isInner && isRule2) {
                 // System.out.println("broken rule");
-                return "invalid";
+                // return "invalid";
             }
 
             curIdx++;
