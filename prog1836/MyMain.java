@@ -78,25 +78,29 @@ class Solution {
     }
 
     boolean checkPath(Character ch) {
-        int stepY = (chMap.get(ch).m2 - chMap.get(ch).m1);
-        stepY = stepY == 0 ? 0 : stepY / Math.abs(stepY);
-        int stepX = (chMap.get(ch).n2 - chMap.get(ch).n1);
-        stepX = stepX == 0 ? 0 : stepY / Math.abs(stepX);
+        int y1 = chMap.get(ch).m1;
+        int y2 = chMap.get(ch).m2;
+        int x1 = chMap.get(ch).n1;
+        int x2 = chMap.get(ch).n2;
+        
 
-        System.out.println(chMap.get(ch));
-
-        if(stepX == 0) { //n2 == n1;
+        if(x1 == x2) { //n2 == n1;
             //check m1 -> m2
-            for(int y = chMap.get(ch).m1 + 1 ; y != chMap.get(ch).m2 ; y+=stepY ) {
-                System.out.println(chMap.get(ch).n2 + ", " + y);
+            for(int y = Math.min(y1, y2) ; y < Math.max(y1,y2) ; y++) {
+                
             }
-        } else if(stepY == 0) { //m2 == m1
+        } else if(y1 == y2) { //m2 == m1
             //check n1 -> n2
-            for(int x = chMap.get(ch).n1 + 1 ; x != chMap.get(ch).n2 ; x+=stepX ) {
-                System.out.println(chMap.get(ch).m2 + ", " + x);
+            for(int x = Math.min(x1, x2) ; x < Math.max(x1,x2) ; x++) {
+                
             }
         } else {
-
+            for(int y = Math.min(y1, y2) ; y < Math.max(y1,y2) ; y++) {
+                
+            }
+            for(int x = Math.min(x1, x2) ; x < Math.max(x1,x2) ; x++) {
+                
+            }
         }
 
         return false;
