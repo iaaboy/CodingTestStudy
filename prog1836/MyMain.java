@@ -8,28 +8,33 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[] m = { 3, 2, 4, 2 };
-        int[] n = { 3, 4, 4, 2 };
+        int[] m = { 3, 3, 2, 4, 2 };
+        int[] n = { 3, 3, 4, 4, 2 };
         String[][] board = {
+                {"AZA", "BZB", "***"},
                 { "DBA", "C*A", "CDB" }, // "ABCD"
                 { "NRYN", "ARYA" }, // "RYAN"
                 { ".ZI.", "M.**", "MZU.", ".IU." }, // "MUZI"
                 { "AB", "BA" } // "IMPOSSIBLE"
         };
         Solution mSol = new Solution();
-        for (int i = 2; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             System.out.println(mSol.solution(m[i], n[i], board[i]));
         }
     }
 }
 
 class Solution {
-    String[] board;
+    StringBuilder[] board;
     HashMap<Character, Vertex> chMap;
 
     public String solution(int m, int n, String[] board) { // m 세로, n 가로
-        this.board = board;
         chMap = new HashMap<>();
+        this.board = new StringBuilder[board.length];
+        for (int i = 0; i < board.length; i++) {
+            this.board[i] = new StringBuilder();
+            this.board[i].append(board[i]);
+        }
 
         for (int y = 0; y < m; y++) {
             for (int x = 0; x < n; x++) {
@@ -44,37 +49,74 @@ class Solution {
             }
         }
 
-        System.out.println(chMap);
+        // System.out.println(chMap);
+
+        answer = new StringBuilder();
+        isFinish = false;
 
         Character[] chList = new Character[chMap.size()];
         chMap.keySet().toArray(chList);
+        Arrays.sort(chList);
+        // System.out.println(Arrays.toString(chList));
         journey(chList, 0);
-
-        String answer = "";
-        return answer;
+        return !isFinish ? "IMPOSSIBLE" : answer.toString();
     }
 
-    boolean isFinish = false;
+    boolean isFinish;
+    StringBuilder answer;
 
-    void journey(Character[] inChar, int depth) {
-        if (!checkPath(inChar[depth])) {
-            // 안풀리면 다음 안가고 리턴,
-            return;
-        }
+    boolean journey(Character[] inChar, int depth) {
+        // System.out.println("journey<" + depth + ">:" + Arrays.toString(inChar));
+        // for(int i = 0; i< board.length ; i ++) {
+        //     System.out.println(board[i].toString());
+        // }
         if (depth == inChar.length - 1 || isFinish) {
-            System.out.println("Success: " + Arrays.toString(inChar));
-            return;
+            if (checkPath(inChar[depth])) {
+                // System.out.println("Succeed : " + Arrays.toString(inChar));
+                for (char ch : inChar) {
+                    answer.append(ch);
+                }
+                isFinish = true;
+                return true;
+            } else {
+                return false;
+            }
         }
 
-        // update path val
+        ArrayList<Character> inCpdChar = new ArrayList<>();
         for (int i = depth; i < inChar.length; i++) {
-            // switch
-            switchVal(inChar, depth, i);
-            journey(inChar, depth + 1);
-            switchVal(inChar, i, depth);
+            inCpdChar.add(inChar[i]);
+        }
+        inCpdChar.sort(null);
+        for (int i = depth; i < inChar.length; i++) {
+            inChar[i] = inCpdChar.get(i-depth);
+        }
+        for (int i = depth; i < inChar.length; i++) {
+            char curCh = inChar[i];
+            if (checkPath(curCh)) {
+                // update path val
+                board[chMap.get(curCh).m1].setCharAt(chMap.get(curCh).n1, '.');
+                board[chMap.get(curCh).m2].setCharAt(chMap.get(curCh).n2, '.');
+                // switch
+                switchVal(inChar, depth, i);
+                if (journey(inChar, depth + 1)) {
+                    return true;
+                }
+                switchVal(inChar, i, depth);
+                // restore path val
+                board[chMap.get(curCh).m1].setCharAt(chMap.get(curCh).n1, curCh);
+                board[chMap.get(curCh).m2].setCharAt(chMap.get(curCh).n2, curCh);
+            } else {
+                // System.out.println("fail:" + inChar[depth]);
+            }
             // revert
         }
-        // restore path val
+
+        return false;
+    }
+
+    boolean isMeOrRoute(int y, int x, char me) {
+        return (board[y].charAt(x) == '.' || board[y].charAt(x) == me);
     }
 
     boolean checkPath(Character ch) {
@@ -82,28 +124,63 @@ class Solution {
         int y2 = chMap.get(ch).m2;
         int x1 = chMap.get(ch).n1;
         int x2 = chMap.get(ch).n2;
-        
 
-        if(x1 == x2) { //n2 == n1;
-            //check m1 -> m2
-            for(int y = Math.min(y1, y2) ; y < Math.max(y1,y2) ; y++) {
-                
+        if (x1 == x2) { // n2 == n1;
+            // check m1 -> m2
+            for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+                if (!isMeOrRoute(y, x1, ch)) {
+                    return false;
+                }
             }
-        } else if(y1 == y2) { //m2 == m1
-            //check n1 -> n2
-            for(int x = Math.min(x1, x2) ; x < Math.max(x1,x2) ; x++) {
-                
+            return true;
+        } else if (y1 == y2) { // m2 == m1
+            // check n1 -> n2
+            for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+                if (!isMeOrRoute(y1, x, ch)) {
+                    return false;
+                }
             }
+            return true;
         } else {
-            for(int y = Math.min(y1, y2) ; y < Math.max(y1,y2) ; y++) {
-                
-            }
-            for(int x = Math.min(x1, x2) ; x < Math.max(x1,x2) ; x++) {
-                
-            }
-        }
+            boolean isPassed = true;
 
-        return false;
+            //y1 고정 x1 - x2
+            for(int x = Math.min(x1, x2); x <= Math.max(x1, x2) ; x++) {
+                if (!isMeOrRoute(y1, x, ch)) {
+                    isPassed = false;
+                    break;
+                }
+            }
+            //x2 고정 y1 - y2
+            for(int y = Math.min(y1, y2) ; y <= Math.max(y1, y2) ; y++) {
+                if (isPassed == false || !isMeOrRoute(y, x2, ch)) {
+                    isPassed = false;
+                    break;
+                }
+            }
+            if(isPassed) {
+                return true;
+            }
+            isPassed = true;
+            //y2 고정 x1 - x2
+            for(int x = Math.min(x1, x2); x <= Math.max(x1, x2) ; x++) {
+                if (!isMeOrRoute(y2, x, ch)) {
+                    isPassed = false;
+                    break;
+                }
+            }
+            //x1 고정 y1 - y2
+            for(int y = Math.min(y1, y2) ; y <= Math.max(y1, y2) ; y++) {
+                if (isPassed == false || !isMeOrRoute(y, x1, ch)) {
+                    isPassed = false;
+                    break;
+                }
+            }
+            if(isPassed) {
+                return true;
+            }
+            return false;
+        }
     };
 
     void switchVal(Character[] inChar, int from, int to) {
@@ -123,7 +200,7 @@ class Solution {
 
         @Override
         public String toString() {
-            return "<" + + m1 + "," + n1 + " ~ " + m2 + "," +  n2 +  ">";
+            return "<" + +m1 + "," + n1 + "~" + m2 + "," + n2 + ">";
         }
     }
 }
