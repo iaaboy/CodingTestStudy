@@ -8,17 +8,18 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[] m = { 3, 3, 2, 4, 2 };
-        int[] n = { 3, 3, 4, 4, 2 };
+        int[] m = { 3, 3, 2, 4, 2, 5};
+        int[] n = { 3, 3, 4, 4, 2, 5};
         String[][] thisboard = {
                 { "AZA", "BZB", "***" },
                 { "DBA", "C*A", "CDB" }, // "ABCD"
                 { "NRYN", "ARYA" }, // "RYAN"
                 { ".ZI.", "M.**", "MZU.", ".IU." }, // "MUZI"
-                { "AB", "BA" } // "IMPOSSIBLE"
+                { "AB", "BA" }, // "IMPOSSIBLE",
+                { "FGHEI", "BAB..", "D.C*.", "CA..I", "DFHGE"}
         };
         Solution mSol = new Solution();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
             System.out.println(mSol.solution(m[i], n[i], thisboard[i]));
         }
     }
@@ -26,39 +27,149 @@ public class MyMain {
 
 class Solution {
 
-    public String solution(int m, int n, String[] board) { // m 세로, n 가로
-        StringBuilder[] thisboard;
-        HashMap<Character, Vertex> chMap;
-        chMap = new HashMap<>();
-        thisboard = new StringBuilder[board.length];
-        for (int i = 0; i < thisboard.length; i++) {
-            thisboard[i] = new StringBuilder();
-            thisboard[i].append(board[i]);
+    static class Point{
+        int y, x;
+        char c;
+
+        public Point(int y, int x, char c) {
+            this.y = y;
+            this.x = x;
+            this.c = c;
+        }
+        @Override
+        public String toString() {
+            return "<" + c + ":" + y + "," + x + ">";
+        }
+    }
+    static List<Point> list;
+    static int[] Y = {-1,1,0,0}, X = {0,0,-1,1};
+    static char[][] map;
+    static boolean[][] visit;
+    static int row, col;
+
+    static boolean DFS(char c, int y, int x, int dir, int rotate){
+
+        if(dir != -1 && map[y][x] == c) {
+        
+            System.out.println(">>> 지워진 타일 : " + map[y][x]);
+            
+            map[y][x] = '.';
+            return true;
         }
 
-        for (int y = 0; y < m; y++) {
-            for (int x = 0; x < n; x++) {
-                if (thisboard[y].charAt(x) > 'Z' || thisboard[y].charAt(x) < 'A')
-                    continue;
-                if (!chMap.containsKey(thisboard[y].charAt(x))) {
-                    chMap.put(thisboard[y].charAt(x), new Vertex(y, x));
-                } else {
-                    chMap.get(thisboard[y].charAt(x)).m2 = y;
-                    chMap.get(thisboard[y].charAt(x)).n2 = x;
+        boolean result = false;
+        visit[y][x] = true;
+
+        for(int a=0; a<4; a++){
+            int ny = y+Y[a];
+            int nx = x+X[a];
+
+            if(ny < 1 || nx < 1 || ny > row || nx > col || visit[ny][nx]) continue;
+            if(map[ny][nx] != c && map[ny][nx] != '.') continue;
+
+            //이미 한번 꺾었을 때
+            if(rotate >= 1) {
+                if (a == dir)
+                    result |= DFS(c, ny, nx, a, rotate);
+            }
+            //아직 꺾지 않았을 때
+            else
+                result |= DFS(c, ny, nx, a, (a == dir)? rotate : rotate + 1);
+        }
+
+        visit[y][x] = false;
+        return result;
+    }
+
+
+    public String solution(int m, int n, String[] board) {
+
+        StringBuilder sb = new StringBuilder();
+        int cnt = 0;
+
+        list = new ArrayList<>();
+        map = new char[101][101];
+        row = m;
+        col = n;
+
+        for(int i=1; i<=row; i++)
+            for(int j=1; j<=col; j++) {
+                map[i][j] = board[i - 1].charAt(j - 1);
+
+                if(map[i][j] >= 'A' && map[i][j] <= 'Z') {
+                    list.add(new Point(i, j, map[i][j]));
+                    cnt++;
                 }
             }
+
+        list.sort((a, b) -> a.c - b.c);
+        System.out.println(list);
+        visit = new boolean[row+1][col+1];
+
+        while(true){
+            boolean flag = false;
+
+            for(int a=0; a<list.size(); a++){
+                Point p = list.get(a);
+                int i = p.y;
+                int j = p.x;
+                char c = p.c;
+
+                if(c < 'A' || c > 'Z') continue;
+
+                if(!visit[i][j]){
+                    boolean remove = DFS(c, i, j, -1, -1);
+                    // boolean remove = true;
+                    System.out.println(c + "," + i + "," + j);
+
+                    if(remove){
+                        flag = true;
+                        cnt -= 2;
+                        sb.append(c);
+                        map[i][j] = '.';
+                        list.remove(a);
+                        break;
+                    }
+                }
+            }
+            if(!flag) break;
         }
 
-        // System.out.println(chMap);
-
-        answer = new StringBuilder();
-        isFinish = false;
-
-        TreeSet<Character> chList = new TreeSet<>(chMap.keySet());
-        // System.out.println(chList);
-        journey(thisboard, chMap, chList);
-        return !isFinish ? "IMPOSSIBLE" : answer.toString();
+        return (cnt == 0)? sb.toString() : "IMPOSSIBLE";
     }
+
+    // public String solution(int m, int n, String[] board) { // m 세로, n 가로
+    //     StringBuilder[] thisboard;
+    //     HashMap<Character, Vertex> chMap;
+    //     chMap = new HashMap<>();
+    //     thisboard = new StringBuilder[board.length];
+    //     for (int i = 0; i < thisboard.length; i++) {
+    //         thisboard[i] = new StringBuilder();
+    //         thisboard[i].append(board[i]);
+    //     }
+
+    //     for (int y = 0; y < m; y++) {
+    //         for (int x = 0; x < n; x++) {
+    //             if (thisboard[y].charAt(x) > 'Z' || thisboard[y].charAt(x) < 'A')
+    //                 continue;
+    //             if (!chMap.containsKey(thisboard[y].charAt(x))) {
+    //                 chMap.put(thisboard[y].charAt(x), new Vertex(y, x));
+    //             } else {
+    //                 chMap.get(thisboard[y].charAt(x)).m2 = y;
+    //                 chMap.get(thisboard[y].charAt(x)).n2 = x;
+    //             }
+    //         }
+    //     }
+
+    //     // System.out.println(chMap);
+
+    //     answer = new StringBuilder();
+    //     isFinish = false;
+
+    //     TreeSet<Character> chList = new TreeSet<>(chMap.keySet());
+    //     journey(thisboard, chMap, chList);
+    //     return !isFinish ? "IMPOSSIBLE" : answer.toString();
+    // }
 
     boolean isFinish;
     StringBuilder answer;
