@@ -9,10 +9,15 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         int[][][] lands = {
-                { { 0, 0, 0, 1, 1, 1, 0, 0 }, { 0, 0, 0, 0, 1, 1, 0, 0 }, { 1, 1, 0, 0, 0, 1, 1, 0 },
-                        { 1, 1, 1, 0, 0, 0, 0, 0 }, { 1, 1, 1, 0, 0, 0, 1, 1 } },
-                { { 1, 0, 1, 0, 1, 1 }, { 1, 0, 1, 0, 0, 0 }, { 1, 0, 1, 0, 0, 1 }, { 1, 0, 0, 1, 0, 0 },
-                        { 1, 0, 0, 1, 0, 1 }, { 1, 0, 0, 0, 0, 0 }, { 1, 1, 1, 1, 1, 1 } },
+                {{0, 0, 0, 1, 1, 1, 0, 0}, {0, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 0, 0, 0, 1, 1, 0}, {1, 1, 1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0, 1, 1}},
+                {{1, 0, 1, 0, 1, 1}, {1, 0, 1, 0, 0, 0}, {1, 0, 1, 0, 0, 1}, {1, 0, 0, 1, 0, 0}, {1, 0, 0, 1, 0, 1}, {1, 0, 0, 0, 0, 0}, {1, 1, 1, 1, 1, 1}},
+
+                {{0, 0, 0, 1, 1, 1, 1, 1},
+                 {0, 0, 0, 0, 0, 0, 0, 1},
+                 {1, 1, 1, 1, 1, 1, 1, 1},
+                 {1, 1, 1, 0, 0, 0, 0, 0},
+                 {1, 1, 1, 0, 0, 0, 1, 1}}
+
         };
 
         Solution mSol = new Solution();
@@ -27,7 +32,6 @@ class Solution {
     int maxX;
     int maxY;
     int[][] land;
-
     public int solution(int[][] land) {
 
         index = 2;
@@ -35,24 +39,24 @@ class Solution {
         maxY = land.length;
         this.land = land;
 
-        for (int y = 0; y < maxY; y++) {
-            for (int x = 0; x < maxX; x++) {
-                if (land[y][x] == 1) {
+        for(int y = 0 ; y < maxY ; y++) {
+            for(int x = 0; x < maxX ; x++) {
+                if(land[y][x] == 1) {
                     setGroup(y, x, -2, -2);
-                    index++;
+                    index ++;
                 }
             }
         }
 
-        // printAll();
+        printAll();
 
         HashMap<Integer, Integer> idCount = new HashMap<>();
-        for (int y = 0; y < maxY; y++) {
-            for (int x = 0; x < maxX; x++) {
-                if (land[y][x] == 0)
+        for(int y = 0 ; y < maxY ; y++) {
+            for(int x = 0; x < maxX ; x++) {
+                if(land[y][x] == 0)
                     continue;
 
-                if (!idCount.containsKey(land[y][x])) {
+                if(!idCount.containsKey(land[y][x])) {
                     idCount.put(land[y][x], 1);
                 } else {
                     idCount.put(land[y][x], idCount.get(land[y][x]) + 1);
@@ -61,10 +65,10 @@ class Solution {
         }
 
         int answer = Integer.MIN_VALUE;
-        for (int x = 0; x < maxX; x++) {
-            Set<Integer> indexSet = new HashSet<>();
-            for (int y = 0; y < maxY; y++) {
-                if (land[y][x] != 0) {
+        for(int x = 0; x < maxX ; x++) {
+            Set <Integer> indexSet = new HashSet<>();
+            for(int y = 0 ; y < maxY ; y++) {
+                if(land[y][x] != 0) {
                     indexSet.add(land[y][x]);
                 }
             }
@@ -75,23 +79,20 @@ class Solution {
             }
             // System.out.println( ": " + sum);
 
-            if (sum > answer) {
+            if(sum > answer) {
                 answer = sum;
             }
         }
 
         return answer;
     }
-
     int[] offsetX = { 0, 1, -1, 0 };
     int[] offsetY = { 1, 0, 0, -1 };
-
     class NextPtr {
         int y;
         int x;
         int prevY;
         int prevX;
-
         public NextPtr(int y, int x, int prevY, int prevX) {
             this.y = y;
             this.x = x;
@@ -99,35 +100,20 @@ class Solution {
             this.prevX = prevX;
         }
     }
+    private void setGroup(int y, int x, int prevY, int prevX) {
 
-    private void setGroup(int yy, int xx, int prevYY, int prevXX) {
+        if(land[y][x] == 1) {
+            land[y][x] = index;
+        }
 
-        Queue<NextPtr> mQueue = new LinkedList<NextPtr>();
-        mQueue.add(new NextPtr(yy, xx, prevYY, prevXX));
-
-        while (!mQueue.isEmpty()) {
-            NextPtr cPtr = mQueue.poll();
-            int y = cPtr.y;
-            int x = cPtr.x;
-            int prevY = cPtr.prevY;
-            int prevX = cPtr.prevX;
-
-            if (land[y][x] == 1) {
-                land[y][x] = index;
-            } else {
+        for(int i = 0; i < 4 ;i++) {
+            int nextX = x + offsetX[i];
+            int nextY = y + offsetY[i];
+            if(nextX < 0 || nextX >= maxX || nextY < 0 || nextY >= maxY || (nextX == prevX && nextY == prevY))
                 continue;
-            }
-
-            for (int i = 0; i < 4; i++) {
-                int nextX = x + offsetX[i];
-                int nextY = y + offsetY[i];
-                if (nextX < 0 || nextX >= maxX || nextY < 0 || nextY >= maxY || (nextX == prevX && nextY == prevY))
-                    continue;
-
-                if (land[nextY][nextX] == 1)
-                    // setGroup(nextY, nextX, y, x);
-                    mQueue.add(new NextPtr(nextY, nextX, y, x));
-            }
+            
+            if(land[nextY][nextX] == 1)
+                setGroup(nextY, nextX, y, x);
         }
     }
 
