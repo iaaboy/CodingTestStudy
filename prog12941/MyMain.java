@@ -8,25 +8,23 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int [][] sample = {
-            {1,4,2}, {5,4,4}
+        int[][] sample = {
+                { 1, 4, 2 }, { 5, 4, 4 }
         };
         Solution mSol = new Solution();
-        
+
         System.out.println(mSol.solution(sample[0], sample[1]));
     }
 }
 
-class Solution
-{
-    public int solution(int []A, int []B)
-    {
+class Solution {
+    public int solution(int[] A, int[] B) {
         int answer = 0;
 
         Arrays.sort(A);
         Arrays.sort(B);
 
-        for(int i = 0; i < A.length ; i++) {
+        for (int i = 0; i < A.length; i++) {
             answer += A[i] * B[B.length - i - 1];
         }
 
