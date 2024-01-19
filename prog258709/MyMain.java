@@ -8,112 +8,153 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int[][][] dicesStatic = {
-                { { 12, 21, 61, 84, 30, 69 },
-                        { 75, 61, 83, 20, 54, 18 } }
-
+        int[][][] dices = {
+                // {{1,2,3},{4,5,6},{1,2,3},{4,7,6},{2,5,5},{7,4,7}
+                // },
+                { { 1, 2, 3, 4, 5, 6 }, { 3, 3, 3, 3, 4, 4 }, { 1, 3, 3, 4, 4, 4 }, { 1, 1, 4, 4, 5, 5 } }, // {1, 4}
+                { { 1, 2, 3, 4, 5, 6 }, { 2, 2, 4, 4, 6, 6 } }, // {2}
+                { { 40, 41, 42, 43, 44, 45 }, { 43, 43, 42, 42, 41, 41 }, { 1, 1, 80, 80, 80, 80 },
+                        { 70, 70, 1, 1, 70, 70 } },// [1, 3]
         };
 
         Solution mSol = new Solution();
-
-        for (int[][] dice : dicesStatic) {
+        for (int[][] dice : dices) {
             System.out.println(Arrays.toString(mSol.solution(dice)));
+            // break;
         }
     }
 }
 
 class Solution {
     int[][] dice;
+    int diceNum;
+    int[] answer;
 
     public int[] solution(int[][] dice) {
-        int diceCount = dice.length;
-        int[] arr = new int[diceCount];
-        boolean[] visited = new boolean[diceCount];
         this.dice = dice;
-        maxWin = Integer.MIN_VALUE;
-        combi(arr, visited, 0, 0, diceCount / 2);
-        int[] answer = finalWin.stream().mapToInt(i -> i + 1).toArray();
+        diceNum = dice.length;
+        answer = new int[diceNum / 2];
+
+        boolean[] visited = new boolean[diceNum];
+        int[] arrIndex = new int[diceNum];
+        for (int i = 0; i < diceNum; i++) {
+            arrIndex[i] = i;
+        }
+
+        combination(arrIndex, visited, 0, diceNum, diceNum / 2);
+
+        Arrays.sort(answer);
         return answer;
     }
 
-    int maxWin;
-    ArrayList<Integer> finalWin;
-
-    private void combi(int[] arr, boolean[] visited, int start, int depth, int r) {
-        if (depth == r) {
-            ArrayList<Integer> mine = new ArrayList<>();
-            ArrayList<Integer> yours = new ArrayList<>();
-            for (int i = 0; i < visited.length; i++) {
-                if (visited[i]) {
-                    mine.add(i);
-                } else {
-                    yours.add(i);
-                }
-            }
-            int curWin = checkWinRate(mine, yours);
-            if (curWin >= 0) {
-                if (curWin > maxWin) {
-                    maxWin = curWin;
-                    finalWin = mine;
-                }
-            } else if (curWin < 0) {
-                curWin = -curWin;
-                if (curWin > maxWin) {
-                    maxWin = curWin;
-                    finalWin = yours;
-                }
-            }
+    void combination(int[] arr, boolean[] visited, int start, int n, int r) {
+        if (r == 0) {
+            compareDice(arr, visited, n);
             return;
         }
 
-        for (int i = start; i < arr.length; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                combi(arr, visited, i + 1, depth + 1, r);
-                visited[i] = false;
-            }
+        for (int i = start; i < n; i++) {
+            visited[i] = true;
+            combination(arr, visited, i + 1, n, r - 1);
+            visited[i] = false;
         }
     }
 
-    private int checkWinRate(ArrayList<Integer> mine, ArrayList<Integer> yours) {
-        HashMap<Integer, Integer> mySums = new HashMap<>();
-        HashMap<Integer, Integer> yourSums = new HashMap<>();
+    private void compareDice(int[] arr, boolean[] visited, int n) {
+        ArrayList<Integer> mySumSet = new ArrayList<>();
+        ArrayList<Integer> newSumSet;
+        ArrayList<Integer> yourSumSet = new ArrayList<>();
 
-        int myWin = 0;
-        int yourWin = 0;
-
-        genNum(mine, 0, 0, mySums);
-        genNum(yours, 0, 0, yourSums);
-
-        for (int m : mySums.keySet()) {
-            for (int y : yourSums.keySet()) {
-                if (m > y) {
-                    myWin += (yourSums.get(y) * mySums.get(m));
-                } else if (y > m) {
-                    yourWin += (yourSums.get(y) * mySums.get(m));
+        int index;
+        for (int i = 0; i < arr.length; i++) {
+            if (visited[i]) {
+                index = arr[i];
+                newSumSet = new ArrayList<>();
+                for (int dNum : dice[index]) {
+                    if (mySumSet.size() == 0) {
+                        newSumSet.add(dNum);
+                    }
+                    for (int pSum : mySumSet) {
+                        newSumSet.add(pSum + dNum);
+                    }
                 }
-            }
-        }
-        System.out.println(mine);
-        System.out.println(yours);
-        System.out.println("my: " + mySums);
-        System.out.println("yr: " + yourSums);
-        System.out.println(myWin + " vs " + yourWin);
-        return myWin - yourWin;
-    }
+                mySumSet = newSumSet;
 
-    void genNum(ArrayList<Integer> idx, int curSum, int depth, HashMap<Integer, Integer> sums) {
-        if (depth == idx.size()) {
-            if (!sums.containsKey(curSum)) {
-                sums.put(curSum, 1);
             } else {
-                sums.put(curSum, sums.get(curSum) + 1);
+                index = arr[i];
+                newSumSet = new ArrayList<>();
+                for (int dNum : dice[index]) {
+                    if (yourSumSet.size() == 0) {
+                        newSumSet.add(dNum);
+                    }
+                    for (int pSum : yourSumSet) {
+                        newSumSet.add(pSum + dNum);
+                    }
+                }
+                yourSumSet = newSumSet;
             }
-            return;
         }
 
-        for (int n : dice[idx.get(depth)]) {
-            genNum(idx, curSum + n, depth + 1, sums);
+        HashMap<Integer, Integer> myMap = new HashMap<>();
+        HashMap<Integer, Integer> yourMap = new HashMap<>();
+
+        for (int a : mySumSet) {
+            if (!myMap.containsKey(a)) {
+                myMap.put(a, 1);
+            } else {
+                myMap.put(a, myMap.get(a) + 1);
+            }
         }
+        for (int a : yourSumSet) {
+            if (!yourMap.containsKey(a)) {
+                yourMap.put(a, 1);
+            } else {
+                yourMap.put(a, yourMap.get(a) + 1);
+            }
+        }
+
+        int myWinCount = 0;
+        int yourWinCount = 0;
+        for (int m : myMap.keySet()) {
+            for (int y : yourMap.keySet()) {
+                if (m > y) {
+                    myWinCount += (myMap.get(m) * yourMap.get(y));
+                } else if (y > m) {
+                    yourWinCount += (myMap.get(m) * yourMap.get(y));
+                }
+            }
+        }
+
+        if (myWinCount >= yourWinCount) {
+            if (myWinCount - yourWinCount > maxWin) {
+                // update
+                int idx = 0;
+                for (int i = 0; i < arr.length; i++) {
+                    if (visited[i]) {
+                        answer[idx++] = arr[i] + 1;
+                    }
+                }
+                maxWin = myWinCount - yourWinCount;
+            }
+        } else if (myWinCount < yourWinCount) {
+            if (yourWinCount - myWinCount > maxWin) {
+                // update
+                int idx = 0;
+                for (int i = 0; i < arr.length; i++) {
+                    if (!visited[i]) {
+                        answer[idx++] = arr[i] + 1;
+                    }
+                }
+                maxWin = yourWinCount - myWinCount;
+            }
+        }
+
+        // System.out.println("me " + ": " + mySumSet);
+        // System.out.println("you " + ": " + yourSumSet);
+        // System.out.println("MyMap: " + myMap);
+        // System.out.println("YourMap: " + yourMap);
+        // System.out.println(myWinCount + " " + yourWinCount + " done\n");
     }
+
+    int maxWin = Integer.MIN_VALUE;
 }
