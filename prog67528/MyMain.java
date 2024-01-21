@@ -9,6 +9,7 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         String[][] gemArr = {
+            {"a", "a", "b", "a", "c", "c","d","d","b","a"},
                 { "DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA" }, // {3, 7}
                 { "AA", "AB", "AC", "AA", "AC" }, // {1, 3}
                 { "XYZ", "XYZ", "XYZ" }, // {1, 1}
@@ -17,7 +18,7 @@ public class MyMain {
 
         Solution mSol = new Solution();
         for (int i = 0; i < 1; i++)
-            System.out.println(Arrays.toString(mSol.solution(gemArr[i])));
+            System.out.println("Sol result: " + Arrays.toString(mSol.solution(gemArr[i])));
     }
 }
 
@@ -46,39 +47,61 @@ class Solution {
         leftQ.add(new Shopping(0, gems.length - 1));
         rigthQ.add(new Shopping(0, gems.length - 1));
 
+        Shopping bestPosition = new Shopping(0, gems.length);
+
         while (!leftQ.isEmpty() && !rigthQ.isEmpty()) {
             if (!leftQ.isEmpty()) {
                 Shopping curPosition = leftQ.poll();
-                System.out.println("handleLeft: " + curPosition);
+                // System.out.println("handleLeft: " + curPosition);
                 int resultLeft = checkLtoR(curPosition);
                 if (resultLeft != -1) {
                     curPosition.left = resultLeft;
                     System.out.println("right q add : " + curPosition);
                     rigthQ.add(curPosition);
                 } else {
-                    System.out.println("result " + curPosition);
+                    // System.out.println("result " + curPosition);
+                    if(checkPosition(bestPosition, curPosition)) {
+                        bestPosition = curPosition;
+                    }
                 }
             }
 
             if (!rigthQ.isEmpty()) {
                 Shopping curPosition = rigthQ.poll();
                 int resultRight = checkRtoL(curPosition);
-                System.out.println("handleRight: " + curPosition);
+                // System.out.println("handleRight: " + curPosition);
                 if (resultRight != -1) {
                     curPosition.right = resultRight;
                     System.out.println("left q add : " + curPosition);
                     leftQ.add(curPosition);
                 } else {
-                    System.out.println("result " + curPosition);
+                    // System.out.println("result " + curPosition);
+                    if(checkPosition(bestPosition, curPosition)) {
+                        bestPosition = curPosition;
+                    }
                 }
             }
 
         }
 
-        System.out.println(nameMap);
+        // System.out.println(nameMap);
 
-        int[] answer = {};
+        int[] answer = {bestPosition.left + 1, bestPosition.right +1};
         return answer;
+    }
+
+    private boolean checkPosition(Shopping bestPosition, Shopping curPosition) {
+        System.out.println("candidate: " + curPosition);
+        int lengthbest = bestPosition.right - bestPosition.left;
+        int lengthcur = curPosition.right - curPosition.left;
+
+        if(lengthbest > lengthcur) {
+            return true;
+        } else if(lengthbest == lengthcur) {
+            return curPosition.left < bestPosition.left;
+        } else {
+            return false;
+        }
     }
 
     private int checkLtoR(Shopping position) {
@@ -118,11 +141,6 @@ class Solution {
     private boolean checkItemExist(String gem, int left, int right, boolean fromLeft) {
         ArrayList<Integer> mList = nameMap.get(gem);
         int indexOfIndex = fromLeft ? mList.indexOf(left) + 1 : mList.indexOf(right) - 1;
-        // if(fromLeft) {
-        // indexOfIndex = mList.indexOf(left) + 1;
-        // } else {
-        // indexOfIndex = mList.indexOf(right) - 1;
-        // }
         if (indexOfIndex < mList.size() && indexOfIndex >= 0) {
             int item = mList.get(indexOfIndex);
             if (item >= left && item <= right) {
