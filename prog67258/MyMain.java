@@ -1,4 +1,4 @@
-package prog67528;
+package prog67258;
 
 import java.util.*;
 
