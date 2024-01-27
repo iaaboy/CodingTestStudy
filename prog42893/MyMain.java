@@ -63,7 +63,7 @@ class Solution {
 
     Page getWordCount(String word, String page) {
 
-        System.out.println(page);
+        // System.out.println(page);
 
         // 단어 뽑기
         String wordpage = page.replaceAll("[^a-zA-Z]", "-");
@@ -78,14 +78,14 @@ class Solution {
             // System.out.print(words.nextToken() + ",");
         }
         
-        System.out.println("======================");
+        // System.out.println("======================");
 
         page = page.replaceAll(">", ">\n");
 
         StringTokenizer aa = new StringTokenizer(page, "\n");
         while (aa.hasMoreTokens()) {
             String senten = aa.nextToken();
-            System.out.println(senten);
+            // System.out.println(senten);
             if (senten.contains("\"og:url\" content=\"https://")) {
                 // System.out.println(senten);
                 senten = senten.replaceAll(".*content=\"https://", "").replaceAll(" .*", "").replaceAll("\"/.*", "");
