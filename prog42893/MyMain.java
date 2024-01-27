@@ -82,7 +82,7 @@ class Solution {
 
         page = page.replaceAll(">", ">\n");
 
-        StringTokenizer aa = new StringTokenizer(page, "\n| ");
+        StringTokenizer aa = new StringTokenizer(page, "\n");
         while (aa.hasMoreTokens()) {
             String senten = aa.nextToken();
             System.out.println(senten);
