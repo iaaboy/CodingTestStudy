@@ -130,7 +130,6 @@ class Solution {
 
         int wordIdx = 1;
         boolean isRule2 = false;
-        int curIdx = 0;
         for (Signature sP : sigList) {
             // System.out.println(sP);
             if (sP.isOuter) {
@@ -190,8 +189,6 @@ class Solution {
                 // System.out.println("broken rule");
                 // return "invalid";
             }
-
-            curIdx++;
         }
 
         int prevId = 0;

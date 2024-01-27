@@ -21,8 +21,7 @@ public class MyMain {
         };
 
         Solution mSol = new Solution();
-        ;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             System.out.println("answer:" + mSol.solution(freiendsList[i], giftsList[i]));
         }
     }
@@ -72,17 +71,16 @@ class Solution {
         //최대값을 answer로
         int answer = Integer.MIN_VALUE;
         for (int i = 0; i < fCount; i++) {
-            if (presentNextMonth[i] > answer) {
-                answer = presentNextMonth[i];
-            }
+            answer = Math.max(answer, i);
         }
 
-        // for (int i = 0; i < fCount; i++) {
-        // System.out.println(Arrays.toString(giftMap[i]));
-        // }
-        // System.out.println();
-        // System.out.println(Arrays.toString(presentIndex));
-        // System.out.println(Arrays.toString(presentNextMonth));
+        //디버깅
+        for (int i = 0; i < fCount; i++) {
+            System.out.println(friends[i].substring(0, 2) + ":" + Arrays.toString(giftMap[i]));
+        }
+        System.out.println();
+        System.out.println(Arrays.toString(presentIndex));
+        System.out.println(Arrays.toString(presentNextMonth));
 
         return answer;
     }
