@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class MyMain {
     public static void main(String[] args) {
         int[][] stickers = {
-                { 1, 3, 2, 5, 4 },
+                { 5},
                 { 14, 6, 5, 11, 3, 9, 2, 10 },
                  };
         Solution mSol = new Solution();
@@ -19,23 +19,28 @@ public class MyMain {
 }
 
 class Solution {
-    public int solution(int sticker[]) {
-        boolean [] visited = new boolean[sticker.length];
-        return dfs(visited, sticker, 0, 0);
-    }
+    public int solution(int[] sticker) {
+        int answer = Integer.MIN_VALUE;
 
-    private int dfs(boolean [] visited, int[] sticker, int curPosition, int curSum) {
-        if(curPosition >= sticker.length) {
-            System.out.println(curSum + ": " + Arrays.toString(visited) );
-            return curSum;
+        if(sticker.length == 1)
+            return sticker[0];
+
+        int len = sticker.length;
+        int[] dpFirst = new int[len];
+        int[] dpSecond = new int[len];
+
+        dpFirst[0] = sticker[0];
+        dpFirst[1] = sticker[0];
+        dpSecond[0] = 0;
+        dpSecond[1] = sticker[1];
+
+        for (int i = 2; i < len; i++) {
+            dpFirst[i] = Math.max(dpFirst[i - 1], dpFirst[i - 2] + sticker[i]);
+            dpSecond[i] = Math.max(dpSecond[i - 1], dpSecond[i - 2] + sticker[i]);
         }
 
-        //이번에 선택한 경우
-        visited[curPosition] = true;
-        int sum = dfs(visited, sticker, curPosition + 2, curSum + sticker[curPosition]);
-        //이번에 선택 안한 경우
-        visited[curPosition] = false;
-        int sum2 = dfs(visited, sticker, curPosition + 1, curSum);
-        return Math.max(sum, sum2);
+        answer = Math.max(dpFirst[len - 2], dpSecond[len - 1]);
+
+        return answer;
     }
 }
