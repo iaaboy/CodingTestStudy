@@ -33,34 +33,40 @@ class Solution {
         }
 
         // System.out.println(Arrays.toString(map));
-        dfs(1, 0, visited);
-        // System.out.println(Arrays.toString(distance));
 
-        int maxDist = Integer.MIN_VALUE;
         int answer = 0;
-        for (int i = 1; i < distance.length; i++) {
-            if (distance[i] > maxDist) {
-                maxDist = distance[i];
-                answer = 1;
-            } else if (distance[i] == maxDist) {
-                answer++;
+        int maxDist = 0;
+        Queue<Next> nextVisit = new LinkedList<>();
+        nextVisit.add(new Next(1, 0));
+        visited[1] = true;
+        while (!nextVisit.isEmpty()) {
+            Next v = nextVisit.poll();
+            // System.out.println("visit <" + v.vertex + "," + v.distance+ "> " +
+            // map[v.vertex]);
+            for (int node : map[v.vertex].nodes) {
+                if (!visited[node]) {
+                    visited[node] = true;
+                    nextVisit.add(new Next(node, v.distance + 1));
+                    if (maxDist < v.distance + 1) {
+                        maxDist = v.distance + 1;
+                        answer = 1;
+                    } else if (maxDist == v.distance + 1) {
+                        answer++;
+                    }
+                }
             }
         }
 
         return answer;
     }
 
-    private void dfs(int v, int d, boolean[] visited) {
-        System.out.println("visit: " + v);
-        if (distance[v] > d) {
-            distance[v] = d;
-        }
-        for (int node : map[v].nodes) {
-            if (!visited[node] && distance[v] <= d) {
-                visited[node] = true;
-                dfs(node, d + 1, visited);
-                visited[node] = false;
-            }
+    class Next {
+        int vertex;
+        int distance;
+
+        public Next(int vertex, int distance) {
+            this.vertex = vertex;
+            this.distance = distance;
         }
     }
 
