@@ -27,120 +27,36 @@ public class MyMain {
 }
 
 class Solution {
-    int[] offsetY = { 1, -1, 0, 0 };
-    int[] offsetX = { 0, 0, -1, 1 };
     int n;
+    int[] offsetX = { 1, 0, -1, 0 };
+    int[] offsetY = { 0, 1, 0, -1 };
 
     public int solution(int[][] board) {
-        PriorityQueue<LastWork> pQ = new PriorityQueue<>((me, you) -> me.cost - you.cost);
         n = board.length;
-        if (board[0][1] != 1) {
-            HashSet<Vertex> visitedSet = new HashSet<>();
-            visitedSet.add(new Vertex(0, 0));
-            visitedSet.add(new Vertex(0, 1));
-            pQ.add(new LastWork(0, 1, true, 1, visitedSet));
-        }
+        int[][] sums = new int[n][n];
+        Arrays.stream(sums).forEach(a -> Arrays.fill(a, Integer.MAX_VALUE));
+        dp(sums, board, 0, 0, 0, 0);
+        return sums[n - 1][n - 1];
+    }
 
-        if (board[1][0] != 1) {
-            HashSet<Vertex> visitedSet = new HashSet<>();
-            visitedSet.add(new Vertex(0, 0));
-            visitedSet.add(new Vertex(0, 1));
-            pQ.add(new LastWork(1, 0, false, 1, visitedSet));
-        }
+    public void dp(int[][] sums, int[][] board, int direction, int sum, int y, int x) {
+        System.out.println("<" + y + "," + x + ">" + direction);
+        if (x < 0 || y < 0 || x >= n || y >= n || board[y][x] == 1) // 좌표 범위 밖이면 방문 안함
+            return;
+        if (sums[y][x] != Integer.MAX_VALUE && sums[y][x] + 500 < sum) // 다음 좌표가 500보다 크면 방문 안함
+            return;
 
-        while (!pQ.isEmpty()) {
-            LastWork curWork = pQ.poll();
-            // System.out.println("poll" + curWork);
+        sums[y][x] = Math.min(sums[y][x], sum);
 
-            for (int i = 0; i < 4; i++) {
-                int nextX = curWork.x + offsetX[i];
-                int nextY = curWork.y + offsetY[i];
-                if (nextX < 0 || nextX >= n || nextY < 0 || nextY >= n) { // 범위 밖이면,
-                    continue;
-                }
-                if (curWork.visitedSet.contains(new Vertex(nextY, nextX))) { // 방문한 곳이면,
-                    continue;
-                }
-                if (board[nextY][nextX] == 1) { // 벽이면,
-                    continue;
-                }
-
-                HashSet<Vertex> visitedSet = new HashSet<>(curWork.visitedSet);
-                visitedSet.add(new Vertex(nextY, nextX));
-                LastWork nextW = new LastWork(nextY, nextX, false, curWork.cost + 1, visitedSet);
-                if (curWork.fromX) { // x축 진행중
-                    if (i < 2) { // 다음 y
-                        nextW.fromX = false;
-                        nextW.cost += 5;
-                    } else {
-                        nextW.fromX = true;
-                    }
-                } else { // Y축 진행중
-                    if (i < 2) { // 다음 y
-                        nextW.fromX = false;
-                    } else {
-                        nextW.fromX = true;
-                        nextW.cost += 5;
-                    }
-                }
-                // System.out.println("put" + nextW);
-                if (nextW.y == n - 1 && nextW.x == n - 1) {
-                    // System.out.println("arrived at goal !!!" + nextW.cost);
-                    return nextW.cost * 100;
-                }
-                pQ.add(nextW);
+        for (int dir = 0; dir < 4; dir++) {
+            if (y == 0 && x == 0) {
+                dp(sums, board, dir, sum + 100, y + offsetY[dir], y + offsetX[dir]);
+                continue;
             }
-        }
-
-        int answer = 0;
-        return answer;
-    }
-
-    class LastWork {
-        int y;
-        int x;
-        int cost;
-        boolean fromX;
-        HashSet<Vertex> visitedSet;
-
-        public LastWork(int y, int x, boolean fromX, int cost, HashSet<Vertex> visitedSet) {
-            this.y = y;
-            this.x = x;
-            this.fromX = fromX;
-            this.cost = cost;
-            this.visitedSet = visitedSet;
-        }
-
-        @Override
-        public String toString() {
-            return "<" + y + "," + x + "> " + cost + "\n" + visitedSet;
-        }
-    }
-
-    class Vertex {
-        Integer y;
-        Integer x;
-
-        public Vertex(Integer y, Integer x) {
-            this.y = y;
-            this.x = x;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            Vertex other = (Vertex) obj;
-            return other.y == y && other.x == x;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            return prime * y.hashCode() + x.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "<" + y + "," + x + ">";
+            if (direction == dir)
+                dp(sums, board, dir, sum + 100, y + offsetY[dir], x + offsetX[dir]);
+            else
+                dp(sums, board, dir, sum + 600, y + offsetY[dir], x + offsetX[dir]);
         }
     }
 }
