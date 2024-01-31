@@ -34,17 +34,19 @@ class Solution {
     public int solution(int[][] board) {
         PriorityQueue<LastWork> pQ = new PriorityQueue<>((me, you) -> me.cost - you.cost);
         n = board.length;
-        Boolean[][] visited = new Boolean[n][n];
-        Arrays.stream(visited).forEach(a -> Arrays.fill(a, false));
-        visited[0][0] = visited[0][1] = true;
-        if(board[0][1] != 1)
-            pQ.add(new LastWork(0, 1, true, 1, visited));
+        if (board[0][1] != 1) {
+            HashSet<Vertex> visitedSet = new HashSet<>();
+            visitedSet.add(new Vertex(0, 0));
+            visitedSet.add(new Vertex(0, 1));
+            pQ.add(new LastWork(0, 1, true, 1, visitedSet));
+        }
 
-        Boolean[][] visited2 = new Boolean[n][n];
-        Arrays.stream(visited2).forEach(a -> Arrays.fill(a, false));
-        visited2[0][0] = visited2[1][0] = true;
-        if(board[1][0] != 1)
-            pQ.add(new LastWork(1, 0, false, 1, visited2));
+        if (board[1][0] != 1) {
+            HashSet<Vertex> visitedSet = new HashSet<>();
+            visitedSet.add(new Vertex(0, 0));
+            visitedSet.add(new Vertex(0, 1));
+            pQ.add(new LastWork(1, 0, false, 1, visitedSet));
+        }
 
         while (!pQ.isEmpty()) {
             LastWork curWork = pQ.poll();
@@ -56,19 +58,16 @@ class Solution {
                 if (nextX < 0 || nextX >= n || nextY < 0 || nextY >= n) { // 범위 밖이면,
                     continue;
                 }
-                if (curWork.visited[nextY][nextX]) { // 방문한 곳이면,
+                if (curWork.visitedSet.contains(new Vertex(nextY, nextX))) { // 방문한 곳이면,
                     continue;
                 }
                 if (board[nextY][nextX] == 1) { // 벽이면,
                     continue;
                 }
 
-                Boolean[][] visitedCopy = new Boolean[n][n];
-                for (int j = 0; j < n; j++) {
-                    visitedCopy[j] = curWork.visited[j].clone();
-                }
-                LastWork nextW = new LastWork(nextY, nextX, false, curWork.cost + 1, visitedCopy);
-                nextW.visited[nextY][nextX] = true;
+                HashSet<Vertex> visitedSet = new HashSet<>(curWork.visitedSet);
+                visitedSet.add(new Vertex(nextY, nextX));
+                LastWork nextW = new LastWork(nextY, nextX, false, curWork.cost + 1, visitedSet);
                 if (curWork.fromX) { // x축 진행중
                     if (i < 2) { // 다음 y
                         nextW.fromX = false;
@@ -102,23 +101,46 @@ class Solution {
         int x;
         int cost;
         boolean fromX;
-        Boolean[][] visited;
+        HashSet<Vertex> visitedSet;
 
-        public LastWork(int y, int x, boolean fromX, int cost, Boolean[][] visited) {
+        public LastWork(int y, int x, boolean fromX, int cost, HashSet<Vertex> visitedSet) {
             this.y = y;
             this.x = x;
             this.fromX = fromX;
             this.cost = cost;
-            this.visited = visited;
+            this.visitedSet = visitedSet;
         }
 
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
-            for (Boolean[] v : visited) {
-                sb.append(Arrays.toString(v) + "\n");
-            }
-            return "<" + y + "," + x + "> " + cost + "\n" + sb.toString();
+            return "<" + y + "," + x + "> " + cost + "\n" + visitedSet;
+        }
+    }
+
+    class Vertex {
+        Integer y;
+        Integer x;
+
+        public Vertex(Integer y, Integer x) {
+            this.y = y;
+            this.x = x;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            Vertex other = (Vertex) obj;
+            return other.y == y && other.x == x;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            return prime * y.hashCode() + x.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "<" + y + "," + x + ">";
         }
     }
 }
