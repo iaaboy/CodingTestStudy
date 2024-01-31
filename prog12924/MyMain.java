@@ -15,7 +15,7 @@ class Solution {
     public int solution(int n) {
         int sum = 0;
         int count = 0;
-        if(n == 1)
+        if (n == 1)
             return 1;
         for (int i = 1; i < n; i++) {
             sum += i;
