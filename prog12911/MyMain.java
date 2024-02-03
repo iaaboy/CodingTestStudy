@@ -70,13 +70,7 @@ class Solution {
         for(int bIndex : bitArray) {
             resultBitSet.set(bIndex);
         }
-        // System.out.println(resultBitSet);
         int result = (int)resultBitSet.toLongArray()[0];
-
-        // if(result != oldSol(n)) {
-        //     System.out.println("Something wrong: " + result + " vs " +  oldSol(n));
-        //     System.out.println(numToBinStr(result) + " vs " +  numToBinStr(oldSol(n)) + ">" + BitSet.valueOf(new long[] { oldSol(n) }).toString());
-        // }
 
         return result;
     }
