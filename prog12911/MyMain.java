@@ -1,107 +1,37 @@
 package prog12911;
 
-import java.util.*;
-
+/* 다음 큰 숫자 풀이
+ * https://school.programmers.co.kr/learn/courses/30/lessons/12911
+ */
 public class MyMain {
     public static void main(String[] args) {
         Solution mSol = new Solution();
-
-        for (int i = 1; i < 1000; i+=1)
-            mSol.solution(i);
+        for (int i = 1; i < 100; i += 1)
+            System.out.println(mSol.solution(i));
     }
 }
 
 class Solution {
-    static int prevNum = -1;
-    static int firstDiff = -1;
-    static int index = 0;
-    static int[] bitArray;
-
     public int solution(int n) {
-        BitSet inBitSet = BitSet.valueOf(new long[] { n });
-        int cardinal = inBitSet.cardinality();
-        prevNum = -1;
-        firstDiff = -1;
-        index = 0;
-        bitArray = new int[cardinal];
+        int countIn = 0;
+        for (char val : Integer.toBinaryString(n).toCharArray()) {
+            if (val == '1') {
+                countIn++;
+            }
+        }
 
-        inBitSet.stream().forEach(bit1 -> {
-            bitArray[index] = bit1;
-            if (index != 0 && firstDiff == -1) {
-                if (prevNum != bit1 - 1) {
-                    firstDiff = index;
+        int i = n + 1;
+        for (; i < n * 2; i++) {
+            int countNext = 0;
+            for (char val : Integer.toBinaryString(i).toCharArray()) {
+                if (val == '1') {
+                    countNext++;
                 }
             }
-            prevNum = bit1;
-            index++;
-        });
-
-        int isZeroStart = inBitSet.stream().findFirst().getAsInt();
-        // System.out.println(n + "->" + numToBinStr(n) + Arrays.toString(bitArray) + ":" + firstDiff + " " + isZeroStart);
-
-        // 값 구하기
-        index = 0;
-        if (isZeroStart == 0) {
-            if (firstDiff == -1) {
-                firstDiff = cardinal;
-            }
-            firstDiff--;
-            inBitSet.stream().forEach(bit1 -> {
-                if (firstDiff == index) {
-                    bitArray[index]++;
-                } else {
-                }
-                index++;
-            });
-            // System.out.println("  ->" + numToBinStr(oldSol(n)) + Arrays.toString(bitArray));
-        } else {
-            if(firstDiff == -1) {
-                firstDiff = cardinal;
-            }
-            int count = 0;
-            for(int i =0; i < firstDiff - 1 ; i++) {
-                bitArray[i] = count++;
-            }
-            bitArray[firstDiff - 1]++;
-            // System.out.println("  *->" + numToBinStr(oldSol(n)) + Arrays.toString(bitArray));
-        }
-        
-        BitSet resultBitSet = new BitSet();
-        for(int bIndex : bitArray) {
-            resultBitSet.set(bIndex);
-        }
-        int result = (int)resultBitSet.toLongArray()[0];
-
-        return result;
-    }
-
-    public int oldSol(int n) {
-        BitSet inBitSet = BitSet.valueOf(new long[] { n });
-        int bitCount = inBitSet.cardinality();
-        int numberNext = n + 1;
-
-        for (; numberNext < 1000001; numberNext++) {
-            BitSet checkBitSet = BitSet.valueOf(new long[] { numberNext });
-            if (checkBitSet.cardinality() == bitCount) {
+            if (countIn == countNext) {
                 break;
             }
         }
-
-        return numberNext;
-    }
-
-    static int lastBit;
-
-    String numToBinStr(int n) {
-        BitSet testBS = BitSet.valueOf(new long[] { n });
-
-        testBS.stream().forEach((b) -> {
-            lastBit = b;
-        });
-        StringBuffer binString = new StringBuffer();
-        for (int i = 0; i <= lastBit; i++) {
-            binString.append(testBS.get(i) ? "1" : "0");
-        }
-        return binString.toString();
+        return i;
     }
 }
