@@ -9,8 +9,7 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         int[][][] dices = {
-                // {{1,2,3},{4,5,6},{1,2,3},{4,7,6},{2,5,5},{7,4,7}
-                // },
+                { { 1, 1, 4, 2, 8, 7 }, { 2, 5, 5, 6, 9, 9 }, { 2, 3, 4, 6, 6, 7 }, { 3, 4, 6, 7, 3, 5 } },
                 { { 1, 2, 3, 4, 5, 6 }, { 3, 3, 3, 3, 4, 4 }, { 1, 3, 3, 4, 4, 4 }, { 1, 1, 4, 4, 5, 5 } }, // {1, 4}
                 { { 1, 2, 3, 4, 5, 6 }, { 2, 2, 4, 4, 6, 6 } }, // {2}
                 { { 40, 41, 42, 43, 44, 45 }, { 43, 43, 42, 42, 41, 41 }, { 1, 1, 80, 80, 80, 80 },
@@ -20,18 +19,22 @@ public class MyMain {
         Solution mSol = new Solution();
         for (int[][] dice : dices) {
             System.out.println(Arrays.toString(mSol.solution(dice)));
-            // break;
         }
     }
 }
 
 class Solution {
-    int[][] dice;
+    Integer[][] dice;
     int diceNum;
     int[] answer;
 
     public int[] solution(int[][] dice) {
-        this.dice = dice;
+        this.dice = new Integer[dice.length][dice[0].length];
+        for (int j = 0; j < dice.length; j++) {
+            for (int i = 0; i < dice[0].length; i++) {
+                this.dice[j][i] = dice[j][i];
+            }
+        }
         diceNum = dice.length;
         answer = new int[diceNum / 2];
 
@@ -41,8 +44,13 @@ class Solution {
             arrIndex[i] = i;
         }
 
+        maxDiff = Integer.MIN_VALUE;
         combination(arrIndex, visited, 0, diceNum, diceNum / 2);
 
+        int index = 0;
+        for (int n : maxList) {
+            answer[index++] = n + 1;
+        }
         Arrays.sort(answer);
         return answer;
     }
@@ -60,101 +68,79 @@ class Solution {
         }
     }
 
-    private void compareDice(int[] arr, boolean[] visited, int n) {
-        ArrayList<Integer> mySumSet = new ArrayList<>();
-        ArrayList<Integer> newSumSet;
-        ArrayList<Integer> yourSumSet = new ArrayList<>();
+    List<Integer> getSumList(List<Integer> curSum, int dIndex) {
+        List<Integer> sumListNext = new ArrayList<>();
+        for (int s : curSum) {
+            for (int d : dice[dIndex]) {
+                sumListNext.add(s + d);
+            }
+        }
+        return sumListNext;
+    }
 
-        int index;
+    List<Integer> maxList;
+    int maxDiff;
+
+    private void compareDice(int[] arr, boolean[] visited, int n) {
+        int myWin = 0;
+        ArrayList<Integer> myDice = new ArrayList<>();
+        ArrayList<Integer> yourDice = new ArrayList<>();
         for (int i = 0; i < arr.length; i++) {
             if (visited[i]) {
-                index = arr[i];
-                newSumSet = new ArrayList<>();
-                for (int dNum : dice[index]) {
-                    if (mySumSet.size() == 0) {
-                        newSumSet.add(dNum);
-                    }
-                    for (int pSum : mySumSet) {
-                        newSumSet.add(pSum + dNum);
-                    }
-                }
-                mySumSet = newSumSet;
-
+                myDice.add(i);
             } else {
-                index = arr[i];
-                newSumSet = new ArrayList<>();
-                for (int dNum : dice[index]) {
-                    if (yourSumSet.size() == 0) {
-                        newSumSet.add(dNum);
-                    }
-                    for (int pSum : yourSumSet) {
-                        newSumSet.add(pSum + dNum);
-                    }
-                }
-                yourSumSet = newSumSet;
+                yourDice.add(i);
             }
         }
 
         HashMap<Integer, Integer> myMap = new HashMap<>();
+        List<Integer> mySumList = Arrays.asList(dice[myDice.get(0)]);
+        for (int i = 1; i < myDice.size(); i++) {
+            mySumList = getSumList(mySumList, myDice.get(i));
+        }
+
+        mySumList.sort(null);
+        for (int s : mySumList) {
+            if (!myMap.containsKey(s)) {
+                myMap.put(s, 1);
+            } else {
+                myMap.put(s, myMap.get(s) + 1);
+            }
+        }
+
         HashMap<Integer, Integer> yourMap = new HashMap<>();
+        List<Integer> yoursumList = Arrays.asList(dice[yourDice.get(0)]);
+        for (int i = 1; i < yourDice.size(); i++) {
+            yoursumList = getSumList(yoursumList, yourDice.get(i));
+        }
+        yoursumList.sort(null);
 
-        for (int a : mySumSet) {
-            if (!myMap.containsKey(a)) {
-                myMap.put(a, 1);
+        for (int s : yoursumList) {
+            if (!yourMap.containsKey(s)) {
+                yourMap.put(s, 1);
             } else {
-                myMap.put(a, myMap.get(a) + 1);
-            }
-        }
-        for (int a : yourSumSet) {
-            if (!yourMap.containsKey(a)) {
-                yourMap.put(a, 1);
-            } else {
-                yourMap.put(a, yourMap.get(a) + 1);
+                yourMap.put(s, yourMap.get(s) + 1);
             }
         }
 
-        int myWinCount = 0;
-        int yourWinCount = 0;
-        for (int m : myMap.keySet()) {
-            for (int y : yourMap.keySet()) {
-                if (m > y) {
-                    myWinCount += (myMap.get(m) * yourMap.get(y));
-                } else if (y > m) {
-                    yourWinCount += (myMap.get(m) * yourMap.get(y));
+        for (int mySum : myMap.keySet()) {
+            for (int yourSum : yourMap.keySet()) {
+                if (mySum > yourSum) {
+                    myWin += myMap.get(mySum) * yourMap.get(yourSum);
                 }
             }
         }
 
-        if (myWinCount >= yourWinCount) {
-            if (myWinCount - yourWinCount > maxWin) {
-                // update
-                int idx = 0;
-                for (int i = 0; i < arr.length; i++) {
-                    if (visited[i]) {
-                        answer[idx++] = arr[i] + 1;
-                    }
-                }
-                maxWin = myWinCount - yourWinCount;
-            }
-        } else if (myWinCount < yourWinCount) {
-            if (yourWinCount - myWinCount > maxWin) {
-                // update
-                int idx = 0;
-                for (int i = 0; i < arr.length; i++) {
-                    if (!visited[i]) {
-                        answer[idx++] = arr[i] + 1;
-                    }
-                }
-                maxWin = yourWinCount - myWinCount;
-            }
+        if (myWin > maxDiff) {
+            maxDiff = myWin;
+            maxList = myDice;
+            // System.out.print("********** " + myDice + " vs ");
+            // System.out.print(yourDice + " ");
+            // System.out.println(myWin);
+            // System.out.println(mySumList);
+            // System.out.println(yoursumList);
+            // System.out.println(myMap);
+            // System.out.println(yourMap);
         }
-
-        // System.out.println("me " + ": " + mySumSet);
-        // System.out.println("you " + ": " + yourSumSet);
-        // System.out.println("MyMap: " + myMap);
-        // System.out.println("YourMap: " + yourMap);
-        // System.out.println(myWinCount + " " + yourWinCount + " done\n");
     }
-
-    int maxWin = Integer.MIN_VALUE;
 }
