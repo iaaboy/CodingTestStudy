@@ -26,23 +26,22 @@ public class MyMain {
 class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
         Vertex[] ver = new Vertex[n + 1];
-        boolean[] visited = new boolean[n + 1]; // n은 1부터..
         int[][] minCost = new int[n + 1][n + 1];
-        for (int i = 0; i < n + 1; i++) {
-            Arrays.fill(minCost[i], Integer.MAX_VALUE - 1);
+        for (int i = 1; i < n + 1; i++) {
+            Arrays.fill(minCost[i], Integer.MAX_VALUE);
         }
-        for (int i = 0; i < n + 1; i++) {
+        for (int i = 1; i < n + 1; i++) {
             ver[i] = new Vertex();
         }
-
         for (int[] fare : fares) {
-            ver[fare[0]].nodes.add(new Node(fare[1], fare[2]));
-            ver[fare[1]].nodes.add(new Node(fare[0], fare[2]));
+            if(fare[1] != s)
+                ver[fare[0]].nodes.add(new Node(fare[1], fare[2]));
+            if(fare[0] != s)
+                ver[fare[1]].nodes.add(new Node(fare[0], fare[2]));
         }
 
-        visited[s] = true;
         PriorityQueue<Next> pQ = new PriorityQueue<>((me, you) -> me.cost - you.cost);
-        pQ.add(new Next(s, s, 0));
+        pQ.add(new Next(s, s, 0, true));
 
         while (!pQ.isEmpty()) {
             Next current = pQ.poll();
@@ -51,31 +50,25 @@ class Solution {
                 return current.cost;
             }
 
-            if (current.nowA == current.nowB) { // 다음도 합승
+            if (current.isShare) { // 다음도 합승
                 for (Node nd : ver[current.nowA].nodes) {
                     if (minCost[nd.to][nd.to] > nd.cost + current.cost) {
                         minCost[nd.to][nd.to] = nd.cost + current.cost;
-                        pQ.add(new Next(nd.to, nd.to, nd.cost + current.cost));
+                        pQ.add(new Next(nd.to, nd.to, nd.cost + current.cost, true));
                     }
                 }
             } 
-            { // 따로 가는 경우
+            {
                 for (Node nd : ver[current.nowA].nodes) {
-                    if(nd.to == current.nowB) {
-                        continue;
-                    }
                     if ((minCost[nd.to][current.nowB] > nd.cost + current.cost)) {
                         minCost[nd.to][current.nowB] = nd.cost + current.cost;
-                        pQ.add(new Next(nd.to, current.nowB, nd.cost + current.cost));
+                        pQ.add(new Next(nd.to, current.nowB, nd.cost + current.cost, false));
                     }
                 }
                 for (Node nd : ver[current.nowB].nodes) {
-                    if(nd.to == current.nowA) {
-                        continue;
-                    }
                     if ((minCost[current.nowA][nd.to] > nd.cost + current.cost)) {
                         minCost[current.nowA][nd.to] = nd.cost + current.cost;
-                        pQ.add(new Next(current.nowA, nd.to, nd.cost + current.cost));
+                        pQ.add(new Next(current.nowA, nd.to, nd.cost + current.cost, false));
                     }
                 }
             }
@@ -84,19 +77,26 @@ class Solution {
     }
 
     void printNext(String add, Next n) {
-        if (add.contains("hand"))
-            System.out.println(add + n);
+        // if (add.contains("hand"))
+        //     System.out.println(add + n);
     }
 
     class Next {
         int nowA;
         int nowB;
         int cost;
+        boolean isShare;
 
-        public Next(int nowA, int nowB, int cost) {
+        public Next(int nowA, int nowB, int cost, boolean isShare) {
             this.nowA = nowA;
             this.nowB = nowB;
             this.cost = cost;
+            this.isShare = isShare;
+        }
+
+        @Override
+        public String toString() {
+            return nowA +"," + nowB + ":" + cost;
         }
     }
 
