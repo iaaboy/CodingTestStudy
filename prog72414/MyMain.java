@@ -1,6 +1,5 @@
 package prog72414;
 
-import java.util.Arrays;
 
 /* 광고 삽입
  * https://school.programmers.co.kr/learn/courses/30/lessons/72414
