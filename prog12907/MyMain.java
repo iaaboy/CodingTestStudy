@@ -1,6 +1,8 @@
 package prog12907;
 
-import java.util.Arrays;
+/* 거스름돈
+ * https://school.programmers.co.kr/learn/courses/30/lessons/12907
+ */
 
 class MyMain {
     public static void main(String[] args) {
@@ -13,24 +15,13 @@ class MyMain {
 
 class Solution {
     public int solution(int n, int[] money) {
-        int [] usedCount = new int [money.length];
-        checkRest(n, money, usedCount);
-
-        int answer = 0;
-        return answer;
-    }
-
-    private void checkRest(int n, int[] money, int[] usedCount) {
-        if(n == 0) {
-            System.out.println("solved" + Arrays.toString(usedCount));
-        }
-
-        for(int i = 0; i < money.length ; i++) {
-            if(n - money[i] >= 0) {
-                usedCount[i]++;
-                checkRest(n - money[i], money, usedCount);
-                usedCount[i]--;
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        for (int m : money) {
+            for (int i = m; i <= n; i++) {
+                dp[i] += dp[i - m];
             }
         }
+        return dp[n];
     }
 }
