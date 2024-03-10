@@ -64,84 +64,46 @@ class Solution {
     }
 
     private int calcMaxDistance(int n, int maxCroud) {
-        // 1 ~ n * n 중에 maxCroud뽑기.
-        int[] lockers = new int[n * n];// 락커 번호
-        boolean[] visited = new boolean[n * n];
-        for (int i = 0; i < n * n; i++) {
-            lockers[i] = i;
-        }
-        minDist = Integer.MIN_VALUE;
-        combi(visited, lockers, 0, 0, maxCroud);
+        ArrayList<Loker> list = new ArrayList<>();
 
-        return minDist;
-    }
-
-    int minDist;
-
-    private void combi(boolean[] visited, int[] lockers, int start, int curCount, int maxCroud) {
-        if (curCount == maxCroud) {
-            ArrayList<Integer> mList = new ArrayList<>();
-            for (int i = 0; i < lockers.length; i++) {
-                if (visited[i]) {
-                    mList.add(lockers[i]);
-                }
-            }
-            // System.out.println( mList);
-            int calcResult = calcMin(mList);
-            minDist = Math.max(minDist, calcResult);
-            // System.out.println(calcResult + " , " + minDist);
-            return;
-        }
-        for (int i = start; i < lockers.length; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                combi(visited, lockers, i, curCount + 1, maxCroud);
-                visited[i] = false;
-            }
-        }
-    }
-
-    //list의 두점중 가장 가까운 거리의 두점 구한다.
-    private int calcMin(ArrayList<Integer> mList) {
-        // List의 모든 2개 조합중 최소 거리 구함.
-        boolean[] visited = new boolean[mList.size()];
-        int minDist = combi2(mList, visited, 0, 0);
-        return minDist;
-    }
-
-    //가장 가까운...
-    private int combi2(ArrayList<Integer> mList, boolean[] visited, int start, int curCount) {
-        if (curCount == 2) {
-            int cnt = 0;
-            int from = 0;
-            int to = 0;
-            for (int i = 0; i < visited.length; i++) {
-                if(visited[i]) {
-                    if(cnt == 0) {
-                        from = mList.get(i);
-                        cnt++;
-                    } else {
-                        to = mList.get(i);
-                        break;
+        for (int maxDist = 2 * (n - 1); maxDist >= 1; maxDist--) {
+            for (int startY = 0; startY < n; startY++) {
+                list.clear();
+                int count = 0;
+                for (int x = 0; x < n; x++) {
+                    for (int y = 0; y < n; y++) {
+                        if (x == 0 && y < startY) {
+                            continue;
+                        }
+                        boolean flag = true;
+                        for (Loker p : list) {
+                            if (Math.abs(p.x - x) + Math.abs(p.y - y) < maxDist) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            count++;
+                            if (count == maxCroud) {
+                                return maxDist;
+                            }
+                            list.add(new Loker(y, x));
+                        }
                     }
                 }
             }
+        }
+        return 1;
+    }
 
-            int yDist = Math.abs(from / n - to / n);
-            int xDist = Math.abs(from % n - to % n);
-            //from to visited로 계산
-            // System.out.println(from + "->" + to + ":" + yDist + xDist);
-            return yDist + xDist;
+    class Loker {
+        int y;
+        int x;
+
+        public Loker(int y, int x) {
+            this.y = y;
+            this.x = x;
         }
-        int curMin = Integer.MAX_VALUE;
-        for (int i = start; i < mList.size(); i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                curMin = Math.min(curMin, combi2(mList, visited, i, curCount + 1));
-                visited[i] = false;
-            }
-        }
-        return curMin;
     }
 
     class Log {
