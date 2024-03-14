@@ -2,10 +2,16 @@ package prog17679;
 
 import java.util.*;
 
+/* [1차] 프렌즈4블록
+ * https://school.programmers.co.kr/learn/courses/30/lessons/17679
+ */
+
 public class MyMain {
     public static void main(String[] args) {
         String[] board = {
-                "TTTANT", "RRFACC", "RRRFCC", "TRRRAA", "TTMMMF", "TMMTTJ" };
+                "CCBDE", "AAADE", "AAABF", "CCBBF"
+                // "TTTANT", "RRFACC", "RRRFCC", "TRRRAA", "TTMMMF", "TMMTTJ"
+        };
         Solution mSol = new Solution();
 
         System.out.println(mSol.solution(0, 0, board));
@@ -34,26 +40,27 @@ class Solution {
     }
 
     private void printArr(char[][] chBd) {
-        for (int y = 0; y < chBd.length; y++) {
-            for (int x = 0; x < chBd[y].length; x++) {
-                System.out.print(chBd[y][x]);
-            }
-            System.out.println();
-        }
+        // System.out.println();
+        // for (int y = 0; y < chBd.length; y++) {
+        // for (int x = 0; x < chBd[y].length; x++) {
+        // System.out.print(chBd[y][x]);
+        // }
+        // System.out.println();
+        // }
     }
 
     private boolean checkBoard(char[][] board) {
         ArrayList<Pair> removeCandi = new ArrayList<>();
         for (int y = 0; y < board.length - 1; y++) {
             for (int x = 0; x < board[y].length - 1; x++) {
-                if (board[y][x] != 'Z' && board[y][x] == board[y][x + 1] && board[y][x] == board[y + 1][x]
+                if (board[y][x] != 'z' && board[y][x] == board[y][x + 1] && board[y][x] == board[y + 1][x]
                         && board[y][x] == board[y + 1][x + 1]) {
                     // add candi
                     removeCandi.add(new Pair(y, x));
                 }
             }
         }
-        System.out.println(removeCandi);
+        // System.out.println(removeCandi);
         if (removeCandi.size() > 0) {
             updateString(board, removeCandi);
         }
@@ -88,11 +95,10 @@ class Solution {
             answer += dummyCount;
             idx = 0;
             for (int j = board.length - 1; j >= 0; j--) {
-                if (dummyCount > 0) {
-                    dummyCount--;
-                    board[j][i] = temp[idx++];
+                if (j < dummyCount) {
+                    board[j][i] = 'z';
                 } else {
-                    board[j][i] = 'Z';
+                    board[j][i] = temp[idx++];
                 }
             }
         }
