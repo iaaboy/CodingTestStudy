@@ -26,6 +26,7 @@ class Solution {
         long sum = 0;
         this.n = a.length;
         long[] weight = new long[n];
+        @SuppressWarnings("unchecked")
         List<Integer>[] nodes = new ArrayList[n];
 
         for (int i = 0; i < a.length; i++) {
