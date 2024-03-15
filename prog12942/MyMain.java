@@ -1,7 +1,5 @@
 package prog12942;
 
-import java.util.*;
-
 /* 최적의 행렬 곱셈
  * https://school.programmers.co.kr/learn/courses/30/lessons/12942
  */
@@ -9,7 +7,7 @@ import java.util.*;
 public class MyMain {
     public static void main(String[] args) {
         int[][] matrix_sizes = {
-                {5,3}, {3,10}, {10,6}
+                { 5, 3 }, { 3, 10 }, { 10, 6 }
         };
         Solution mSol = new Solution();
 
@@ -18,61 +16,41 @@ public class MyMain {
 }
 
 class Solution {
+    int minCalc;
+    int[][] matrix_sizes;
+    int[][] memo;
+
     public int solution(int[][] matrix_sizes) {
-        List<Pair> matPairs = new LinkedList<>();
-        for (int i = 0; i < matrix_sizes.length; i++) {
-            matPairs.add(new Pair(matrix_sizes[i][0], matrix_sizes[i][1]));
-        }
-        minCalc = Integer.MAX_VALUE;
-        int caclSum = dfs(matPairs, 0);
+        this.matrix_sizes = matrix_sizes;
+        memo = new int[matrix_sizes.length + 1][matrix_sizes.length + 1];
 
-        return caclSum;
+        minCalc = calcMulti(0, matrix_sizes.length, 0);
+        return minCalc;
     }
 
-    int minCalc = Integer.MAX_VALUE;
+    private int calcMulti(int start, int end, int depth) {
+        // System.out.println("calc : " + start + " , " + end + " , " + depth);
+        if (end - start == 1) {
+            // System.out.println("return 0");
+            return 0;
+        }
 
-    private int dfs(List<Pair> matPairs, int calcSum) {
-        // System.out.println(matPairs);
-        if (calcSum > minCalc)
-            return calcSum;
-        if (matPairs.size() == 1) {
-            minCalc = Math.min(calcSum, minCalc);
-            return calcSum;
+        if (memo[start][end] != 0) {
+            return memo[start][end];
         }
-        int calcMin = Integer.MAX_VALUE;
-        for (int i = 0; i < matPairs.size(); i++) {
-            Pair me = matPairs.get(i);
-            for (int j = i + 1; j < matPairs.size(); j++) {
-                Pair you = matPairs.get(j);
-                if (me.second == you.first) {
-                    Pair savedMe = me;
-                    Pair savedYou = you;
-                    if (calcSum + me.first * me.second * you.second < calcMin) {
-                        matPairs.remove(j);
-                        matPairs.set(i, new Pair(me.first, you.second));
-                        calcMin = Math.min(calcMin, dfs(matPairs, calcSum + me.first * me.second * you.second));
-                        // matPairs.remove(i);
-                        matPairs.set(i, savedYou);
-                        matPairs.add(i, savedMe);
-                    }
-                }
-            }
+
+        int result = Integer.MAX_VALUE;
+        // mid 중심으로 왼쪽, 오른쪽...
+        for (int mid = start + 1; mid < end; mid++) {
+            int l = calcMulti(start, mid, depth + 1);
+            int r = calcMulti(mid, end, depth + 1);
+            int current = matrix_sizes[start][0] * matrix_sizes[mid][0] * matrix_sizes[end - 1][1];
+            // System.out.println("update : " + start + " , " + mid + " , " + end + " , " +
+            // depth + " ,cur: " + current);
+            result = Math.min(result, l + r + current);
         }
-        return calcMin;
+        memo[start][end] = result;
+        return result;
     }
 
-    class Pair {
-        int first;
-        int second;
-
-        public Pair(int first, int second) {
-            this.first = first;
-            this.second = second;
-        }
-
-        @Override
-        public String toString() {
-            return first + "," + second;
-        }
-    }
 }
