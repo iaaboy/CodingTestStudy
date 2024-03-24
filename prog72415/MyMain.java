@@ -26,8 +26,11 @@ public class MyMain {
 }
 
 class Solution {
+    int[][] board;
+
     public int solution(int[][] board, int r, int c) {
-        mCount = Integer.MAX_VALUE;
+        this.board = board;
+        mCount = 0;
         HashMap<Integer, Card> card = new HashMap<>();
         for (int j = 0; j < board.length; j++) {
             for (int i = 0; i < board[0].length; i++) {
@@ -40,14 +43,17 @@ class Solution {
             }
         }
 
-        dfs(board, card, r, c, 0);
+        System.out.println(card);
+
+        dfs(card, r, c, 0);
         int answer = 0;
         return answer;
     }
 
     int mCount = 0;
 
-    private void dfs(int[][] board, HashMap<Integer, Card> card, int r, int c, int curCount) {
+    private void dfs(HashMap<Integer, Card> card, int r, int c, int curCount) {
+        printAll(card, board);
         if (checkAll(board)) {
             mCount = Math.max(mCount, curCount);
             return;
@@ -55,13 +61,13 @@ class Solution {
 
         for (int j = 0; j < board.length; j++) {
             for (int i = 0; i < board[0].length; i++) {
-                if (board[j][i] > 1 && board[j][i] < 7) {
-                    if (card.get(board[j][i]).isClear) {
+                if (board[j][i] > 0 && board[j][i] < 7) {
+                    if (!card.get(board[j][i]).isClear) {
                         // 1 이동
-                        int moveCount = move(r, c, j, i, 0);
+                        int moveCount = move(r, c, j, i);
 
                         // check clear
-                        Card cCard = card.get(board[j][i] - 10);
+                        Card cCard = card.get(board[j][i]);
                         int savedCard1 = board[cCard.r1][cCard.c1];
                         int savedCard2 = board[cCard.r2][cCard.c2];
 
@@ -74,22 +80,72 @@ class Solution {
                         }
 
                         // 3 콜 dfs
-                        dfs(board, card, j, i, curCount + moveCount);
+                        dfs(card, j, i, curCount + moveCount);
 
                         // 4 원복
                         board[cCard.r1][cCard.c1] = savedCard1;
                         board[cCard.r2][cCard.c2] = savedCard2;
-                        cCard.isClear = true;
+                        cCard.isClear = false;
                     }
                 }
             }
         }
     }
 
-    private int move(int r, int c, int targetR, int targetC, int curCount) {
-        
-        return -1;
+    private void printAll(HashMap<Integer, Card> card, int[][] bd) {
+        if (card != null) {
+            System.out.println(card);
+        }
+        for (int j = 0; j < bd.length; j++) {
+            for (int i = 0; i < bd[0].length; i++) {
+                System.out.print(bd[j][i] + " ");
+            }
+            System.out.println();
+        }
     }
+
+    private int move(int r, int c, int targetR, int targetC) {
+        int[][] map = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (board[j][i] != 0) {
+                    if (i == targetC && j == targetR) {
+                        map[j][i] = Integer.MAX_VALUE;
+                    } else {
+
+                    }
+                } else {
+                    map[j][i] = Integer.MAX_VALUE;
+                }
+            }
+        }
+        Queue<Location> mQ = new LinkedList<>();
+        mQ.add(new Location(r, c, 0));
+
+        printAll(null, map);
+
+        while (!mQ.isEmpty()) {
+            Location cL = mQ.poll();
+
+            for(int i = 0 ; i < 4 ; i++) {
+                int curR = cL.r + pR[i];
+                int curC = cL.c + pC[i];
+
+                //종점(-1, 4)일때
+
+                //오버일 때
+
+                //
+            }
+            
+        }
+
+        printAll(null, map);
+        return map[targetR][targetC];
+    }
+
+    int [] pC = {1, 0, -1, 0};
+    int [] pR = {0, 1, 0, -1};
 
     private boolean checkAll(int[][] board) {
         // TODO map 확인하는거로 수정
@@ -101,6 +157,23 @@ class Solution {
             }
         }
         return true;
+    }
+
+    class Location {
+        int c;
+        int r;
+        int horizon;// 1가로 2세로 0둘다
+
+        public Location(int r, int c, int horizon) {
+            this.c = c;
+            this.r = r;
+            this.horizon = horizon;
+        }
+
+        @Override
+        public String toString() {
+            return r + "," + c + "," + horizon;
+        }
     }
 
     class Card {
@@ -115,14 +188,14 @@ class Solution {
                 r1 = r;
                 c1 = c;
             } else {
-                r1 = r;
+                r2 = r;
                 c2 = c;
             }
         }
 
         @Override
         public String toString() {
-            return r1 + "," + c1 + ",," + r2 + "," + c2 + "," + isClear;
+            return r1 + "," + c1 + ":" + r2 + "," + c2 + "," + isClear;
         }
     }
 }
