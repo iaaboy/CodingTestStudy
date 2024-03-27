@@ -1,6 +1,6 @@
 package prog77886;
 
-import java.util.Arrays;
+import java.util.*;
 
 /* 110 옮기기
  * https://school.programmers.co.kr/learn/courses/30/lessons/77886
@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class MyMain {
     public static void main(String[] args) {
-        String[] s = { "1110", "100111100", "0111111010" };
+        String[] s = { "100111100", "1110", "0111111010" };
         Solution mSol = new Solution();
         System.out.println(Arrays.toString(mSol.solution(s)));
     }
@@ -16,46 +16,57 @@ public class MyMain {
 
 class Solution {
     public String[] solution(String[] s) {
-
         char[] comparer = { '1', '1', '0' };
+        Deque<Character> mQ = new LinkedList<>();
+        int numCount = 0;
+        String[] answer = new String[s.length];
+        int index = 0;
 
-        int matchCount = 0;
-        for (int i = 0; i < s.length; i++) {
-            char[] chArr = s[i].toCharArray();
-            for (int j = 0; j < chArr.length - 2; j++) {
-
-                int cmp = 0;
-                int index = j;
-                while (cmp < 3 && index < chArr.length) {
-                    if (chArr[index] == comparer[cmp]) {
-                        cmp++;
-                        index++;
+        for (String ss : s) {
+            mQ.clear();
+            for (int i = 0; i < ss.length(); i++) {
+                char third = ss.charAt(i);
+                if (mQ.size() > 1) {
+                    char second = mQ.pollFirst();
+                    char first = mQ.peekFirst();
+                    // System.out.println(first + "," + second + "," + third);
+                    if (first == comparer[0] && second == comparer[1] && third == comparer[2]) {
+                        // mached
+                        mQ.pop();
+                        numCount++;
+                        third = '9';// mean handled
+                        // System.out.println(mQ);
                     } else {
-                        if(chArr[index] == '2') {
-                            index ++;
-                        } else {
-                            break;
-                        }
+                        // mQ.add(second);
+                        mQ.push(second);
                     }
                 }
-
-                if (cmp == 3) {
-                    matchCount++;
-                    cmp = 3;
-                    for (int k = j; k < chArr.length; k++) {
-                        if (chArr[k] != '2') {
-                            cmp--;
-                            chArr[k] = '2';
-                            if (cmp == 0)
-                                break;
-                        }
-                    }
-                }
+                if (third != '9') // pass already handled
+                    mQ.push(third);
             }
-            System.out.println(Arrays.toString(chArr));
-        }
+            StringBuffer sb = new StringBuffer();
+            while (!mQ.isEmpty()) {
+                char ch = mQ.pollFirst();
+                if (ch == '1') {
+                    sb.insert(0, ch);
+                } else {
+                    while (numCount > 0) {
+                        sb.insert(0, "110");
+                        numCount--;
+                    }
+                    sb.insert(0, ch);
+                }
+                // System.out.print(ch + ",");
+            }
 
-        String[] answer = {};
+            while (numCount > 0) {
+                sb.insert(0, "110");
+                numCount--;
+            }
+            answer[index++] = sb.toString();
+            // System.out.println(numCount);
+            // numCount = 0;
+        }
         return answer;
     }
 }
