@@ -265,7 +265,7 @@ class Solution {
         }
     }
 
-    class Card {
+    class Card {    
         int c1 = -1;
         int r1 = -1;
         int c2 = -1;
