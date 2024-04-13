@@ -118,39 +118,88 @@ class Solution {
         }
     }
 
+    private void printAll(int[][] bd) {
+        System.out.println("---------");
+        for (int j = 0; j < BD_MAX; j++) {
+            for (int i = 0; i < BD_MAX; i++) {
+                System.out.print(bd[j][i] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     private int move(int r, int c, int targetR, int targetC) {
         PriorityQueue<Curser> mQ = new PriorityQueue<>((a, b) -> a.cost - b.cost);
-        mQ.add(new Curser(r, c, -1, 0));
+
+        int[][] map = new int[BD_MAX][BD_MAX];
+        for (int i = 0; i < map.length; i++) {
+            Arrays.fill(map[i], 20000);
+        }
+
+        map[r][c] = 0;
+        mQ.add(new Curser(r, c, 0));
         while (!mQ.isEmpty()) {
             Curser cur = mQ.poll();
             if (cur.r == targetR && cur.c == targetC) {
                 return cur.cost;
             }
-            for (int i = 0; i < 4; i++) {
-                // 반대 방향으로 가는거 방지
-                if (isSwitch(cur.direction, i))
-                    continue;
-                int nextR = cur.r + pR[i];
-                int nextC = cur.c + pC[i];
-                if (nextR < 0 || nextR >= BD_MAX || nextC < 0 || nextC >= BD_MAX)
-                    continue;
-                if (board[nextR][nextC] != 0 && board[nextR][nextC] != board[targetR][targetC])
-                    continue;
-                if (nextR == r && nextC == c)
-                    continue;
 
-                // System.out.println("add Q : " + nextR + "," + nextC + "," + " <-- " + cur.r +
-                // "," + cur.c);
-                mQ.add(new Curser(nextR, nextC, i, cur.cost + 1));
+            int nextC = 0;
+            int nextR = 0;
+            for (int i = 0; i < 4; i++) {
+                nextC = cur.c + pC[i];
+                nextR = cur.r + pR[i];
+                if (nextC < 0 || nextC > 3 || nextR < 0 || nextR > 3)
+                    continue;
+                if (cur.cost + 1 < map[nextR][nextC]) {
+                    map[nextR][nextC] = cur.cost + 1;
+                    mQ.add(new Curser(nextR, nextC, map[nextR][nextC]));
+                }
             }
-            // ctrl + 방향키 쓰는 경우
-            // 사이드이고, 끝까지 카드가 없는 경우
-            JumpResult jump = new JumpResult();
-            if (hasNocard(cur.r, cur.c, cur.direction, jump)) {
-                // System.out.println(
-                // "add Q : " + jump.nextR + "," + jump.nextC + " <-- " + cur.r + "," + cur.c +
-                // "," + i);
-                mQ.add(new Curser(jump.nextR, jump.nextC, cur.direction, cur.cost + 2));
+
+            // 4방향 control 키
+            // 가장 가까운 카드 , 카드가 없으면 맨 끝
+            boolean hasJump = false;
+            if (cur.r == 0) {
+                if (board[1][cur.c] == 0 && board[2][cur.c] == 0) {
+                    nextC = cur.c;
+                    nextR = 3;
+                    hasJump = true;
+                }
+            }
+            if (cur.r == 3) {
+                if (board[1][cur.c] == 0 && board[2][cur.c] == 0) {
+                    nextC = cur.c;
+                    nextR = 0;
+                    hasJump = true;
+                }
+            }
+            if (hasJump) {
+                if (cur.cost + 2 < map[nextR][nextC]) {
+                    map[nextR][nextC] = cur.cost + 2;
+                    mQ.add(new Curser(nextR, nextC, map[nextR][nextC]));
+                }
+                hasJump = false;
+            }
+            if (cur.c == 0) {
+                if (board[cur.r][1] == 0 && board[cur.r][2] == 0) {
+                    nextC = 3;
+                    nextR = cur.r;
+                    hasJump = true;
+                }
+            }
+            if (cur.c == 3) {
+                if (board[cur.r][1] == 0 && board[cur.r][2] == 0) {
+                    nextC = 0;
+                    nextR = cur.r;
+                    hasJump = true;
+                }
+            }
+            if (hasJump) {
+                if (cur.cost + 2 < map[nextR][nextC]) {
+                    map[nextR][nextC] = cur.cost + 2;
+                    mQ.add(new Curser(nextR, nextC, map[nextR][nextC]));
+                }
             }
         }
 
@@ -249,19 +298,17 @@ class Solution {
     class Curser {
         int c;
         int r;
-        int direction;
         int cost;
 
-        public Curser(int r, int c, int direction, int cost) {
+        public Curser(int r, int c, int cost) {
             this.c = c;
             this.r = r;
-            this.direction = direction;
             this.cost = cost;
         }
 
         @Override
         public String toString() {
-            return r + "," + c + "," + direction + "," + cost;
+            return r + "," + c + "," + cost;
         }
     }
 
