@@ -61,52 +61,69 @@ class Solution {
                 xMax -= queries[i][1];
                 xMin -= queries[i][1];
                 if (xMax < 0) {
-                    if (xMaxCount < m)
+                    if (xMaxCount < m) {
                         xMaxCount += -xMax;
+                        xMaxCount = Math.min(xMaxCount, m);
+                    }
                     xMax = 0;
                 }
                 if (xMin < 0) {
-                    if (xMinCount < m)
+                    if (xMinCount < m) {
                         xMinCount += -xMin;
+                        xMaxCount = Math.min(xMaxCount, m);
+                    }
+                    
                     xMin = 0;
                 }
             } else if (queries[i][0] == 1) { // 증가
                 xMax += queries[i][1];
                 xMin += queries[i][1];
                 if (xMax > m - 1) {
-                    if (xMaxCount < m)
+                    if (xMaxCount < m) {
                         xMaxCount += (xMax - (m - 1));
+                        xMaxCount = Math.min(xMaxCount, m);
+                    }
                     xMax = m - 1;
                 }
                 if (xMin > m - 1) {
-                    if (xMinCount < m)
+                    if (xMinCount < m) {
                         xMinCount += (xMin - (m - 1));
+                        xMaxCount = Math.min(xMaxCount, m);
+                    }
                     xMin = m - 1;
                 }
             } else if (queries[i][0] == 2) { // 감소
                 yMax -= queries[i][1];
                 yMin -= queries[i][1];
                 if (yMax < 0) {
-                    if (yMaxCount < n)
+                    if (yMaxCount < n) {
                         yMaxCount += -yMax;
+                        yMaxCount = Math.min(yMaxCount, n);
+                    }
                     yMax = 0;
                 }
                 if (yMin < 0) {
-                    if (yMinCount < n)
+                    if (yMinCount < n) {
                         yMinCount += -yMin;
+                        yMaxCount = Math.min(yMaxCount, n);
+                    }
                     yMin = 0;
                 }
             } else if (queries[i][0] == 3) { // 증가
                 yMax += queries[i][1];
                 yMin += queries[i][1];
                 if (yMax > n - 1) {
-                    if (yMaxCount < n)
+                    if (yMaxCount < n) {
                         yMaxCount += (yMax - (n - 1));
+                        yMaxCount = Math.min(yMaxCount, n);
+                    }
                     yMax = n - 1;
                 }
                 if (yMin > n - 1) {
-                    if (yMinCount < n)
+                    if (yMinCount < n) {
                         yMinCount += (yMin - (n - 1));
+                        yMaxCount = Math.min(yMaxCount, n);
+                    }
                     yMin = n - 1;
                 }
             }
@@ -147,3 +164,57 @@ class Solution {
     }
 }
 
+class Solution2 {
+    public int[] dx = { 0, 0, 1, -1 };
+    public int[] dy = { 1, -1, 0, 0 };
+
+    public int[] calNextRange(int s, int e, int move, int max) {
+        int nextS = (s == 0 && move > 0) ? 0 : s + move;
+        int nextE = (e == max - 1 && move < 0) ? max - 1 : e + move;
+        // 1 둘 다 범위 벗어남
+        if ((nextS < 0 || nextS >= max) && (nextE < 0 || nextE >= max)) {
+            return new int[] { -1, -1 };
+        }
+        // 2 시작점만 범위 벗어남
+        if (nextS < 0 && nextE >= 0 && nextE < max) {
+            return new int[] { 0, nextE };
+        }
+        // 3 종료점만 범위 벗어남
+        if (nextE >= max && nextS >= 0 && nextS < max) {
+            return new int[] { nextS, max - 1 };
+        }
+        // 4 둘 다 범위 이내
+        return new int[] { nextS, nextE };
+    }
+
+    public long solution(int n, int m, int x, int y, int[][] queries) {
+
+        // 0, 0
+        // (2, 1);;;
+        int sx, ex, sy, ey;
+        sx = ex = x;
+        sy = ey = y;
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int dir = queries[i][0];
+            int cnt = queries[i][1];
+
+            // y 좌표 기준
+            if (dir == 0 || dir == 1) {
+                int[] res = calNextRange(sy, ey, cnt * dy[dir], m);
+                if (res[0] == -1)
+                    return 0;
+                sy = res[0];
+                ey = res[1];
+            }
+            // x 좌표 기준
+            else {
+                int[] res = calNextRange(sx, ex, cnt * dx[dir], n);
+                if (res[0] == -1)
+                    return 0;
+                sx = res[0];
+                ex = res[1];
+            }
+        }
+        return (long) (ex - sx + 1) * (long) (ey - sy + 1);
+    }
+}
