@@ -8,7 +8,7 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        String[] s = { "100111100", "1110", "0111111010" };
+        String[] s = { "10101001110"};
         Solution mSol = new Solution();
         System.out.println(Arrays.toString(mSol.solution(s)));
     }
@@ -17,7 +17,7 @@ public class MyMain {
 class Solution {
     public String[] solution(String[] s) {
         char[] comparer = { '1', '1', '0' };
-        Deque<Character> mQ = new LinkedList<>();
+        Stack<Character> mQ = new Stack<>();
         int numCount = 0;
         String[] answer = new String[s.length];
         int index = 0;
@@ -27,15 +27,15 @@ class Solution {
             for (int i = 0; i < ss.length(); i++) {
                 char third = ss.charAt(i);
                 if (mQ.size() > 1) {
-                    char second = mQ.pollFirst();
-                    char first = mQ.peekFirst();
-                    // System.out.println(first + "," + second + "," + third);
+                    char second = mQ.pop();
+                    char first = mQ.peek();
+                    System.out.println(first + "," + second + "," + third);
                     if (first == comparer[0] && second == comparer[1] && third == comparer[2]) {
                         // mached
                         mQ.pop();
                         numCount++;
                         third = '9';// mean handled
-                        // System.out.println(mQ);
+                        System.out.println(mQ);
                     } else {
                         // mQ.add(second);
                         mQ.push(second);
@@ -46,7 +46,7 @@ class Solution {
             }
             StringBuffer sb = new StringBuffer();
             while (!mQ.isEmpty()) {
-                char ch = mQ.pollFirst();
+                char ch = mQ.pop();
                 if (ch == '1') {
                     sb.insert(0, ch);
                 } else {
@@ -56,7 +56,7 @@ class Solution {
                     }
                     sb.insert(0, ch);
                 }
-                // System.out.print(ch + ",");
+                System.out.print(ch + ",");
             }
 
             while (numCount > 0) {
@@ -64,7 +64,7 @@ class Solution {
                 numCount--;
             }
             answer[index++] = sb.toString();
-            // System.out.println(numCount);
+            System.out.println(numCount);
             // numCount = 0;
         }
         return answer;

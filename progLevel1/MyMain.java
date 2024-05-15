@@ -8,34 +8,24 @@ import java.util.*;
 
 public class MyMain {
     public static void main(String[] args) {
-        int k = 4;
-        int[] score = { 0, 300, 40, 300, 20, 70, 150, 50, 500, 1000 };
+        int a = 1000000; 
+        int b = 1000000; 
+        int n = 1000000; 
         Solution mSol = new Solution();
 
-        System.out.println(Arrays.toString(mSol.solution(k, score)));
+        System.out.println(mSol.solution(a, b, n));
     }
 }
 
 class Solution {
-    public int[] solution(int k, int[] score) {
-        PriorityQueue<Integer> topkScore = new PriorityQueue<>();
-        int[] answer = new int[score.length];
+    public int solution(int a, int b, int n) {
+        return calcCoke(a,b, n, 0);
+    }
 
-        for (int i = 0; i < score.length; i++) {
-            if (k > 0) {
-                topkScore.add(score[i]);
-                k--;
-            } else {
-                if (topkScore.peek() >= score[i]) {
-                    // skip
-                } else {
-                    topkScore.poll();
-                    topkScore.add(score[i]);
-                }
-            }
-            answer[i] = topkScore.peek();
+    private int calcCoke(int a, int b, int n, int curBottle) {
+        if(n < a) {
+            return curBottle;
         }
-
-        return answer;
+        return calcCoke(a, b, n / a + n % a, curBottle + (n / a) * b);
     }
 }
