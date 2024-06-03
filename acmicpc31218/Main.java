@@ -3,6 +3,9 @@ package acmicpc31218;
 import java.io.*;
 import java.util.*;
 
+/* 자료 구조의 왕
+ * https://www.acmicpc.net/problem/31218
+ */
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -28,7 +31,7 @@ public class Main {
                     count--;
                     y += dy;
                     x += dx;
-                    if (x < 0 || y < 0 || y > n || x > m)
+                    if (x < 1 || y < 1 || y > n || x > m)
                         break;
                 }
             } else if (query == 2) {
