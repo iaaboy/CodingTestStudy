@@ -1,7 +1,10 @@
 package acmicpc2851;
 
 import java.io.*;
-// import java.util.Arrays;
+
+/* 슈퍼 마리오
+ *  https://www.acmicpc.net/problem/2851
+ */
 
 public class Main {
     public static void main(String[] args) throws IOException {
