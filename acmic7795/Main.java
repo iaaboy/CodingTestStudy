@@ -5,6 +5,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(bf.readLine());
         StringBuilder sb = new StringBuilder();
@@ -23,35 +24,27 @@ public class Main {
             st = new StringTokenizer(bf.readLine());
             for (int i = 0; i < B; i++) {
                 int b = Integer.parseInt(st.nextToken());
-                aWin = getBiggerCnt();
+                aWin = A - getLowerBound(arrA, b);
             }
             sb.append(aWin + "\n");
         }
         System.out.println(sb);
     }
 
-    private static int getBiggerCnt(int []arr, int b) {
+    private static int getLowerBound(int[] arr, int b) {
         int left = 0;
-                int right = arr.length - 1;
-                int center = 0;
-                while (true) {
-                    center = (left + right) / 2;
-                    if (arr[center] <= b) {
-                        left = center;
-                    } else {
-                        right = center;
-                    } 
-                    if (left + 1 == right) {
-                        System.out.println("\n" + b + " .. " + center +"  <" + left + "," + right + ">:" + Arrays.toString(arrA));
-                        if(arr[right] <= b) {
-                            System.out.println("result" + right);
-                            return right;
-                        } else {
-                            System.out.println("result" + left);
-                            return left;
-                        }
-                        break;
-                    }
-                }
+        int right = arr.length - 1;
+        int center = 0;
+        while (true) {
+            center = (left + right) / 2;
+            if (arr[center] <= b) {
+                left = center;
+            } else {
+                right = center;
+            }
+            if (arr[center] < b && arr[center + 1] >= b) {
+                return center;
+            }
+        }
     }
 }
