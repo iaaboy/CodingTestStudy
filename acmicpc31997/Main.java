@@ -3,6 +3,8 @@ package acmicpc31997;
 import java.io.*;
 import java.util.*;
 
+//TODO
+
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -61,7 +63,7 @@ public class Main {
             }
             sb.append(talk + "\n");
         }
-        System.out.println(sb);
+        System.out.print(sb);
     }
 
     static class P {
