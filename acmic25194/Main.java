@@ -3,34 +3,43 @@ package acmic25194;
 import java.io.*;
 import java.util.*;
 
+/* 결전의 금요일
+ * https://www.acmicpc.net/problem/25194
+ */
+
 public class Main {
+    static int[] pos;
+    static boolean ans;
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(bf.readLine());
         StringTokenizer st = new StringTokenizer(bf.readLine());
-        boolean[] pos = new boolean[7];
+        pos = new int[7];
         for (int i = 0; i < N; i++) {
-            int work = Integer.parseInt(st.nextToken()) - 1;
-            work %= 7;
-            ArrayList<Integer> candi = new ArrayList<>();
-            for (int j = 0; j < pos.length; j++) {
-                if (pos[j]) {
-                    int next = (j + 1 + work) % 7;
-                    // pos[next] = true;
-                    if (!pos[next]) {
-                        candi.add(next);
-                    }
-                }
-            }
-            for (Integer a : candi) {
-                pos[a] = true;
-            }
-            pos[work] = !pos[work] ? true : pos[work];
+            int a = Integer.parseInt(st.nextToken());
+            if (a % 7 != 0)
+                pos[a % 7]++;
         }
-        if (pos[4]) {
+        backTrack(0);
+        if (ans)
             System.out.println("YES");
+        else
+            System.out.println("NO");
+    }
+
+    static void backTrack(int val) {
+        if (ans)
+            return;
+        if (val % 7 == 4) {
+            ans = true;
             return;
         }
-        System.out.println("NO");
+        for (int i = 1; i <= 6; i++) {
+            if (pos[i] != 0) {
+                pos[i]--;
+                backTrack(val + i);
+                pos[i]++;
+            }
+        }
     }
 }
