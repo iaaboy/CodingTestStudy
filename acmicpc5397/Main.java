@@ -1,37 +1,48 @@
 package acmicpc5397;
 
 import java.io.*;
+import java.util.*;
+
+/* 키로거
+ * https://www.acmicpc.net/problem/5397
+ */
 
 public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(bf.readLine());
-        StringBuilder []sb = new StringBuilder[N];
+        StringBuilder[] sb = new StringBuilder[N];
         for (int i = 0; i < N; i++) {
             char[] cArr = bf.readLine().toCharArray();
-            int cursor = 0;
+            LinkedList<Character> word = new LinkedList<>();
+            ListIterator<Character> iter = word.listIterator();
             sb[i] = new StringBuilder();
             for (int j = 0; j < cArr.length; j++) {
                 switch (cArr[j]) {
                     case '>':
-                        cursor++;
-                        cursor = Math.min(cursor, sb[i].length());
+                        if (iter.hasNext())
+                            iter.next();
                         break;
                     case '-':
-                        if(cursor != 0)
-                            sb[i].deleteCharAt(cursor - 1);
+                        if (iter.hasPrevious()) {
+                            iter.previous();
+                            iter.remove();
+                        }
+                        break;
                     case '<':
-                        cursor--;
-                        cursor = Math.max(0, cursor);
+                        if (iter.hasPrevious())
+                            iter.previous();
                         break;
                     default:
-                        sb[i].insert(cursor, cArr[j]);
-                        cursor++;
-                        cursor = Math.min(cursor, sb[i].length());
+                        iter.add(cArr[j]);
                         break;
                 }
             }
-            
+            iter = word.listIterator();
+            while (iter.hasNext()) {
+                sb[i].append(iter.next());
+            }
+            // System.out.println(word);
         }
         for (int i = 0; i < sb.length; i++) {
             System.out.println(sb[i]);
