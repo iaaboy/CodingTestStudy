@@ -14,8 +14,8 @@ public class Main {
         int A = Integer.parseInt(st.nextToken());
         int N = Integer.parseInt(st.nextToken());
 
-        int [] arrAccumul = new int[A + 1];
-        int [] arr = new int[A];
+        int[] arrAccumul = new int[A + 1];
+        int[] arr = new int[A];
         st = new StringTokenizer(bf.readLine());
         for (int i = 0; i < A; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
@@ -23,7 +23,7 @@ public class Main {
         Arrays.sort(arr);
         int sum = 0;
         for (int i = 1; i <= A; i++) {
-            sum += arr[i-1];
+            sum += arr[i - 1];
             arrAccumul[i] = sum;
         }
         StringBuilder sb = new StringBuilder();
@@ -31,7 +31,7 @@ public class Main {
             st = new StringTokenizer(bf.readLine());
             int from = Integer.parseInt(st.nextToken());
             int to = Integer.parseInt(st.nextToken());
-            sb.append(arrAccumul[to] - arrAccumul[from-1] + "\n");
+            sb.append(arrAccumul[to] - arrAccumul[from - 1] + "\n");
         }
         System.out.print(sb);
     }
