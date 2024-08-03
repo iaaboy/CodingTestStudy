@@ -3,8 +3,7 @@ package acmicpc25955;
 import java.io.*;
 import java.util.*;
 
-//풀이중
-/*
+/* APC는 쉬운 난이도 순일까, 아닐까?
  * https://www.acmicpc.net/problem/25955
  */
 
@@ -36,12 +35,19 @@ public class Main {
             index[i] = i;
         }
         Arrays.sort(index, (a, b) -> tierInt[a] - tierInt[b]);
+
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < index.length; i++) {
             if (index[i] != i) {
-                System.out.println("diff: " + i);
+                sb.append(log[index[i]] + " ");
             }
         }
-        //System.out.println("OK");
-        System.out.println(Arrays.toString(tierInt));
+        if (sb.length() > 0) {
+            sb.insert(0, "KO\n");
+        } else {
+            sb.append("OK");
+        }
+        System.out.println(sb);
+        // System.out.println(Arrays.toString(tierInt));
     }
 }
