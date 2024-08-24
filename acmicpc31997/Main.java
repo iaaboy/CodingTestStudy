@@ -3,7 +3,7 @@ package acmicpc31997;
 import java.io.*;
 import java.util.*;
 
-/* 즐거운 회의
+/* TODO
 https://www.acmicpc.net/problem/31997
 */
 
