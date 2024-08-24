@@ -3,18 +3,20 @@ package acmicpc31997;
 import java.io.*;
 import java.util.*;
 
-//TODO
+/* 즐거운 회의
+https://www.acmicpc.net/problem/31997
+*/
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(bf.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken()); //사람수
+        int M = Integer.parseInt(st.nextToken()); //친한 정보 개수
+        int K = Integer.parseInt(st.nextToken()); //시간
 
         P[] p = new P[N];
-        Integer[] sIndex = new Integer[N];
+        Integer[] sIndex = new Integer[N]; //시작 기준으로 sort된 index
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(bf.readLine());
@@ -35,12 +37,12 @@ public class Main {
 
         PriorityQueue<Integer> pQ = new PriorityQueue<>((a, b) -> {
             return p[a].ed - p[b].ed;
-        });
+        }); //종료 기준으로 sort됨
 
         int ptr = 0;
         int talk = 0;
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < K; i++) {
+        for (int i = 0; i < K; i++) { //각 시간에 대해  for loop
             while (ptr < N && p[sIndex[ptr]].st == i) {
                 int me = sIndex[ptr];
                 p[me].onMeeting = true;
