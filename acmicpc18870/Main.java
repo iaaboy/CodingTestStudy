@@ -3,6 +3,10 @@ package acmicpc18870;
 import java.io.*;
 import java.util.*;
 
+/* 좌표 압축
+ * https://www.acmicpc.net/problem/18870
+ */
+
 public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -16,10 +20,8 @@ public class Main {
         }
         Arrays.sort(alignedIdx, (a, b) -> arr[a] - arr[b]);
         int biggerLeft = 0;
-        // System.out.println(Arrays.toString(alignedIdx));
         Integer[] biggerCount = new Integer[N];
-
-        biggerCount[alignedIdx[0]] = 0;
+        biggerCount[alignedIdx[0]] = biggerLeft;
         for (int i = 1; i < N; i++) {
             if (arr[alignedIdx[i]] > arr[alignedIdx[i - 1]]) {
                 biggerLeft++;
