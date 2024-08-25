@@ -16,17 +16,18 @@ public class Main {
         int K = Integer.parseInt(st.nextToken()); //시간
 
         P[] p = new P[N];
-        Integer[] sIndex = new Integer[N]; //시작 기준으로 sort된 index
+        Leg[] legs = new Leg[N*2];
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(bf.readLine());
-            p[i] = new P(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()),
+            int start = Integer.parseInt(st.nextToken());
+            int end = Integer.parseInt(st.nextToken());
+            p[i] = new P(start, end,
                     false, new HashSet<Integer>());
-            sIndex[i] = i;
+            legs[i*2] = new Leg(start, true);
+            legs[i*2 + 1] = new Leg(end, false);
         }
-        Arrays.sort(sIndex, (a, b) -> {
-            return p[a].st - p[b].st;
-        });
+
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(bf.readLine());
             int r1 = Integer.parseInt(st.nextToken()) - 1;
@@ -35,36 +36,21 @@ public class Main {
             p[r2].relations.add(r1);
         }
 
-        PriorityQueue<Integer> pQ = new PriorityQueue<>((a, b) -> {
-            return p[a].ed - p[b].ed;
-        }); //종료 기준으로 sort됨
+        Arrays.sort(legs, (a, b) -> {
+            return a.timestamp - b.timestamp;
+        });
 
-        int ptr = 0;
-        int talk = 0;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < K; i++) { //각 시간에 대해  for loop
-            while (ptr < N && p[sIndex[ptr]].st == i) {
-                int me = sIndex[ptr];
-                p[me].onMeeting = true;
-                pQ.add(me);
-                for (Integer friend : p[me].relations) {
-                    if (p[friend].onMeeting && p[friend].relations.contains(me)) {
-                        talk++;
-                    }
-                }
-                ptr++;
+        int [] enjoyChat = new int[K];
+
+        for (Leg leg : legs) {
+            if (leg.isStart) {
+                
+            } else {
+                
             }
-            while (!pQ.isEmpty() && p[pQ.peek()].ed <= i) {
-                int me = pQ.poll();
-                for (Integer friend : p[me].relations) {
-                    if (p[friend].onMeeting && p[friend].relations.contains(me)) {
-                        talk--;
-                    }
-                }
-                p[me].onMeeting = false;
-            }
-            sb.append(talk + "\n");
         }
+
+        StringBuilder sb = new StringBuilder();
         System.out.print(sb);
     }
 
@@ -79,6 +65,14 @@ public class Main {
             this.ed = ed;
             this.onMeeting = onMeeting;
             this.relations = relations;
+        }
+    }
+    static class Leg {
+        int timestamp;
+        boolean isStart;
+        public Leg(int timestamp, boolean isStart) {
+            this.timestamp = timestamp;
+            this.isStart = isStart;
         }
     }
 }
