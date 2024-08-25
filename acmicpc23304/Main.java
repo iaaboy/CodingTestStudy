@@ -22,13 +22,10 @@ public class Main {
                 return false;
             }
         }
-        if (aka.length() > 3) {
-            if (!checkAka(aka.substring(0, aka.length() / 2))) {
+        if (aka.length() > 1) {
+            String prefix = aka.substring(0, aka.length() / 2);
+            if (!checkAka(prefix))
                 return false;
-            }
-            if (!checkAka(aka.substring(aka.length() / 2 + 1, aka.length()))) {
-                return false;
-            }
         }
         return true;
     }
