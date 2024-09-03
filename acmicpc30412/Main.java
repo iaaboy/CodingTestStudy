@@ -1,95 +1,74 @@
 package acmicpc30412;
 
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(bf.readLine());
+
         int N = Integer.parseInt(st.nextToken());
         int X = Integer.parseInt(st.nextToken());
 
+        int arr[] = new int[N];
         st = new StringTokenizer(bf.readLine());
-        int[] t = new int[N];
-        for (int i = 0; i < t.length; i++) {
-            t[i] = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int minC = Integer.MAX_VALUE;
-        // 사이드 확인
-        minC = Math.min(minC, compareSide(t[0], t[1], X));
-        // minC = Math.min(minC, compareSide(t[1], t[0], X));
-        minC = Math.min(minC, compareSide(t[t.length - 1], t[t.length - 2], X));
-        // minC = Math.min(minC, compareSide(t[t.length - 2], t[t.length - 1], X));
+        int addMin = Integer.MAX_VALUE;
+        int add = 0;
 
-        for (int i = 1; i < t.length - 1; i++) {
-            // 나를 높임
-            minC = Math.min(minC, raiseMe(t[i - 1], t[i], t[i + 1], X));
-
-            // 양 사이드를 높임
-            minC = Math.min(minC, raiseNeighbor(t[i - 1], t[i], t[i + 1], X));
-        }
-        System.out.println(minC);
-    }
-
-    private static int raiseNeighbor(int left, int me, int right, int X) {
-        //왼쪽 높임
-        int result1 = 0;
-        if(left <= me) {
-            result1 = me - left + X;
+        // left side
+        int l = arr[0];
+        int r = arr[1];
+        if (l > r) {
+            add = Math.max(r + X - l, 0);
         } else {
-            if(left - me > X) {
-                result1 = 0;
-            } else {
-                result1 = X - (left - me);
-            }
+            add = Math.max(l + X - r, 0);
         }
-        //오늘쪽 높임
-        int result2 = 0;
-        if(right <= me) {
-            result2 = me - right + X;
-        } else {
-            if(right - me > X) {
-                result2 = 0;
-            } else {
-                result2 = X - (right - me);
-            }
-        }
-        return Math.min(result1, result2);
-    }
+        addMin = Math.min(add, addMin);
 
-    private static int raiseMe(int left, int me, int right, int X) {
-        int result = 0;
-        int you = Math.max(left, right);
-        if (me <= you) {
-            result = you - me + X;
+        // right side
+        l = arr[arr.length - 2];
+        r = arr[arr.length - 1];
+        if (l > r) {
+            add = Math.max(r + X - l, 0);
         } else {
-            if (me > you + X) {
-                result = 0;
-            } else {
-                result = X - (me - you);
-            }
+            add = Math.max(l + X - r, 0);
         }
-        return result;
-    }
+        addMin = Math.min(add, addMin);
 
-    private static int compareSide(int me, int you, int X) {
-        int result;
-        // me 를 높임
-        if (me > you) {
-            result = Math.max(0, X - (me - you));
-        } else {
-            result = X + (you - me);
-        }
+        for (int i = 1; i < arr.length - 1; i++) {
+            l = arr[i - 1];
+            int c = arr[i];
+            r = arr[i + 1];
+            // 1 long short long
+            int tempLeft = Math.max(X + c - l, 0);
+            int tempRight = Math.max(X + c - r, 0);
+            add = tempLeft + tempRight;
+            addMin = Math.min(add, addMin);
 
-        // you 를 높임
-        int result2;
-        if (me > you) {
-            result2 = me - you + X;
-        } else {
-            result2 = Math.max(0, X - (you - me));
+            // 2 short Long short
+            int tempLRMax = Math.max(l, r);
+            add = Math.max(X + tempLRMax - c, 0);
+            addMin = Math.min(add, addMin);
+
+            // 3 short mid long
+            int centerAdd = Math.max(X + r - c, 0);
+            int tempCenter = c + centerAdd;
+            int leftAdd = Math.max(X + tempCenter - l, 0);
+            add = centerAdd + leftAdd;
+            addMin = Math.min(add, addMin);
+
+            // 4 long mid short
+            centerAdd = Math.max(X + l - c, 0);
+            tempCenter = c + centerAdd;
+            int rightAdd = Math.max(X + tempCenter - r, 0);
+            add = centerAdd + rightAdd;
+            addMin = Math.min(add, addMin);
         }
-        return Math.min(result, result2);
+        System.out.println(addMin);
     }
 }
