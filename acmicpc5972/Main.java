@@ -33,18 +33,21 @@ public class Main {
 
         while (!pQ.isEmpty()) {
             Road cRoad = pQ.poll();
-            System.out.println(cRoad);
+            // System.out.println(cRoad);
             Cow cow = c[cRoad.nd];
+            if (cRoad.nd == N - 1) {
+                System.out.println(cRoad.distance);
+                return;
+            }
             for (Node n : cow.nds) {
+                if (n.visited) { // 같은 노드를 재방문 하지 않도록 함
+                    continue;
+                }
                 if (n.target == cRoad.prev)
                     continue;
-                if (n.target == N - 1) {
-                    System.out.println(cRoad.distance + n.cost);
-                    return;
-                }
+                n.visited = true;
                 pQ.add(new Road(cRoad.distance + n.cost, n.target, cRoad.nd));
             }
-
         }
     }
 
@@ -72,6 +75,7 @@ public class Main {
     static class Node {
         int target;
         int cost;
+        boolean visited;
 
         public Node(int target, int cost) {
             this.target = target;
