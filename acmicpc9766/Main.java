@@ -1,4 +1,4 @@
-package acmic9766;
+package acmicpc9766;
 
 import java.io.*;
 

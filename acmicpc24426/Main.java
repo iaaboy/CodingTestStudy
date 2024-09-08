@@ -1,4 +1,4 @@
-package acmic24426;
+package acmicpc24426;
 
 import java.io.*;
 import java.util.*;
