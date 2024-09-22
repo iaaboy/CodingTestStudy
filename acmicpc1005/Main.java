@@ -3,7 +3,7 @@ package acmicpc1005;
 import java.io.*;
 import java.util.*;
 
-/* ACM Craft >>> 풀이중
+/* ACM Craft
  * https://www.acmicpc.net/problem/1005
  */
 
@@ -57,23 +57,13 @@ public class Main {
                         v[son].pCount--;
                         v[son].start = Math.max(v[son].start, v[cur].start + v[cur].task);
                         if (v[son].pCount == 0) {
-                            if (lastOne == son) {
-                                sb.append(v[son].start + v[son].task).append("\n");
-                                isDone = true;
-                                break;
-                            }
                             q.add(son);
                         }
                     }
-                    if (isDone) {
-                        break;
-                    }
                     v[cur].pCount = Integer.MAX_VALUE;
                 }
-                if (isDone) {
-                    break;
-                }
             }
+            sb.append(v[lastOne].start + v[lastOne].task).append("\n");
         }
         System.out.print(sb);
     }
