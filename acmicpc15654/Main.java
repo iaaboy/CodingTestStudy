@@ -1,0 +1,68 @@
+package acmicpc15654;
+
+import java.io.*;
+import java.util.*;
+
+/* N과 M (5)
+ * https://www.acmicpc.net/problem/15654
+ */
+
+public class Main {
+    static ArrayList<ArrayList<Integer>> answer = new ArrayList<>();
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(bf.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        int[] arr = new int[N];
+        st = new StringTokenizer(bf.readLine());
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+        permutation(arr, 0, N, M);
+        answer.sort((a, b) -> {
+            int count = a.size();
+            for (int i = 0; i < count; i++) {
+                if (a.get(i) > b.get(i)) {
+                    return 1;
+                } else if (a.get(i) < b.get(i)) {
+                    return -1;
+                }
+            }
+            return -1;
+        });
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < answer.size(); i++) {
+            for (int a : answer.get(i)) {
+                sb.append(a + " ");
+            }
+            sb.append("\n");
+        }
+        System.out.print(sb);
+    }
+
+    static void permutation(int[] arr, int depth, int n, int r) {
+        if (depth == r) {
+            ArrayList<Integer> mList = new ArrayList<>();
+            for (int i = 0; i < r; i++) {
+                mList.add(arr[i]);
+            }
+            answer.add(mList);
+            return;
+        }
+
+        for (int i = depth; i < n; i++) {
+            swap(arr, depth, i);
+            permutation(arr, depth + 1, n, r);
+            swap(arr, depth, i);
+        }
+    }
+
+    static void swap(int[] arr, int depth, int i) {
+        int temp = arr[depth];
+        arr[depth] = arr[i];
+        arr[i] = temp;
+    }
+}
