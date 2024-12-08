@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 /* 회전 초밥
+ * https://www.acmicpc.net/problem/2531
  * https://www.acmicpc.net/problem/15961
  */
 
