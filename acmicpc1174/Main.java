@@ -5,6 +5,8 @@ import java.util.*;
 
 /* 줄어드는 수
  * https://www.acmicpc.net/problem/1174
+ * 감소하는 수
+ * https://www.acmicpc.net/problem/1038
  */
 
 public class Main {
@@ -15,7 +17,13 @@ public class Main {
         long N = Long.parseLong(bf.readLine());
 
         calcNum(-1, 0, 0);
-        System.out.println(getNum(nums, N));
+
+        if(N == 0) {
+            System.out.println(0);
+            return;
+        }
+        long result = getNum(nums, N + 1);
+        System.out.println(result);
         // System.out.println(nums);
 
     }
