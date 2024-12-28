@@ -3,6 +3,10 @@ package acmicpc2746;
 import java.io.*;
 import java.util.*;
 
+/*
+ * 못 푼문제
+ */
+
 public class Main {
     static int[] arr;
 
