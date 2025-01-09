@@ -6,16 +6,23 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(bf.readLine());
-
-        StringBuilder sb = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(bf.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+        int [] arr = new int[N + 1];
+        st = new StringTokenizer(bf.readLine());
         for (int i = 0; i < N; i++) {
-            int num = Integer.parseInt(bf.readLine());
-            for (int j = 0; j < num; j++) {
-                sb.append("=");
-            }
-            sb.append("\n");
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-        System.out.print(sb);
+        int index = 0;
+        while (true) {
+            if (arr[index] < K) {
+                break;
+            }
+            K++;
+            index++;
+            index %= N;
+        }
+        System.out.println(index + 1);
     }
 }
