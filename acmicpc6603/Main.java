@@ -3,6 +3,10 @@ package acmicpc6603;
 import java.io.*;
 import java.util.*;
 
+/* 로또
+ * https://www.acmicpc.net/problem/6603
+ */
+
 public class Main {
     static int N;
     static StringBuilder sb = new StringBuilder();
