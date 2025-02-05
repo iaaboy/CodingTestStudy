@@ -7,18 +7,20 @@ public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         // StringTokenizer st = new StringTokenizer(bf.readLine());
-        char [] ej = bf.readLine().toCharArray();
-        char [][] mbti = {
-            {'E','S','T','J'},
-            {'I','N','F','P'}
-        };
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            char result = ej[i] != mbti[0][i] ? mbti[0][i] : mbti[1][i];
-            sb.append(result);
+        
+        boolean [] arr = new boolean[31];
+
+        for (int i = 0; i < 28; i++) {
+            arr[Integer.parseInt(bf.readLine())] = true;            
         }
 
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= 30; i++) {
+            if (!arr[i]) {
+                sb.append(i).append("\n");
+            }
+        }
 
-        System.out.println(sb);
+        System.out.print(sb);
     }
 }
