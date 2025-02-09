@@ -1,40 +1,48 @@
 package acmicpc9663;
 
 import java.io.*;
-import java.util.*;
+
+/* N-Queen
+ * https://www.acmicpc.net/problem/9663
+ */
 
 public class Main {
     static int N;
+    static boolean visited[];
+    static int board[];
 
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(bf.readLine());
+        visited = new boolean[N];
+        board = new int[N];
 
-        boolean visited[] = new boolean[N * N];
-
-        traverse(visited, 0, 0);
+        traverse(0);
+        System.out.println(countTT);
     }
 
-    private static void traverse(boolean visited [], int count, int at) {
+    static int countTT = 0;
+
+    private static void traverse(int count) {
         if (count == N) {
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    if (visited[i * N + j]) {
-                        System.out.print(i + "," + j + " / ");
-                    }
-                }
-            }
-            System.out.println();
-            // System.out.println(Arrays.toString(visited));
+            countTT++;
             return;
         }
 
-        for (int i = at; i < N * N; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                traverse(visited, count + 1, i);
-                visited[i] = false;
+        for (int i = 0; i < N; i++) {
+            board[count] = i;
+            if (promising(count)) {
+                traverse(count + 1);
             }
         }
+    }
+
+    static boolean promising(int count) {
+        for (int i = 0; i < count; i++) {
+            if (board[count] == board[i] || count - i == Math.abs(board[count] - board[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 }
