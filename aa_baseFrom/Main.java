@@ -7,20 +7,23 @@ public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         // StringTokenizer st = new StringTokenizer(bf.readLine());
-        
-        boolean [] arr = new boolean[31];
 
-        for (int i = 0; i < 28; i++) {
-            arr[Integer.parseInt(bf.readLine())] = true;            
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= 30; i++) {
-            if (!arr[i]) {
-                sb.append(i).append("\n");
+        int N = Integer.parseInt(bf.readLine());
+        char[] M = bf.readLine().toCharArray();
+        int K = Integer.parseInt(bf.readLine());
+        int k = 0;
+        for (int i = N - 1; i >= 0; i--) {
+            if (M[i] == '0') {
+                k++;
+            } else {
+                break;
             }
         }
 
-        System.out.print(sb);
+        if ((k == N || k >= K)) {
+            System.out.println("YES");
+        } else {
+            System.out.println("NO");
+        }
     }
 }

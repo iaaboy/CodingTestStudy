@@ -5,6 +5,7 @@ import java.util.*;
 
 /* 퇴사
  * https://www.acmicpc.net/problem/14501
+ * https://www.acmicpc.net/problem/15486
  */
 
 public class Main {
