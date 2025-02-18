@@ -9,21 +9,15 @@ public class Main {
         // StringTokenizer st = new StringTokenizer(bf.readLine());
 
         int N = Integer.parseInt(bf.readLine());
-        char[] M = bf.readLine().toCharArray();
-        int K = Integer.parseInt(bf.readLine());
-        int k = 0;
-        for (int i = N - 1; i >= 0; i--) {
-            if (M[i] == '0') {
-                k++;
-            } else {
-                break;
-            }
+        Integer [] arr = new Integer[N];
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(bf.readLine());
         }
-
-        if ((k == N || k >= K)) {
-            System.out.println("YES");
-        } else {
-            System.out.println("NO");
+        Arrays.sort(arr, (a,b) -> b - a);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < N; i++) {
+            sb.append(arr[i]).append("\n");
         }
+        System.out.print(sb);
     }
 }
