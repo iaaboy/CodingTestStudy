@@ -5,6 +5,10 @@ import java.util.*;
 
 /* 좋은수열
  * https://www.acmicpc.net/problem/2661
+ * 
+ * 백트래킹
+ * 숫자(1,2,3)를 하나씩 늘려가며 조건을 체크한다, 조건을 만족하지 않는 숫자는 탐색 종료
+ * 1개 ~ 전체 숫자개수 / 2 개만큼 같은지 비교
  */
 
 public class Main {
