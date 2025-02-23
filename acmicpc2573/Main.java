@@ -6,6 +6,8 @@ import java.util.*;
 /* 빙산
  * https://www.acmicpc.net/problem/2573
 
+너비우선 탐색(bfs)
+
 Pseudo
 0. 입력 받을 때에 전체 빙산 count
 1. 1년 기준으로 빙산을 녹인다, 녹은 빙산 만큼 count빼준다.
