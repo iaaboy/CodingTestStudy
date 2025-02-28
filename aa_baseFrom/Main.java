@@ -7,12 +7,17 @@ public class Main {
 
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(bf.readLine());
-        int H = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken()) + Integer.parseInt(bf.readLine());
-        H += (M / 60);
-        H %= 24;
-        M %= 60;
-        System.out.println(H + " " + M);
+        
+        int X = Integer.parseInt(bf.readLine());
+        int N = Integer.parseInt(bf.readLine());
+        long sum = 0;
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st = new StringTokenizer(bf.readLine());
+            long price = Long.parseLong(st.nextToken());
+            long n = Long.parseLong(st.nextToken());
+            sum += (price * n);
+        }
+        String result = sum == X ? "Yes" : "No";
+        System.out.println(result);
     }
 }
