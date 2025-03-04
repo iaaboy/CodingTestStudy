@@ -8,104 +8,65 @@ import java.util.*;
  */
 
 public class Main {
-    static int N;
-    
-
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(bf.readLine());;
-        int x1 = Integer.parseInt(st.nextToken());
-        int y1 = Integer.parseInt(st.nextToken());
-        int x2 = Integer.parseInt(st.nextToken());
-        int y2 = Integer.parseInt(st.nextToken());
-        N = Math.max(Math.abs(x1), Math.abs(x2));
-        N = Math.max(N, Math.max(Math.abs(y1), Math.abs(y2)));
-        int[][] map = new int[N * 2 + 1][N * 2 + 1];
-        System.out.println(g(0) + "," + g(0));
+        // StringTokenizer st = new StringTokenizer(bf.readLine());;
+        // int x1 = Integer.parseInt(st.nextToken());
+        // int y1 = Integer.parseInt(st.nextToken());
+        // int x2 = Integer.parseInt(st.nextToken());
+        // int y2 = Integer.parseInt(st.nextToken());
 
-        map[g(0)][g(0)] = 1;
-        int start = 2;
-        for (int i = 1; i <= N; i++) {
-            start = setSquare(map, start, i);
+        printMap(4, "Test");
+
+    }
+
+    private static int getValue(int y, int x) {
+        int layer = Math.max(Math.abs(y), Math.abs(x));
+        // System.out.print(layer + " ");
+        int N = layer * 2 + 1;
+        int start = N * N - (N - 2 * layer) * (N - 2 * layer) + 1;
+        int index = start;
+        // System.out.print(start + " ");
+        int dir = 3;
+        int lineLength = 1 + 2 * layer;
+        int[] startInSqare = { 0, lineLength, lineLength + lineLength - 1,
+                lineLength + lineLength - 1 + lineLength - 1 };
+        int option = 0;
+        if (y - layer == 0) { // 하단(← 방향)
+            // option = x - N / 2;
+            // index += option;
+            dir = 0;
+        } else if (x + layer == 0) { // 왼쪽(↓ 방향)
+            // option = y - N / 2 + 1;
+            // index += option;
+            dir = 1;
+        } else if (y + layer <= 0) { // 상단(→ 방향)
+            // option = x - N / 2 + 1;
+            // index -= option;
+            dir = 2;
+        } else { //오른쪽(↑ 방향)
+            // option = y - N / 2;
+            // index -= option;
+            dir = 3;
+
         }
+        // System.out.print(startInSqare[dir] + " ");
+        index -= startInSqare[dir];
 
-        for (int i = x1; i <= x2; i++) {
-            for (int j = y1; j <= y2; j++) {
-                if (map[g(i)][g(j)] > 9) {
-                    System.out.print(map[g(i)][g(j)] + " ");
-                } else {
-                    System.out.print(map[g(i)][g(j)] + "  ");
-                }
+        // System.out.print(dir + " ");
+
+        System.out.printf("%2d ", index);
+
+        return -1;
+    }
+
+    private static void printMap(int N, String s) {
+        System.out.println(s);
+        for (int y = -N; y <= N; y++) {
+            for (int x = -N; x <= N; x++) {
+                getValue(y, x);
             }
             System.out.println();
         }
-    }
-
-    private static int setSquare(int[][] map, int index, int num) {
-        // (num, 0) 시작
-        int x = num;
-        int y = num - 1;
-        map[g(y)][g(x)] = index++;
-        y--;
-        // y감소 -num 만날때까지
-        for (; y >= -num; y--) {
-            if (map[g(y)][g(x)] == 0)
-                map[g(y)][g(x)] = index++;
-        }
-        y++;
-        // printMap(x + "," + y);
-
-        // x감소 -num 만날때까지
-        for (; x >= -num; x--) {
-            if (map[g(y)][g(x)] == 0)
-                map[g(y)][g(x)] = index++;
-        }
-        x++;
-        // printMap(x + "," + y);
-
-        // y증가 num 만날때까지
-        for (; y <= num; y++) {
-            if (map[g(y)][g(x)] == 0)
-                map[g(y)][g(x)] = index++;
-        }
-        y--;
-        // printMap(x + "," + y);
-
-        // x증가 num 만날때까지
-        for (; x <= num; x++) {
-            if (map[g(y)][g(x)] == 0)
-                map[g(y)][g(x)] = index++;
-        }
-        x--;
-        // printMap(x + "," + y);
-
-        // y 증가 0 만나기 전까지
-        for (; y > 0; y--) {
-            if (map[g(y)][g(x)] == 0)
-                map[g(y)][g(x)] = index++;
-        }
-
-        // printMap(x + "," + y);
-
-        return index;
-    }
-
-    private static void printMap(String s) {
-        // System.out.println(s);
-        // for (int i = -N; i <= N; i++) {
-        //     for (int j = -N; j <= N; j++) {
-        //         if (map[g(i)][g(j)] > 9) {
-        //             System.out.print(" " + map[g(i)][g(j)]);
-        //         } else {
-        //             System.out.print("  " + map[g(i)][g(j)]);
-        //         }
-
-        //     }
-        //     System.out.println();
-        // }
-    }
-
-    static int g(int x) {
-        return x + N;
     }
 }
