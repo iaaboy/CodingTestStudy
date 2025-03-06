@@ -3,6 +3,10 @@ package acmicpc10757;
 import java.io.*;
 import java.util.*;
 
+/* 큰 수 A+B
+ * https://www.acmicpc.net/problem/10757
+ */
+
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
