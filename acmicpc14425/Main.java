@@ -3,6 +3,12 @@ package acmicpc14425;
 import java.io.*;
 import java.util.*;
 
+/* 문자열 집합
+ * https://www.acmicpc.net/problem/14425
+첫번째 클래스 내용들을 set에 저장.
+set에 있는 이름들을 카운트 출력.
+ */
+
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
