@@ -3,68 +3,63 @@ package acmicpc20166;
 import java.io.*;
 import java.util.*;
 
+/* 문자열 지옥에 빠진 호석
+ * https://www.acmicpc.net/problem/20166
+ */
+
+/*
+DFS로 모든 경우의 수를 탐색하며, 5글자가 될 때까지 countMap에 저장.
+query를 받아서 countMap에서 찾아서 출력.
+ */
+
 public class Main {
-    static char[][] map ;
-    static Queue<Coord> q = new LinkedList<>();
-    static HashMap<String, Integer> countMap;
+    static char[][] map;
+    static Map<String, Integer> countMap;
+    static int K, N, M;
+
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(bf.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
         map = new char[N][M];
-        
+
         for (int i = 0; i < N; i++) {
             map[i] = bf.readLine().toCharArray();
-        
         }
         countMap = new HashMap<>();
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                q = new LinkedList<>();
-                q.add(new Coord(i, j, "" + (map[i][j])));
-                while (!q.isEmpty()) {
-                    Coord c = q.poll();
-                    // if (c.word.length() == K) {
-                    //     countMap.put(c.word, countMap.getOrDefault(c.word, 1) + 1);
-                    //     // System.out.println(countMap);
-                    //     continue;
-                    // }
-                    for (int d = 0; d < 8; d++) {
-                        int nx = (M + c.x + dx[d]) % M;
-                        int ny = (N + c.y + dy[d]) % N;
-                        if (c.word.length() + 1 == K) {
-                            String s = c.word + map[ny][nx];
-                            countMap.put(s, countMap.getOrDefault(s, 1) + 1);
-                            // System.out.println(countMap);
-                            // continue;
-                        } else {
-                            q.add(new Coord(ny, nx, c.word + map[ny][nx]));
-                        }
-                        
-                    }
-                }
+                dfs(i, j, String.valueOf(map[i][j]));
             }
         }
-        
-        
+
+        // System.out.println(countMap);
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < K; i++) {
             String inWord = bf.readLine();
             sb.append(countMap.getOrDefault(inWord, 0)).append("\n");
+            // System.out.println(countMap.getOrDefault(inWord, 0));
         }
         System.out.print(sb);
     }
-    static int[] dx = { 1, 0, 0, -1, 1, 1, -1, -1 };
-    static int[] dy = { 0, 1, -1, 0, -1, 1, -1, 1 };
-    static class Coord {
-        int y, x;
-        String word;
-        public Coord(int y, int x, String word) {
-            this.y = y;
-            this.x = x;
-            this.word = word;
+
+    static void dfs(int y, int x, String word) {
+        String s = word;
+        countMap.put(s, countMap.getOrDefault(s, 0) + 1);
+        if (word.length() == 5) {
+
+            // System.out.println(countMap);
+            return;
+        }
+        int[] dx = { 1, 0, 0, -1, 1, 1, -1, -1 };
+        int[] dy = { 0, 1, -1, 0, -1, 1, -1, 1 };
+        for (int d = 0; d < 8; d++) {
+            int nx = (M + x + dx[d]) % M;
+            int ny = (N + y + dy[d]) % N;
+            dfs(ny, nx, word + map[ny][nx]);
         }
     }
 }
