@@ -1,27 +1,27 @@
 package baseForm;
 
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws NumberFormatException, IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(bf.readLine());
-        char[] nArr = st.nextToken().toCharArray();
         int N = Integer.parseInt(st.nextToken());
-        int num = (nArr[0] >= '0' && nArr[0] <= '9') ? nArr[0] - '0'
-                : nArr[0] - 'A' + 10;
-        for (int i = 1; i < nArr.length; i++) {
-            int n;
-            num *= N;
-            if (nArr[i] >= '0' && nArr[i] <= '9') {
-                n = nArr[i] - '0';
-            } else {
-                n = nArr[i] - 'A' + 10;
+        int K = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(bf.readLine());
+        ArrayList <Integer> nums = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            int num = Integer.parseInt(st.nextToken());
+            if (num < K) {
+                nums.add(num);
             }
-            num += n;
         }
-
-        System.out.println(num);
+        StringBuilder sb = new StringBuilder();
+        for (Integer integer : nums) {
+            sb.append(integer).append(" ");
+        }
+        System.out.println(sb);
+        
     }
 }
