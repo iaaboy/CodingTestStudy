@@ -3,6 +3,11 @@ package acmicpc3067;
 import java.io.*;
 import java.util.*;
 
+/* coins , 동전
+ * https://www.acmicpc.net/problem/9084
+ * https://www.acmicpc.net/problem/3067
+ */
+
 public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
