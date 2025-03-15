@@ -3,6 +3,10 @@ package acmicpc25192;
 import java.io.*;
 import java.util.*;
 
+/* 인사성 밝은 곰곰이
+ * https://www.acmicpc.net/problem/25192
+ */
+
 public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
