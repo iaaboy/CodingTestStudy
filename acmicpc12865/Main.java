@@ -1,55 +1,52 @@
 package acmicpc12865;
 
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
-/* 평범한 배낭
+/* 평범한 배낭 다시 풀기
  * https://www.acmicpc.net/problem/12865
  */
 
-/*
-4 7  n  k
-6 13  w[i]  v[i]
-4 8
-3 6
-5 12
- */
-
 public class Main {
-    public static void main(String[] args) throws NumberFormatException,
-            IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-        st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int k = Integer.parseInt(st.nextToken());
 
-        int[] w = new int[n + 1];
-        int[] v = new int[n + 1];
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            int ww = Integer.parseInt(st.nextToken());
-            int vv = Integer.parseInt(st.nextToken());
-            w[i] = ww;
-            v[i] = vv;
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+
+        int[] W = new int[N + 1];
+        int[] V = new int[N + 1];
+        int[][] dp = new int[N + 1][K + 1];
+
+        for (int i = 1; i <= N; i++) {
+            st = new StringTokenizer(br.readLine(), " ");
+            W[i] = Integer.parseInt(st.nextToken());
+            V[i] = Integer.parseInt(st.nextToken());
         }
-        new Main().solution(w, v, k);
-    }
 
-    public void solution(int[] w, int[] v, int k) { // N 출력
-        int[][] maxv = new int[w.length + 1][k + 1];
-
-        for (int y = 1; y <= w.length; y++) {
-            for (int x = 0; x <= k; x++) {
-                if (x - w[y - 1] < 0) {
-                    // 전에꺼 그대로
-                    maxv[y][x] = maxv[y - 1][x];
-                } else {
-                    // 전에꺼 + 다음꺼
-                    maxv[y][x] = Math.max(maxv[y - 1][x], maxv[y - 1][x - w[y - 1]] + v[y - 1]);
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= K; j++) {
+                //
+                if (W[i] > j) {
+                    dp[i][j] = dp[i - 1][j];
+                }
+                //
+                else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - W[i]] + V[i]);
                 }
             }
         }
-        System.out.println(maxv[w.length][k]);
+
+        for (int i = 0; i <= N; i++) {
+            System.out.print(W[i] + " , " + V[i] + " : ");
+            for (int j = 0; j <= K; j++) {
+                System.out.print(dp[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        System.out.println(dp[N][K]);
     }
 }
