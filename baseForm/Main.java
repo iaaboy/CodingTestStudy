@@ -9,19 +9,21 @@ public class Main {
         StringTokenizer st = new StringTokenizer(bf.readLine());
         int N = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
-        st = new StringTokenizer(bf.readLine());
-        ArrayList <Integer> nums = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            int num = Integer.parseInt(st.nextToken());
-            if (num < K) {
-                nums.add(num);
+        int i = 1;
+        for (; i <= N; i++) {
+            if (N % i == 0) {
+                K--;
+                if (K == 0) {
+                    break;
+                }
             }
         }
-        StringBuilder sb = new StringBuilder();
-        for (Integer integer : nums) {
-            sb.append(integer).append(" ");
+
+        if (K == 0) {
+            System.out.println(i);
+        } else {
+            System.out.println(0);
         }
-        System.out.println(sb);
-        
+
     }
 }
