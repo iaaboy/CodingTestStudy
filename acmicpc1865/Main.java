@@ -3,10 +3,15 @@ package acmicpc1865;
 import java.io.*;
 import java.util.*;
 
+/* 웜홀
+ * https://www.acmicpc.net/problem/1865
+벨만포드로 음수 사이클이 존재하는지 확인한다.!!!
+벨만 포드를 한 번 돌리고, 음수 사이클이 존재하는지 각 노드에 대해 확인.
+ */
+
 public class Main {
-    static long INF = Long.MAX_VALUE / 2 - 1;
-    static Vertex[] v;
-    static long[][] cost;
+    static int INF = Integer.MAX_VALUE;
+    static Edge[] roads;
     static int N;
 
     public static void main(String[] args) throws NumberFormatException, IOException {
@@ -15,106 +20,83 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         for (int t = 0; t < TC; t++) {
             StringTokenizer st = new StringTokenizer(bf.readLine());
-            int N = Integer.parseInt(st.nextToken());
+            N = Integer.parseInt(st.nextToken());
             int M = Integer.parseInt(st.nextToken());
             int W = Integer.parseInt(st.nextToken());
-            v = new Vertex[N + 1];
-            for (int i = 0; i < N + 1; i++) {
-                v[i] = new Vertex();
-            }
+            roads = new Edge[M * 2 + W];
+            int idx = 0;
             for (int i = 0; i < M; i++) {
                 st = new StringTokenizer(bf.readLine());
-                int s = Integer.parseInt(st.nextToken());
-                int e = Integer.parseInt(st.nextToken());
-                int w = Integer.parseInt(st.nextToken());
-                v[s].neighbor.add(new Node(e, w));
-                v[e].neighbor.add(new Node(s, w));
+                int from = Integer.parseInt(st.nextToken()) - 1;
+                int to = Integer.parseInt(st.nextToken()) - 1;
+                int weight = Integer.parseInt(st.nextToken());
+                roads[idx++] = new Edge(from, to, weight);
+                roads[idx++] = new Edge(to, from, weight);
             }
             for (int i = 0; i < W; i++) {
                 st = new StringTokenizer(bf.readLine());
-                int s = Integer.parseInt(st.nextToken());
-                int e = Integer.parseInt(st.nextToken());
-                int w = Integer.parseInt(st.nextToken());
-                v[s].neighbor.add(new Node(e, -w));
-            }
-            cost = new long[N + 1][N + 1];
-            for (int i = 0; i < N; i++) {
-                Arrays.fill(cost[i], INF);
+                int from = Integer.parseInt(st.nextToken()) - 1;
+                int to = Integer.parseInt(st.nextToken()) - 1;
+                int weight = Integer.parseInt(st.nextToken());
+                roads[idx++] = new Edge(from, to, -weight);
             }
 
-            boolean result = false;
-            for (int i = 1; i <= N; i++) {
-                traverse(i);
-                // System.out.println(i + " -> " + cost[i][i]);
-                if (cost[i][i] < 0) {
-                    result = true;
+            String result = "NO\n";
+            distance = new int[N];
+            Arrays.fill(distance, INF);
+            bellmanFord();
+            for (int i = 0; i < N; i++) {
+                if (!checkRoads(i)) {
+                    result = "YES\n";
                     break;
                 }
             }
-            if (result) {
-                sb.append("YES\n");
-            } else {
-                sb.append("NO\n");
-            }
+            sb.append(result);
         }
         System.out.print(sb);
     }
 
-    private static void traverse(int start) {
-        Queue<State> q = new ArrayDeque<>();
-        q.add(new State(start, 0));
-        while (!q.isEmpty()) {
-            State c = q.poll();
-            // System.out.println(c);
-            int next = c.index;
-            for (Node n : v[next].neighbor) {
-                if (n.visited < start && cost[start][n.end] > c.weight + n.weight) {
-                    cost[start][n.end] = c.weight + n.weight;
-                    n.visited = start;
-                    q.add(new State(n.end, c.weight + n.weight));
+    static int[] distance;
+
+    public static void bellmanFord() {
+
+        for (int i = 0; i < distance.length; i++) {
+            distance[i] = 0;
+        }
+
+        for (int i = 0; i < N - 1; i++) {
+            for (int j = 0; j < roads.length; j++) {
+                int u = roads[j].source;
+                int v = roads[j].dest;
+                int weight = roads[j].weight;
+
+                if (distance[u] != INF && distance[u] + weight < distance[v]) {
+                    distance[v] = distance[u] + weight;
                 }
             }
         }
     }
 
-    static class Vertex {
-        ArrayList<Node> neighbor = new ArrayList<>();
+    static boolean checkRoads(int source) {
+        for (int i = 0; i < roads.length; i++) {
+            int u = roads[i].source;
+            int v = roads[i].dest;
+            int weight = roads[i].weight;
+            if (distance[u] != INF && distance[u] + weight < distance[v]) {
+                // System.out.println("Error occurred. Negative edge weight cycles detected");
+                return false;
+            }
+        }
+        return true;
     }
 
-    static class Node {
-        int end;
-        long weight;
-        int visited = 0;
+    static class Edge {
+        int source, dest, weight;
 
-        public Node(int end, long weight) {
-            this.end = end;
+        public Edge(int source, int dest, int weight) {
+            this.source = source;
+            this.dest = dest;
             this.weight = weight;
-        }
-    }
-
-    static class State {
-        int index;
-        long weight;
-
-        public State(int index, long weight) {
-            this.index = index;
-            this.weight = weight;
-        }
-
-        @Override
-        public String toString() {
-            return index + "(" + weight + ")";
         }
     }
 }
-
-/*
-1
-4 2 2
-3 4 1
-2 4 1
-1 2 1
-1 3 10
-
- * 
- */
