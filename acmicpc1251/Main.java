@@ -1,39 +1,33 @@
 package acmicpc1251;
 
 import java.io.*;
+import java.util.*;
+
+/* 단어 나누기
+ * https://www.acmicpc.net/problem/1251
+ */
 
 public class Main {
+    static Set<String> dict = new HashSet<>();
+
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        char[] inStr = bf.readLine().toCharArray();
+        String inStr = bf.readLine();
+        makeDict(inStr);
+        ArrayList<String> dictList = new ArrayList<>(dict);
+        dictList.sort(null);
+        System.out.println(dictList.get(0));
+    }
 
-        int firstIdx = 0;
-        for (int i = 0; i < inStr.length - 1; i++) {
-            if (inStr[i] < inStr[firstIdx]) {
-                firstIdx = i;
+    private static void makeDict(String inStr) {
+        for (int first = 1; first < inStr.length(); first++) {
+            for (int second = first + 1; second < inStr.length(); second++) {
+                // System.out.println(first + "," + second);
+                StringBuilder a = new StringBuilder(inStr.substring(0, first)).reverse();
+                StringBuilder b = new StringBuilder(inStr.substring(first, second)).reverse();
+                StringBuilder c = new StringBuilder(inStr.substring(second, inStr.length())).reverse();
+                dict.add(a.toString() + b.toString() + c.toString());
             }
         }
-        int secondIdx = firstIdx == 0 ? 1 : 0;
-        for (int i = 0; i < inStr.length - 1; i++) {
-            if (i == firstIdx)
-                continue;
-            if (inStr[i] < inStr[secondIdx]) {
-                secondIdx = i;
-            }
-        }
-        int l = Math.min(firstIdx, secondIdx);
-        int r = Math.max(firstIdx, secondIdx);
-        System.out.println(l + "," + r);
-        StringBuilder sb = new StringBuilder();
-        for (int i = l; i >= 0; i--) {
-            sb.append(inStr[i]);
-        }
-        for (int i = r; i >= l + 1; i--) {
-            sb.append(inStr[i]);
-        }
-        for (int i = inStr.length - 1; i >= r + 1; i--) {
-            sb.append(inStr[i]);
-        }
-        System.out.println(sb.toString());
     }
 }
