@@ -3,12 +3,13 @@ package AlgorithmSamples.UpperBoundLowerBound;
 public class Main {
     public static void main(String[] args) {
         Integer[] arr = { 1, 2, 3, 4, 5, 5, 6, 7, 10, 10, 10 };
-        System.out.println(myUnderBound(arr, 2));
-        System.out.println(myUnderBound(arr, 1));
-        System.out.println(myUnderBound(arr, 0));
-        System.out.println(myUnderBound(arr, 10));
-        System.out.println(myUnderBound(arr, 7));
-        System.out.println(myUnderBound(arr, 12));
+        System.out.println(lastLEQ(arr, 10));
+        // System.out.println(myUnderBound(arr, 2));
+        // System.out.println(myUnderBound(arr, 1));
+        // System.out.println(myUnderBound(arr, 0));
+        // System.out.println(myUnderBound(arr, 10));
+        // System.out.println(myUnderBound(arr, 7));
+        // System.out.println(myUnderBound(arr, 12));
         System.out.println();
         // System.out.println(upperBound(arr, 5));
         // System.out.println(upperBound(arr, 0));
@@ -20,6 +21,24 @@ public class Main {
         // System.out.println(lowerBound(arr, 8));
         // System.out.println(upperBound(arr, 8));
     }
+    private static int lastLEQ(Integer[] arr, int x) {
+        int left = 0, right = arr.length - 1;
+        int result = -1; // 결과가 없을 경우 -1
+    
+        while (left <= right) {
+            int mid = (left + right) / 2;
+    
+            if (arr[mid] <= x) {
+                result = mid;       // 후보 저장
+                left = mid + 1;     // 오른쪽을 더 탐색
+            } else {
+                right = mid - 1;
+            }
+        }
+    
+        return result;
+    }
+    
     private static int myUnderBound(Integer[] arr, int key) {
         int left = 0;
         int right = arr.length;
