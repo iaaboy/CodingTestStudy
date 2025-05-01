@@ -3,6 +3,10 @@ package acmicpc4963;
 import java.io.*;
 import java.util.*;
 
+/* 섬의 개수
+ * https://www.acmicpc.net/problem/4963
+ */
+
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
