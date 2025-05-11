@@ -2,15 +2,16 @@ package AlgorithmSamples.UpperBoundLowerBound;
 
 public class Main {
     public static void main(String[] args) {
-        Integer[] arr = { 1, 2, 3, 4, 5, 5, 6, 7, 10, 10, 10 };
-        System.out.println(lastLEQ(arr, 10));
-        // System.out.println(myUnderBound(arr, 2));
+        Integer[] arr = { 1, 2, 3, 4, 5, 5, 5, 6, 7, 10, 10, 10 };
+        System.out.println(lastLEQ(arr, 5));
+        System.out.println(myUnderBound(arr, 5));
+        System.out.println(lowerBound(arr, 5));
+        System.out.println(upperBound(arr, 5));
         // System.out.println(myUnderBound(arr, 1));
         // System.out.println(myUnderBound(arr, 0));
         // System.out.println(myUnderBound(arr, 10));
         // System.out.println(myUnderBound(arr, 7));
         // System.out.println(myUnderBound(arr, 12));
-        System.out.println();
         // System.out.println(upperBound(arr, 5));
         // System.out.println(upperBound(arr, 0));
         // System.out.println(upperBound(arr, 1));
@@ -54,7 +55,7 @@ public class Main {
         return right - 1;
     }
 
-    private static int upperBound(int[] arr, int key) {
+    private static int upperBound(Integer[] arr, int key) { // 특정 target보다 큰 첫번째 원소의 인덱스
         int left = 0;
         int right = arr.length;
         while (left < right) {
@@ -68,7 +69,7 @@ public class Main {
         return left;
     }
 
-    private static int lowerBound(int[] arr, int key) {
+    private static int lowerBound(Integer[] arr, int key) { //target보다 크거나 같은 첫번째 원소의 인덱스
         int left = 0;
         int right = arr.length;
         while (left < right) {
