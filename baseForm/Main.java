@@ -6,32 +6,19 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(bf.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(bf.readLine());
+        int M = Integer.parseInt(bf.readLine());
+        int K = Integer.parseInt(bf.readLine());
+        int sum = N * M * K;
+        char [] num = Integer.toString(sum).toCharArray();
+        int [] count = new int[10];
+        for (char num2 : num) {
+            count[num2 - '0']++;
+        }
         StringBuilder sb = new StringBuilder();
-        char[] ref = bf.readLine().toCharArray();
-        for (int i = 0; i < M; i++) {
-            char[] inStr = bf.readLine().toCharArray();
-            if (compareStr(ref, inStr)) {
-                sb.append("true").append("\n");
-            } else {
-                sb.append("false").append("\n");
-            }
+        for (int count2 : count) {
+            sb.append(count2).append("\n");
         }
-        System.out.print(sb);
-    }
-
-    private static boolean compareStr(char[] ref, char[] inStr) {
-        int idx = 0;
-        for (int i = 0; i < inStr.length; i++) {
-            if (inStr[i] == ref[idx]) {
-                idx++;
-                if (idx >= ref.length) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        System.out.print(sb); 
     }
 }
