@@ -3,53 +3,44 @@ package acmicpc27468;
 import java.io.*;
 import java.util.*;
 
-/* 푸는중.
- * https://www.acmicpc.net/problem/27468V
+/* 2배 또는 0.5배
+ * https://www.acmicpc.net/problem/27468
  */
 
 public class Main {
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(bf.readLine());
-        int[] arr = new int[N];
-        boolean[] visited = new boolean[N];
-        permutation(arr, visited, 0);
-        if (!done) {
-            System.out.println("NO");
-        }
-    }
+        
+        StringBuilder sb = new StringBuilder();
+        if (N < 3) {
+            sb.append("NO");
+        } else {
+            
+            
+            int curVal = 0;
+            sb.append("YES\n");
 
-    static boolean done = false;
+            if (N % 2 == 1 || N % 4 == 0) {
+                sb.append("3 1 2 ");
+                N -= 3;
+                curVal = 2;
+            } else {
+                sb.append("1 2 4 3 ");
+                N -= 4;
+                curVal = 3;
+            }
 
-    public static void permutation(int [] resulList , boolean [] visited, int idx) {
-        if(idx == resulList.length) {
-            return;
+            int curIndex = 0;
+            int[] offset = { 2, 1, 2, -1 };
+            while (N-- > 0) {
+                curVal = curVal + offset[curIndex++];
+                if (curIndex == 4)
+                    curIndex = 0;
+                sb.append(curVal + " ");
+            }
         }
-        for(int i = 0; i < visited.length; ++i) {
-            if(visited[i]) continue;
-                
-            resulList[idx] = list[i];
-            visited[i] = true;
-            permutation(idx+1);
-            visited[i] = false;
-        }
-    }
 
-    private static boolean checkArr(int[] arr, int n) {
-        if (n < 2) {
-            return true;
-        }
-        int a = Math.max(arr[n - 2], arr[n - 1]) - Math.min(arr[n - 2], arr[n - 1]);
-        int b = Math.max(arr[n - 1], arr[n]) - Math.min(arr[n - 1], arr[n]);
-        if (a != 2 * b && a * 2 != b) {
-            return false;
-        }
-        return true;
-    }
-
-    static void swap(int[] arr, int depth, int i) {
-        int temp = arr[depth];
-        arr[depth] = arr[i];
-        arr[i] = temp;
+        System.out.println(sb);
     }
 }
