@@ -6,11 +6,11 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        HashMap<String, String> map = new HashMap<>();
-        map.put("SONGDO", "HIGHSCHOOL");
-        map.put("CODE", "MASTER");
-        map.put("2023", "0611");
-        map.put("ALGORITHM", "CONTEST");
-        System.out.println(map.get(bf.readLine()));
+        char [] inArr = bf.readLine().toCharArray();
+        if (inArr[0] == inArr[2]) {
+            System.out.println(1);
+        } else {
+            System.out.println(0);
+        }
     }
 }
