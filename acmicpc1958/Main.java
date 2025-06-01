@@ -1,3 +1,0 @@
-package acmicpc1958;
-
-
