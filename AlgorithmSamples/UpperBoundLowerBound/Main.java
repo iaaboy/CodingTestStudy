@@ -4,9 +4,11 @@ public class Main {
     public static void main(String[] args) {
         Integer[] arr = { 1, 2, 3, 4, 5, 5, 5, 6, 7, 10, 10, 10 };
         System.out.println(lastLEQ(arr, 5));
-        System.out.println(myUnderBound(arr, 5));
-        System.out.println(lowerBound(arr, 5));
-        System.out.println(upperBound(arr, 5));
+        System.out.println("underBOund: " + myUnderBound(arr, 5));
+        System.out.println("lowerBound: " + lowerBound(arr, 5));
+        System.out.println("upperBound: " + upperBound(arr, 5));
+        System.out.println("lastLEQ: " + lastLEQ(arr, 5));
+        // System.out.println("lastLEQ: " + lastLEQ(arr, 12));
         // System.out.println(myUnderBound(arr, 1));
         // System.out.println(myUnderBound(arr, 0));
         // System.out.println(myUnderBound(arr, 10));
