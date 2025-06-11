@@ -6,15 +6,22 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(bf.readLine());
-        StringTokenizer st = new StringTokenizer(bf.readLine());
-        int sum = 0;
-        int A = Integer.parseInt(st.nextToken());
-        sum += Math.min(N, A);
-        int B = Integer.parseInt(st.nextToken());
-        sum += Math.min(N, B);
-        int C = Integer.parseInt(st.nextToken());
-        sum += Math.min(N, C);
-        System.out.println(sum);
+        int T = Integer.parseInt(bf.readLine());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < T; i++) {
+            int N = Integer.parseInt(bf.readLine());
+            int [] arr = new int[1001];    
+            for (int j = 0; j < N; j++) {
+                arr[Integer.parseInt(bf.readLine())]++;
+            }
+            int max = 0;
+            for (int j = 0; j < arr.length; j++) {
+                if (arr[j] > arr[max]) {
+                    max = j;
+                }
+            }
+            sb.append(max).append("\n");
+        }
+        System.out.print(sb);
     }
 }
