@@ -8,26 +8,29 @@ import java.util.*;
  */
 
 public class Main {
+    static Farm[][] f;
+    static int N;
+
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(bf.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
-        int[][] currentNutri = new int[N][N];
+        f = new Farm[N][N];
+        for (int i = 0; i < N * N; i++) {
+            f[i / N][i % N] = new Farm();
+        }
         int[][] annualNutri = new int[N][N];
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(bf.readLine());
             for (int j = 0; j < N; j++) {
                 annualNutri[i][j] = Integer.parseInt(st.nextToken());
-                currentNutri[i][j] = 5;
+                f[i][j].nutri = 5;
             }
         }
-        Farm[][] f = new Farm[N][N];
-        for (int i = 0; i < N * N; i++) {
-            f[i / N][i % N] = new Farm();
-        }
+
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(bf.readLine());
             int y = Integer.parseInt(st.nextToken()) - 1;
@@ -50,15 +53,18 @@ public class Main {
                 int x = i % N;
                 // 봄
                 for (Tree t : f[y][x].tr) {
-                    if (t.age <= currentNutri[y][x]) {
-                        currentNutri[y][x] -= t.age;
-                        t.age++;
-                        if (t.age % 5 == 0) {
-                            f[y][x].breedCount++;
+                    for (int j = 0; j < t.count; j++) {
+                        if (t.age <= f[y][x].nutri) {
+                            f[y][x].nutri -= t.age;
+                        } else {
+                            t.count--;
+                            f[y][x].deadNutriAdds += t.age / 2;
+                            if (t.count == 0) {
+                                t.isAlive = false;
+                            }
                         }
-                    } else {
-                        t.isAlive = false;
                     }
+                    t.age++;
                 }
             }
 
@@ -69,12 +75,11 @@ public class Main {
             for (int i = 0; i < N * N; i++) {
                 int y = i / N;
                 int x = i % N;
-                int nutriAdds = 0;
                 while (!f[y][x].tr.isEmpty() && !f[y][x].tr.getLast().isAlive) {
-                    nutriAdds += (f[y][x].tr.getLast().count * (int) (f[y][x].tr.getLast().age / 2));
                     f[y][x].tr.removeLast();
                 }
-                currentNutri[y][x] += nutriAdds;
+                f[y][x].nutri += f[y][x].deadNutriAdds;
+                f[y][x].deadNutriAdds = 0;
             }
 
             // 가을
@@ -84,33 +89,56 @@ public class Main {
             // 어떤 칸 (r, c)와 인접한 칸은 (r-1, c-1), (r-1, c), (r-1, c+1), (r, c-1), (r, c+1),
             // (r+1, c-1), (r+1, c), (r+1, c+1) 이다.
             // 상도의 땅을 벗어나는 칸에는 나무가 생기지 않는다.
-            int[][] newTree = new int[N][N];
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    for (int d = 0; d < 8; d++) {
-                        int nx = i + dx[d];
-                        int ny = j + dy[d];
-                        if (nx < 0 || ny < 0 || nx >= N || ny >= N)
-                            continue;
-                        newTree[ny][nx] += f[i][j].breedCount;
+
+            for (int i = 0; i < N * N; i++) {
+                int y = i / N;
+                int x = i % N;
+                // 봄
+                for (Tree t : f[y][x].tr) {
+                    if (t.age > 0 && t.age % 5 == 0) {
+                        f[y][x].breedCount += t.count;
                     }
                 }
             }
 
+            printBreed();
+
+            int[][] newTree = new int[N][N];
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
-                    if (newTree[i][j] > 0) {
-                        f[i][j].tr.add(new Tree(1, newTree[i][j]));
+                    if (f[i][j].breedCount > 0) {
+                        for (int d = 0; d < 8; d++) {
+                            int nx = j + dx[d];
+                            int ny = i + dy[d];
+                            if (nx < 0 || ny < 0 || nx >= N || ny >= N)
+                                continue;
+                            newTree[ny][nx] += f[i][j].breedCount;
+                        }
+                        f[i][j].breedCount = 0;
                     }
                 }
             }
+
+            int treeCount = 0 ;
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (newTree[i][j] > 0) {
+                        f[i][j].tr.addFirst(new Tree(1, newTree[i][j]));
+                    }
+                    for (Tree t : f[i][j].tr) {
+                        treeCount+= t.count;
+                    }
+                }
+            }
+
+            printFarm(K + " " + treeCount);
 
             // 겨울
             // 겨울에는 S2D2가 땅을 돌아다니면서 땅에 양분을 추가한다.
             // 각 칸에 추가되는 양분의 양은 A[r][c]이고, 입력으로 주어진다.
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
-                    currentNutri[i][j] += annualNutri[i][j];
+                    f[i][j].nutri += annualNutri[i][j];
                 }
             }
         }
@@ -118,14 +146,32 @@ public class Main {
         int leftTreeCount = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                System.out.print(f[i][j].tr + " ");
                 for (Tree t : f[i][j].tr) {
                     leftTreeCount += t.count;
                 }
             }
+        }
+
+        System.out.println(leftTreeCount);
+    }
+
+    private static void printBreed() {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(f[i][j].breedCount + " / ");
+            }
             System.out.println();
         }
-        System.out.println(leftTreeCount);
+    }
+
+    static void printFarm(String msg) {
+        System.out.println(msg);
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(f[i][j] + " / ");
+            }
+            System.out.println();
+        }
     }
 
     static int[] dx = { 1, 0, -1, 0, 1, 1, -1, -1 };
@@ -134,6 +180,13 @@ public class Main {
     static class Farm {
         LinkedList<Tree> tr = new LinkedList<Tree>();
         int breedCount = 0;
+        int nutri = 0;
+        int deadNutriAdds = 0;
+
+        @Override
+        public String toString() {
+            return nutri + "<" + tr + ">";
+        }
     }
 
     static class Tree {
@@ -145,10 +198,10 @@ public class Main {
             this.age = age;
             this.count = count;
         }
-        
+
         @Override
         public String toString() {
-            return age + "," + count + "," + isAlive;
+            return age + "," + count + "," + (isAlive? "T":"F");
         }
     }
 }

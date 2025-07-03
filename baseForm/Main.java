@@ -6,31 +6,25 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(bf.readLine());
-        StringBuilder sb = new StringBuilder();
-        while (N != -1) {
-            ArrayList<Integer> gcs = new ArrayList<>();
-            for (int i = 1; i <= N / 2; i++) {
-                if (N % i == 0) {
-                    gcs.add(i);
-                }
+        StringTokenizer st = new StringTokenizer(bf.readLine());
+        int prevNum = Integer.parseInt(st.nextToken());
+        int hasAsc = 0;
+        int hasDsc = 0;
+        for (int i = 1; i < 8; i++) {
+            int num = Integer.parseInt(st.nextToken());
+            if (prevNum > num) {
+                hasDsc = 1;
+            } else if (prevNum < num) {
+                hasAsc = 1;
             }
-            long sum = 0;
-            for(Integer g : gcs) {
-                sum += g;
-            }
-            if (sum == N) {
-                sb.append(N).append(" = ").append(gcs.get(0)).append(" ");
-                for (int i = 1; i < gcs.size() - 1; i++) {
-                    sb.append("+ ").append(gcs.get(i)).append(" ");
-                }
-                sb.append("+ ").append(gcs.get(gcs.size() - 1));
-            } else {
-                sb.append(N).append(" is NOT perfect.");
-            }
-            sb.append("\n");
-            N = Integer.parseInt(bf.readLine());
+            prevNum = num;
         }
-        System.out.print(sb);
+        if (hasAsc == 1 && hasDsc == 1) {
+            System.out.println("mixed");
+        } else if (hasAsc == 1) {
+            System.out.println("ascending");
+        } else if (hasDsc == 1) {
+            System.out.println("descending");
+        }
     }
 }
