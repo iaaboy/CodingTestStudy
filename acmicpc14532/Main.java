@@ -2,6 +2,7 @@ package acmicpc14532;
 
 import java.io.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 /*
  * 풀이중
@@ -9,73 +10,83 @@ import java.util.*;
 
 public class Main {
     static int N;
-    static int[][] num;
-    static int xMax, xMin, yMax, yMin;
+    static int[][] num, numReversed;
 
     public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(bf.readLine());
         num = new int[N][N];
-        boolean [] colorHandled = new boolean [11];
+        numReversed = new int[N][N];
+        HashMap<Integer, Square> colors = new HashMap<>();
         for (int i = 0; i < N; i++) {
             char[] nChar = bf.readLine().toCharArray();
             for (int j = 0; j < N; j++) {
-                num[i][j] = nChar[j] - '0';
-                colorHandled[num[i][j]] = true;
+                int n = nChar[j] - '0';
+                num[i][j] = n;
+                if (n == 0)
+                    continue;
+                if (!colors.containsKey(n)) {
+                    colors.put(n, new Square());
+                }
+                Square s = colors.get(n);
+                s.xMax = Math.max(s.xMax, j);
+                s.xMin = Math.min(s.xMin, j);
+                s.yMax = Math.max(s.yMax, i);
+                s.yMin = Math.min(s.yMin, i);
             }
         }
-        int latsUpdated = 0;
-        boolean haItem = true;
-        while (haItem) {
-            latsUpdated = 0;
-            ArrayList<Integer> eraseCandidate = new ArrayList<>();
-            for (int i = 1; i <= 10; i++) {
-                if (colorHandled[i]) {
-                    xMin = Integer.MAX_VALUE;
-                    xMax = -1;
-                    yMin = Integer.MAX_VALUE;
-                    yMax = -1;
-                    getPoint(i);
-                    if (checkSquare(xMin, yMin, xMax, yMax, i)) {
-                        System.out.println("Its square: " + i);
-                        colorHandled[i] = false;
-                        latsUpdated++;
-                        eraseCandidate.add(i);
-                    }
-                }
-            }
-            setSqare(eraseCandidate);
-            
-            // System.out.println();
-            if (eraseCandidate.isEmpty()) {
-                haItem = false;
-                break;
-            }
-            haItem = false;
-            for (int i = 1; i < colorHandled.length; i++) {
-                if (colorHandled[i]) {
-                    haItem = true;
-                    break;
+        // System.out.println(colors);
+
+        boolean hasMoreItem = true;
+        while (hasMoreItem) {
+            hasMoreItem = false;
+            for (Entry<Integer, Square> entrySet : colors.entrySet()) {
+                hasMoreItem = chechSquare(entrySet.getKey(), entrySet.getValue());
+                if (hasMoreItem) {
+                    entrySet.getValue().isHandled = true;
+                    setSquare(entrySet.getKey(), entrySet.getValue());
                 }
             }
         }
-        System.out.println(latsUpdated);
+
+        // System.out.println();
+        // for (int i = 0; i < N; i++) {
+        //     System.out.println(Arrays.toString(num[i]));
+        // }
+
+        // System.out.println();
+        // for (int i = 0; i < N; i++) {
+        //     System.out.println(Arrays.toString(numReversed[i]));
+        // }
+
+        int result = 0;
+        for (Entry<Integer, Square> entrySet : colors.entrySet()) {
+            hasMoreItem = checkReversedSquare(entrySet.getKey(), entrySet.getValue());
+            if (hasMoreItem) {
+                result++;
+            }
+        }
+        System.out.println(result);
     }
 
-    private static void setSqare(ArrayList<Integer> eraseCandidate) {
-        for (int i = 0; i < N ; i++) {
-            for (int j = 0; j < N; j++) {
-                if (eraseCandidate.contains(num[i][j])) {
-                    num[i][j] = -1;
-                }
+    private static void setSquare(Integer number, Square sq) {
+        for (int i = sq.yMin; i <= sq.yMax; i++) {
+            for (int j = sq.xMin; j <= sq.xMax; j++) {
+                numReversed[i][j] = number;
+                num[i][j] = OVER_DRAWN;
             }
         }
     }
 
-    private static boolean checkSquare(int x1, int y1, int x2, int y2, int n) {
-        for (int i = y1; i <= y2; i++) {
-            for (int j = x1; j <= x2; j++) {
-                if (num[i][j] != n && num[i][j] != -1) {
+    static int OVER_DRAWN = 10;
+
+    private static boolean chechSquare(Integer number, Square sq) {
+        if (sq.isHandled) {
+            return false;
+        }
+        for (int i = sq.yMin; i <= sq.yMax; i++) {
+            for (int j = sq.xMin; j <= sq.xMax; j++) {
+                if (num[i][j] != number && num[i][j] != OVER_DRAWN) {
                     return false;
                 }
             }
@@ -83,16 +94,35 @@ public class Main {
         return true;
     }
 
-    private static void getPoint(int n) {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (num[i][j] == n) {
-                    xMin = Math.min(xMin, j);
-                    yMin = Math.min(yMin, i);
-                    xMax = Math.max(xMax, j);
-                    yMax = Math.max(yMax, i);
+    private static boolean checkReversedSquare(Integer number, Square sq) {
+        for (int i = sq.yMin; i <= sq.yMax; i++) {
+            for (int j = sq.xMin; j <= sq.xMax; j++) {
+                if (numReversed[i][j] != number) {
+                    return false;
                 }
             }
         }
+        return true;
+    }
+
+    private static class Square {
+        int xMax;
+        int xMin = Integer.MAX_VALUE;
+        int yMax;
+        int yMin = Integer.MAX_VALUE;
+        boolean isHandled = false;
+
+        @Override
+        public String toString() {
+            return "(" + yMin + "," + xMin + " - " + yMax + "," + xMax + ")";
+        }
     }
 }
+
+/*
+4
+1113
+1113
+2333
+2244
+*/
