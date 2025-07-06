@@ -4,8 +4,9 @@ import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
-/*
- * 풀이중
+/* Modern Art (Bronze)
+ * https://www.acmicpc.net/problem/14532
+ * 애드혹
  */
 
 public class Main {
@@ -43,8 +44,10 @@ public class Main {
             for (Entry<Integer, Square> entrySet : colors.entrySet()) {
                 hasMoreItem = chechSquare(entrySet.getKey(), entrySet.getValue());
                 if (hasMoreItem) {
+                    // System.out.println("handle: " + entrySet.getKey());
                     entrySet.getValue().isHandled = true;
                     setSquare(entrySet.getKey(), entrySet.getValue());
+                    break;
                 }
             }
         }
@@ -114,16 +117,7 @@ public class Main {
 
         @Override
         public String toString() {
-            return "(" + yMin + "," + xMin + " - " + yMax + "," + xMax + ")";
+            return "(" + yMin + "," + xMin + " - " + yMax + "," + xMax + ")" + isHandled;
         }
     }
 }
-
-
-/*
-4
-1113
-1113
-2333
-2244
-*/
