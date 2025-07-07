@@ -9,8 +9,10 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        char [] duru = bf.readLine().toCharArray();
+        char [] durumari = bf.readLine().toCharArray();
         char [] br1 = bf.readLine().toCharArray();
         char [] br2 = bf.readLine().toCharArray();
+        int brLength = br1.length;
+        int [][] dp = new int[durumari.length][brLength];
     }
 }
