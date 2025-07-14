@@ -5,6 +5,7 @@ import java.util.*;
 
 /* 우수 마을
  * https://www.acmicpc.net/problem/1949
+ * 트리 dp
  */
 
 public class Main {
