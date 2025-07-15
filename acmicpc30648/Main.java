@@ -3,6 +3,10 @@ package acmicpc30648;
 import java.io.*;
 import java.util.*;
 
+/* 트릭 플라워
+ * https://www.acmicpc.net/problem/30648
+ */
+
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
