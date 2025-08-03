@@ -5,7 +5,7 @@ import java.util.*;
 
 /* 가장 작은 직사각형
  * https://www.acmicpc.net/problem/1438
- * 슬라이딩 윈도우
+ * 슬라이딩 윈도우, 완탐으로는 최적화 해도 풀리지 않음.
  */
 
 public class Main {
