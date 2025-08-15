@@ -3,7 +3,7 @@ package acmicpx26260;
 import java.io.*;
 import java.util.*;
 
-/*
+/* 이가 빠진 이진 트리
  * https://www.acmicpc.net/problem/26260
  */
 
