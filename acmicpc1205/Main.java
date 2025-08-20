@@ -3,6 +3,10 @@ package acmicpc1205;
 import java.io.*;
 import java.util.*;
 
+/* 등수 구하기
+ * https://www.acmicpc.net/problem/1205
+ */
+
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));

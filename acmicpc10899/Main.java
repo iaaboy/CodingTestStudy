@@ -3,6 +3,10 @@ package acmicpc10899;
 import java.io.*;
 import java.util.*;
 
+/* King of penalty
+ * https://www.acmicpc.net/problem/10899
+ */
+
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
