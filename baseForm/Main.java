@@ -6,9 +6,11 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        char[] inchr = bf.readLine().toCharArray();
-        
-        System.out.println((int)inchr[0]);
-        
+        int N = Integer.parseInt(bf.readLine());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < N; i++) {
+            sb.append("LoveisKoreaUniversity").append(" ");
+        }
+        System.out.println(sb);
     }
 }
