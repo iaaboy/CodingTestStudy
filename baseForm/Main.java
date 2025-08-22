@@ -6,11 +6,12 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(bf.readLine());
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < N; i++) {
-            sb.append("LoveisKoreaUniversity").append(" ");
+        StringTokenizer st = new StringTokenizer(bf.readLine());
+        int count = 0;
+        while (st.hasMoreTokens()) {
+            st.nextToken();
+            count++;
         }
-        System.out.println(sb);
+        System.out.println(count);
     }
 }
