@@ -1,13 +1,21 @@
 package AlgorithmSamples.UpperBoundLowerBound;
 
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
         Integer[] arr = { 1, 2, 3, 4, 5, 5, 5, 6, 7, 10, 10, 10 };
         System.out.println(lastLEQ(arr, 5));
+        System.out.println(Arrays.toString(arr));
         System.out.println("underBOund: " + myUnderBound(arr, 5));
+        System.out.println("underBOund: " + myUnderBound(arr, 0));
+        System.out.println("underBOund: " + myUnderBound(arr, 20));
         System.out.println("lowerBound: " + lowerBound(arr, 5));
-        System.out.println("upperBound: " + upperBound(arr, 5));
+        System.out.println("lowerBound: " + lowerBound(arr, 0));
+        System.out.println("lowerBound: " + lowerBound(arr, 20));
         System.out.println("lastLEQ: " + lastLEQ(arr, 5));
+        System.out.println("lastLEQ: " + lastLEQ(arr, 0));
+        System.out.println("lastLEQ: " + lastLEQ(arr, 20));
         // System.out.println("lastLEQ: " + lastLEQ(arr, 12));
         // System.out.println(myUnderBound(arr, 1));
         // System.out.println(myUnderBound(arr, 0));
@@ -24,7 +32,7 @@ public class Main {
         // System.out.println(lowerBound(arr, 8));
         // System.out.println(upperBound(arr, 8));
     }
-    private static int lastLEQ(Integer[] arr, int x) {
+    private static int lastLEQ(Integer[] arr, int x) { //target보다 작거나 같은 마지막 원소
         int left = 0, right = arr.length - 1;
         int result = -1; // 결과가 없을 경우 -1
     
@@ -42,7 +50,7 @@ public class Main {
         return result;
     }
     
-    private static int myUnderBound(Integer[] arr, int key) {
+    private static int myUnderBound(Integer[] arr, int key) { //target보다 작은 마지막 원소의 인덱스
         int left = 0;
         int right = arr.length;
         while (left < right) {
@@ -57,7 +65,7 @@ public class Main {
         return right - 1;
     }
 
-    private static int upperBound(Integer[] arr, int key) { // 특정 target보다 큰 첫번째 원소의 인덱스
+    private static int upperBound(Integer[] arr, int key) { // target보다 큰 첫번째 원소의 인덱스
         int left = 0;
         int right = arr.length;
         while (left < right) {
