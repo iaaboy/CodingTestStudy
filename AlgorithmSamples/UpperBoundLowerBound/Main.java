@@ -1,6 +1,8 @@
 package AlgorithmSamples.UpperBoundLowerBound;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.TreeSet;
 
 public class Main {
     public static void main(String[] args) {
@@ -31,6 +33,15 @@ public class Main {
 
         // System.out.println(lowerBound(arr, 8));
         // System.out.println(upperBound(arr, 8));
+
+        TreeSet<Integer> trSet = new TreeSet<>();
+        trSet.add(2);
+        trSet.add(3);
+        trSet.add(6);
+        trSet.add(7);
+        trSet.add(10);
+        System.out.println(trSet.ceiling(3));
+        System.out.println(trSet.floor(4));
     }
     private static int lastLEQ(Integer[] arr, int x) { //target보다 작거나 같은 마지막 원소
         int left = 0, right = arr.length - 1;
