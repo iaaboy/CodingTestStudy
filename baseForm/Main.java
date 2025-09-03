@@ -6,16 +6,22 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(bf.readLine());
-        int max = 0;
-        int sum = 0;
         StringTokenizer st = new StringTokenizer(bf.readLine());
-        for (int i = 0; i < N; i++) {
-            int num = Integer.parseInt(st.nextToken());
-            max = Math.max(max, num);
-            sum += num;
+        int a = Integer.parseInt(st.nextToken());
+        int b = Integer.parseInt(st.nextToken());
+        int c = Integer.parseInt(st.nextToken());
+        int d = Integer.parseInt(st.nextToken());
+        int e = Integer.parseInt(st.nextToken());
+        int f = Integer.parseInt(st.nextToken());
+        for (int x = -999; x <= 999; x++) {
+            for (int y = -999; y <= 999; y++) {
+                boolean result1 = (a*x + b*y == c);
+                boolean result2 = (d*x + e*y == f);
+                if (result1 && result2) {
+                    System.out.println(x + " " + y);
+                    return;
+                }
+            }
         }
-        Double result = (double)(100 * sum) / (double)(max * N);
-        System.out.println(result);
     }
 }
