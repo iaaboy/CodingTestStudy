@@ -3,8 +3,12 @@ package acmicpc1553;
 import java.io.*;
 import java.util.*;
 
+/* 도미노 찾기
+ * https://www.acmicpc.net/problem/1553
+ */
+
 public class Main {
-    static int[][] dominos;
+    static ArrayList<ArrayList<Pair>> dominos;
     static int[][] map;
     static int[][] dp;
     static boolean[] used;
@@ -18,16 +22,18 @@ public class Main {
                 map[i][j++] = ch - '0';
             }
         }
-        dominos = new int[28][2];
-        used = new boolean[28];
-        int index = 0;
+        dominos = new ArrayList<>();
         for (int i = 0; i <= 6; i++) {
             for (int j = i; j <= 6; j++) {
-                dominos[index][0] = i;
-                dominos[index][1] = j;
-                index++;
+                ArrayList<Pair> domino = new ArrayList<>();
+                domino.add(new Pair(i, j));
+                if (i != j) {
+                    domino.add(new Pair(j, i));
+                }
+                dominos.add(domino);
             }
         }
+        used = new boolean[dominos.size()];
         dp = new int[8][7];
         for (int i = 0; i < 8; i++) {
             Arrays.fill(dp[i], -1);
@@ -43,10 +49,10 @@ public class Main {
         if (y == 7 && x == 6) {
             if (dp[y][x] != -1) {
                 count++;
-                System.out.println();
-                for (int i = 0; i < 8; i++) {
-                    System.out.println(Arrays.toString(dp[i]));
-                }
+                // System.out.println();
+                // for (int i = 0; i < 8; i++) {
+                //     System.out.println(Arrays.toString(dp[i]));
+                // }
             }
             return;
         }
@@ -57,62 +63,88 @@ public class Main {
                 traverse(y, x + 1);
             }
         } else {
-            for (int i = 0; i < dominos.length; i++) {
+            for (int i = 0; i < used.length; i++) {
                 if (!used[i]) {
                     // check 가로
-                    if (isVerticalMatch(y, x, dominos[i])) {
-                        used[i] = true;
-                        dp[y][x] = dominos[i][0];
-                        dp[y][x + 1] = dominos[i][1];
-
-                        // go next
-                        if (x == 6) {
-                            traverse(y + 1, 0);
-                        } else {
-                            traverse(y, x + 1);
-                        }
-
-                        dp[y][x] = -1;
-                        dp[y][x + 1] = -1;
-                        used[i] = false;
-                    }
+                    checkVertical(y, x, i);
                     // check 세로
-                    if (isHorizontalMatch(y, x, dominos[i])) {
-                        used[i] = true;
-                        dp[y][x] = dominos[i][0];
-                        dp[y + 1][x] = dominos[i][1];
-
-                        // go next
-                        if (x == 6) {
-                            traverse(y + 1, 0);
-                        } else {
-                            traverse(y, x + 1);
-                        }
-
-                        dp[y][x] = -1;
-                        dp[y + 1][x] = -1;
-                        used[i] = false;
-                    }
+                    checkHorizontal(y, x, i);
                 }
             }
         }
     }
 
-    private static boolean isHorizontalMatch(int y, int x, int[] domino) {
+    private static void checkHorizontal(int y, int x, int i) {
+        int dominoSize = dominos.get(i).size();
+
+        for (int dominoIndex = 0; dominoIndex < dominoSize; dominoIndex++) {
+            if (isHorizontalMatch(y, x, dominos.get(i).get(dominoIndex))) {
+                used[i] = true;
+                dp[y][x] = dominos.get(i).get(dominoIndex).front;
+                dp[y + 1][x] = dominos.get(i).get(dominoIndex).back;
+
+                // go next
+                if (x == 6) {
+                    traverse(y + 1, 0);
+                } else {
+                    traverse(y, x + 1);
+                }
+
+                dp[y][x] = -1;
+                dp[y + 1][x] = -1;
+                used[i] = false;
+            }
+        }
+    }
+
+    private static void checkVertical(int y, int x, int i) {
+        int dominoSize = dominos.get(i).size();
+
+        for (int dominoIndex = 0; dominoIndex < dominoSize; dominoIndex++) {
+            if (isVerticalMatch(y, x, dominos.get(i).get(dominoIndex))) {
+                used[i] = true;
+                dp[y][x] = dominos.get(i).get(dominoIndex).front;
+                dp[y][x + 1] = dominos.get(i).get(dominoIndex).back;
+
+                // go next
+                if (x == 6) {
+                    traverse(y + 1, 0);
+                } else {
+                    traverse(y, x + 1);
+                }
+
+                dp[y][x] = -1;
+                dp[y][x + 1] = -1;
+                used[i] = false;
+            }
+        }
+    }
+
+    private static boolean isHorizontalMatch(int y, int x, Pair domino) {
         if (y >= 7) {
             return false;
         }
         boolean isBlank = dp[y + 1][x] == -1 && dp[y][x] == -1;
-        boolean isMatch = domino[0] == map[y][x] && domino[1] == map[y + 1][x];
+        boolean isMatch = domino.front == map[y][x] && domino.back == map[y + 1][x];
         return isBlank && isMatch;
     }
 
-    private static boolean isVerticalMatch(int y, int x, int[] domino) {
+    private static boolean isVerticalMatch(int y, int x, Pair domino) {
         if (x >= 6) {
             return false;
         }
         boolean isBlank = dp[y][x] == -1 && dp[y][x + 1] == -1;
-        boolean isMatch = domino[0] == map[y][x] && domino[1] == map[y][x + 1];
+        boolean isMatch = domino.front == map[y][x] && domino.back == map[y][x + 1];
         return isBlank && isMatch;
+    }
+
+    static class Pair {
+        int front;
+        int back;
+
+        public Pair(int front, int back) {
+            this.front = front;
+            this.back = back;
+        }
     }
 }
