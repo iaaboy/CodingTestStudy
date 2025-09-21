@@ -3,6 +3,10 @@ package acmicpc1711;
 import java.io.*;
 import java.util.*;
 
+/* 직각삼각형
+ * https://www.acmicpc.net/problem/1711
+ */
+
 public class Main {
     static int N;
     static int[][] points;
