@@ -7,13 +7,17 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(bf.readLine());
-        StringBuilder sb = new StringBuilder();
-        for (int i = 2; i <= N; i++) {
-            while (N % i == 0) {
-                sb.append(i + "\n");
-                N /= i;
-            }
+        int maxX = Integer.MIN_VALUE, minX = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE, minY = Integer.MAX_VALUE;
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st = new StringTokenizer(bf.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            maxX = Math.max(maxX, x);
+            minX = Math.min(minX, x);
+            maxY = Math.max(maxY, y);
+            minY = Math.min(minY, y);
         }
-        System.out.print(sb);
+        long answer = Math.abs(maxX - minX) * Math.abs(maxY - minY);
+        System.out.println(answer);
     }
 }
