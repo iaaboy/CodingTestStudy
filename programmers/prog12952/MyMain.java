@@ -38,23 +38,23 @@ class Solution {
         }
 
         for (int i = 0; i < n; i++) {
-            board[depth] = i;
-
-            boolean hasNext = true;
-            for (int j = 0; j < depth; j++) {
-                if (board[depth] == board[j]) { //직선
-                    hasNext = false;
-                    break;
-                }
-                if (Math.abs(depth - j) == Math.abs(board[depth] - board[j])) { //대각선
-                    hasNext = false;
-                    break;
-                }
-            }
-
-            if (hasNext) {
-                dfs(depth + 1);
-            }
+//            board[depth] = i;
+//
+//            boolean hasNext = true;
+//            for (int j = 0; j < depth; j++) {
+//                if (board[depth] == board[j]) { //직선
+//                    hasNext = false;
+//                    break;
+//                }
+//                if (Math.abs(depth - j) == Math.abs(board[depth] - board[j])) { //대각선
+//                    hasNext = false;
+//                    break;
+//                }
+//            }
+//
+//            if (hasNext) {
+//                dfs(depth + 1);
+//            }
         }
     }
 }

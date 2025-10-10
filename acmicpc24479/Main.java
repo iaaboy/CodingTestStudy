@@ -27,8 +27,8 @@ public class Main {
         dfs(E, 1);
     }
 
-    void dfs(int now , int count) { // # V : 정점 집합, E : 간선 집합, R : 시작 정점
-        visited[count] = now;
+    static void dfs(int now , int count) { // # V : 정점 집합, E : 간선 집합, R : 시작 정점
+//        visited[count] = now;
 
     }
 }

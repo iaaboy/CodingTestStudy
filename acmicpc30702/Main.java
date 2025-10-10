@@ -74,7 +74,7 @@ public class Main {
     static int[] offsetX = { -1, 0, 1, 0 };
     static int[] skipIdx = { 2, 3, 0, 1, 5 };
 
-    private static boolean fillColor(char[][] newFlag, char[][] reference ,char refCh, char fillCh, int y, int x, int from) {
+    private static boolean fillColor(char[][] newFlag, char[][] reference ,/*char refCh,*/ char fillCh, int y, int x, int from) {
         // reference 영역의 모든 구역을 c로 채운다
         boolean result = true;
         if (newFlag[y][x] != 0 && newFlag[y][x] != fillCh) {
@@ -90,7 +90,7 @@ public class Main {
             if (nX < 0 || nY < 0 || nX >= newFlag[0].length || nY >= newFlag.length || i == skipIdx[from])
                 continue;
             if (reference[nY][nX] == fillCh) {
-                result &= fillColor(newFlag, reference, refCh , fillCh, nY, nX, from);
+//                result &= fillColor(newFlag, reference, refCh , fillCh, nY, nX, from);
             }
         }
         return result;

@@ -1,3 +1,5 @@
+package acmicpc2252;
+
 import java.io.*;
 import java.util.*;
 
