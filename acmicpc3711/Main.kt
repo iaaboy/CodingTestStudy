@@ -7,7 +7,7 @@ import java.util.*
 https://www.acmicpc.net/problem/2258
  */
 
-fun main(args: Array<String>) {
+fun main() {
     val bf = BufferedReader(InputStreamReader(System.`in`))
     val st = StringTokenizer(bf.readLine())
     val T = st.nextToken().toInt()
