@@ -31,3 +31,16 @@ fun checkPalindrome(inputStr: String): Boolean {
     }
     return true
 }
+
+/*
+심플 버전
+fun main() {
+    val s = readLine()!!
+
+    when {
+        s != s.reversed() -> println(s.length)
+        s.all { it == s[0] } -> println(-1)
+        else -> println(s.length - 1)
+    }
+}
+ */
