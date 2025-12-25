@@ -1,128 +1,72 @@
 package acmicpc15883
 
-/* 풀이중
+/* First In Last Out, 구현 백트랙킹
 https://www.acmicpc.net/problem/15883
  */
 
 fun main() {
-//    println("start")
-    trackNumbers( 0, -1, 0, 0)
-//    println(calledCount)
-    print(sb)
-}
-var calledCount =0L
-val numArray: IntArray = IntArray(8)
-val sb = StringBuilder()
-fun trackNumbers (a: Int, a1 : Int, b: Int, count : Int) {
-    if (count == 8) {
-//        println("${a.toString(16)} + ${b.toString(16)} = ${(a+b).toString(16)}")
-//        if (a ==0xd812 && b == 0x48d9) {
-//            println("Test")
-//        }
-        if(!checkNumbers(a,b)) {
-            return
-        }
-        calledCount++
-        val c = a + b
-        println("${a.toString(16)} + ${b.toString(16)} = ${c.toString(16)}")
-//        sb.append("${a.toString(16)} + ${b.toString(16)} = ${c.toString(16)}\n")
-        //printNumber
-        return
-    }
-    when (count) {
-        0 -> {
-            for (num in 1 until 16) {
-                numArray[count] = num
-                trackNumbers(a * 0x10 + num, a1, b, count + 1)
-            }
-        }
-        1 -> {
-            for (num in 0 until 16) {
-                numArray[count] = num
-                trackNumbers(a * 0x10 + num, num, b, count + 1)
-            }
-        }
-        2 -> {
-            for (num in 0 until 16) {
-                numArray[count] = num
-                trackNumbers(a * 0x10 + num, a1, b, count + 1)
-            }
-        }
-        3 -> {
-            for (num in 0 until 16) {
-                numArray[count] = num
-                if (!validateDigits(0, 3)) continue
-                trackNumbers(a * 0x10 + num, a1, b, count + 1)
-            }
-        }
-        4 -> {
-            for (num in 1 until 16) {
-                numArray[count] = num
-                trackNumbers(a, a1, b * 0x10 + num,count + 1)
-            }
-        }
-        5 -> {
-            //a의 1과 같은지 확인
-            for (num in 0 until 16) {
-                if (a1 != num) continue
-                numArray[count] = num
-                trackNumbers(a, a1, b * 0x10 + num,count + 1)
-            }
-        }
-        6 -> {
-            for (num in 0 until 16) {
-                //5번째와 1번째가 같을때,
-                numArray[count] = num
-                trackNumbers(a, a1, b * 0x10 + num,count + 1)
-            }
-        }
-        7 -> {
-            for (num in 0 until 16) {
-                //5번째와 1번째가 같을때,
-                numArray[count] = num
-                if (!validateDigits(4, 7)) continue
-                trackNumbers(a, a1, b * 0x10 + num,count + 1)
+    for (L in 1..15) {
+        for (I in 0..15) {
+            for (S in 1..15) {
+                for (T in 0..15) {
+                    for (F in 1..15) {
+                        for (O in 0 .. 15) {
+                            if(!unique6(L,I,S,T,F,O)) continue
+
+                            val a = L * 0x1000 + I * 0x100 + S * 0x10 + T
+                            val b = F * 0x1000 + I * 0x100 + L * 0x10 + O
+                            val c = a + b
+
+                            val S3 = (c ushr 16) and 0xF
+                            val T3 = (c ushr 12) and 0xF
+                            val A3 = (c ushr 8) and 0xF
+                            val C3 = (c ushr 4) and 0xF
+                            val K3 = c and 0xF
+                            if (S != S3 || T != T3) continue
+
+                            if(!unique9(L,I,S,T,F,O,A3,C3,K3)) continue
+
+                            println("${a.toString(16)} + ${b.toString(16)} = ${c.toString(16)}")
+                        }
+                    }
+                }
             }
         }
     }
 }
 
-fun validateDigits(s : Int, e : Int) : Boolean {
-//    val numSet = HashSet<Int>()
-//    for (i in s .. e) {
-//        if (numSet.contains(numArray[i])) return false
-//        numSet.add(numArray[i])
-//    }
-//    return true
-    for (i in s .. e - 1) {
-        for (j in i + 1 .. e) {
-            if (numArray[i] == numArray[j]) return false
-        }
-    }
-    return true
-}
-
-fun checkNumbers(a: Int, b: Int): Boolean {
-    var c = a + b
-    if (c >= 0xFFFFF || c < 0x10000) {
-        return false
-    }
-
-    //check
-    //S and T
-    val newA = a and 0xFF
-    val newC = (c and 0xFF000) / 0x1000
-    if (newA != newC) return false
-
-    // c의 5개 hex digit이 모두 유니크인지: HashSet 대신 bitmask
-
+fun unique6(L:Int,I:Int,S:Int,T:Int,F:Int,O:Int): Boolean {
     var mask = 0
-    repeat(5) {
-        val d = c and 0xF
-        val bit = 1 shl d
+    fun add(x:Int): Boolean {
+        val bit = 1 shl x
         if ((mask and bit) != 0) return false
         mask = mask or bit
-        c = c ushr 4
+        return true
     }
-    return true
+    return add(L) && add(I) && add(S) && add(T) && add(F) && add(O)
+}
+
+fun unique9(
+    a: Int, b: Int, c: Int,
+    d: Int, e: Int, f: Int,
+    g: Int, h: Int, i: Int
+): Boolean {
+    var mask = 0
+
+    fun add(x: Int): Boolean {
+        val bit = 1 shl x
+        if ((mask and bit) != 0) return false
+        mask = mask or bit
+        return true
+    }
+
+    return add(a) &&
+            add(b) &&
+            add(c) &&
+            add(d) &&
+            add(e) &&
+            add(f) &&
+            add(g) &&
+            add(h) &&
+            add(i)
 }
