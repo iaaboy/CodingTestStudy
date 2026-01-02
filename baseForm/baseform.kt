@@ -3,6 +3,10 @@ package baseForm
 import java.io.*
 import java.util.StringTokenizer
 
+/* 팰린드롬과 관련된 수열의 개수, 수학(?)
+https://www.acmicpc.net/problem/17360
+ */
+
 fun main() {
     val bf = BufferedReader(InputStreamReader(System.`in`))
     val N = bf.readLine().toInt()
