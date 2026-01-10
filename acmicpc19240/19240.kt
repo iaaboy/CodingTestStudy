@@ -38,7 +38,9 @@ fun main() {
                 }
             }
         }
-//        println(v.contentToString())
+        for (vertex in v) {
+            println(vertex)
+        }
         sb.append(if (isBinGraph) "YES\n" else "NO\n")
     }
     print(sb)
