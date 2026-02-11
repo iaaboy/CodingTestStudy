@@ -57,4 +57,4 @@ fun main() {
     println(sb)
 }
 
-class Trie(var occupied: Boolean = false, val child: IntArray = IntArray(10) { -1 }, val ch: Char = 'a')
+private class Trie(var occupied: Boolean = false, val child: IntArray = IntArray(10) { -1 })
