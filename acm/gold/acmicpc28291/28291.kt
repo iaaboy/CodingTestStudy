@@ -3,7 +3,7 @@ package acm.gold.acmicpc28291
 import java.util.ArrayDeque
 import java.util.StringTokenizer
 
-/* 풀이중.
+/* 레드스톤, 깊이 우선 탐색
 https://www.acmicpc.net/problem/28291
  */
 
@@ -35,15 +35,13 @@ fun main() {
         val y = st.nextToken().toInt()
         map[y][x] = value
         if (map[y][x] == 1) {
-            electric[y][x] = 15
-            q.add(Coord(y,x,15))
+            electric[y][x] = 16
+            q.add(Coord(y, x, 16))
         }
     }
 
     val dx = arrayOf(0, 1, -1, 0)
     val dy = arrayOf(1, 0, 0, -1)
-
-    var rampOn = false
 
     while (q.isNotEmpty()) {
         val c = q.poll()
@@ -60,21 +58,49 @@ fun main() {
             } else if (map[ny][nx] == 1) { //do nothing
 
             } else if (map[ny][nx] == 3) { //lamp
-                rampOn = true
-                println("success")
-//                return
+                electric[ny][nx] = c.value - 1
             }
         }
     }
 
-    for (ints in map) {
-        println(ints.joinToString(" "))
+//    for (ints in map) {
+//        println(ints.joinToString(" "))
+//    }
+//    for (ints in electric) {
+//        println(ints.joinToString(" "))
+//    }
+
+    for (y in 0..<H) {
+        for (x in 0..<W) {
+            if (map[y][x] == 3 && electric[y][x] == 0) {
+                println("failed")
+                return
+            }
+        }
     }
-    for (ints in electric) {
-        println(ints.joinToString(" "))
-    }
-    if (!rampOn)
-        println("failed")
+
+    println("success")
 
 }
-data class Coord(val y : Int, val x : Int, val value : Int)
+
+data class Coord(val y: Int, val x: Int, val value: Int)
+
+/*
+15 1
+15
+redstone_block 0 0
+redstone_dust 1 0
+redstone_dust 2 0
+redstone_dust 3 0
+redstone_dust 4 0
+redstone_dust 5 0
+redstone_dust 6 0
+redstone_dust 7 0
+redstone_dust 8 0
+redstone_dust 9 0
+redstone_dust 10 0
+redstone_dust 11 0
+redstone_dust 12 0
+redstone_lamp 13 0
+redstone_lamp 14 0
+ */
