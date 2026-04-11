@@ -1,4 +1,4 @@
-package acmicpc10868;
+package acm.gold.acmicpc10868;
 
 import java.io.*;
 import java.util.*;
