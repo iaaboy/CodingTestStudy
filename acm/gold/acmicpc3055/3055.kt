@@ -3,8 +3,8 @@ package acm.gold.acmicpc3055
 import java.util.ArrayDeque
 import java.util.StringTokenizer
 
-/*
-3055 풀이중.
+/* 탈출, bfs
+https://www.acmicpc.net/problem/3055
  */
 
 fun main() {
@@ -55,7 +55,7 @@ fun main() {
             val nx = currentS.x + dx[i]
             if (ny < 0 || ny >= R || nx < 0 || nx >= C) continue
             if (map[ny][nx] == '.') {
-                map[ny][nx] = ('0' + currentS.count)
+                map[ny][nx] = 'K'//('0' + currentS.count)
                 sQ.add(Coord(ny, nx, currentS.count + 1))
             } else if (map[ny][nx] == 'D') {
                 println(currentS.count)
